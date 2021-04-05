@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: letok 
+# key: letok
+# --
+if let Ok(($1)) = query.single$2() {
+   $3
+}

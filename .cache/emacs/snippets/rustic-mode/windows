@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: windows
+# key: windows
+# --
+windows: Res<Windows>,

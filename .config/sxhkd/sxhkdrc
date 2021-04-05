@@ -1,0 +1,12 @@
+super + c
+	brave
+super + e
+	emacsclient --create-frame --alternate-editor=""
+super + i
+	emacs
+super + w
+	~/.emacs_anywhere/bin/run
+super + p
+	PDF=$(fd . '/home/odd' | rg ".pdf" | rmenu) && zathura "$PDF"
+super + y
+	notify-send "Loading $(xclip -o)..." && mpv $(xclip -o)

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: query
+# key: query
+# --
+query: Query<($1)>,

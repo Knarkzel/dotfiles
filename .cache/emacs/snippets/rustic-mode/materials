@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: materials
+# key: materials
+# --
+mut materials: ResMut<Assets<ColorMaterial>>, $1

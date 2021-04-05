@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: assetserver
+# key: assetserver
+# --
+asset_server: Res<AssetServer>, $1

@@ -1,0 +1,18 @@
+#+title: Title
+#+author: Odd-Harald Lillestø Myhren
+#+options: toc:nil
+#+language: no
+#+latex_header: \usepackage[norsk]{babel}
+#+latex_class_options: [12pt]
+#+latex_header: \usepackage[margin=1in]{geometry}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+* Header
+  
+bibliography:sources.bib
+bibliographystyle:apalike

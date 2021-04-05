@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: time
+# key: time
+# --
+time: Res<Time>, $1
