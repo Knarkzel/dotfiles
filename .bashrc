@@ -36,23 +36,16 @@ alias bashconf="vim ~/.bashrc"
 alias lfconf="vim ~/.config/lf/lfrc"
 alias server="ssh root@knarkzel.xyz"
 alias arendal="ssh odd@85.166.244.106"
-alias emacsrestart="systemctl --user restart emacs"
 alias cpuhigh="echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # exports
-export PATH="$PATH:/home/odd/.cargo/bin/"
+export PATH="$PATH:~/.cargo/bin/:~/.scripts"
 export FZF_DEFAULT_COMMAND="rg --files"
 export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -t"                  # $EDITOR opens in terminal
 export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI mode
-
 export RUSTC_WRAPPER=""
-export CARGO_TARGET_DIR="target"
-
-export DEVKITPRO=/opt/devkitpro
-export DEVKITARM=/opt/devkitpro/devkitARM
-export DEVKITPPC=/opt/devkitpro/devkitPPC
 
 vterm_printf(){
     if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ] ); then

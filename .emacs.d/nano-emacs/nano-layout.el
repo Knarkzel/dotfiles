@@ -16,17 +16,18 @@
 ;; along with this program. If not, see <http://www.gnu.org/licenses/>.
 ;; ---------------------------------------------------------------------
 
-(setq default-frame-alist
-      (append (list
-	           '(font . "Monospace:size=24")
-	           '(min-height . 1)  '(height     . 45)
-	           '(min-width  . 1) '(width      . 81)
-               '(vertical-scroll-bars . nil)
-               '(internal-border-width . 6)
-               '(left-fringe    . 0)
-               '(right-fringe   . 0)
-               '(tool-bar-lines . 0)
-               '(menu-bar-lines . 0))))
+;; (setq default-frame-alist
+;;       (append (list
+;; 	           '(font . "Monospace:size=24")
+;; 	           '(min-height . 1)  '(height     . 45)
+;; 	           '(min-width  . 1) '(width      . 81)
+;;                '(vertical-scroll-bars . nil)
+;;                '(internal-border-width . 6)
+;;                ;; '(left-fringe    . 0)
+;;                ;; '(right-fringe   . 0)
+;;                ;; '(tool-bar-lines . 0)
+;;                ;; '(menu-bar-lines . 0)
+;;                )))
 
 ;; on OSX, type the line below (in terminal) to get a 1 pixel border
 ;; defaults write com.apple.universalaccess increaseContrast -bool YES
@@ -43,13 +44,13 @@
 (set-display-table-slot standard-display-table 'truncation
                         (make-glyph-code ?… 'fallback))
 (set-display-table-slot standard-display-table 'wrap
-                         (make-glyph-code ?↩ 'fallback))
+                        (make-glyph-code ?↩ 'fallback))
 
 ;; (set-fontset-font t nil "Fira Code" nil 'append)
 
 ;; Fix bug on OSX in term mode & zsh (spurious % after each command)
 (add-hook 'term-mode-hook
-	  (lambda () (setq buffer-display-table (make-display-table))))
+	      (lambda () (setq buffer-display-table (make-display-table))))
 
 (setq inhibit-startup-screen t
       inhibit-startup-message t
@@ -62,9 +63,9 @@
 (setq x-underline-at-descent-line t)
 
 ;; Vertical window divider
-(setq window-divider-default-right-width 6)
+(setq window-divider-default-right-width 2)
 (setq window-divider-default-bottom-width 6)
-(setq window-divider-default-places t)
+(setq window-divider-default-places 'bottom-only)
 (window-divider-mode 1)
 
 ;; No ugly button for checkboxes

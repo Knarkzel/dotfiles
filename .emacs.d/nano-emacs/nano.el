@@ -32,8 +32,5 @@
 ;; Nano default settings (optional)
 (require 'nano-defaults)
 
-;; Nano header & mode lines (optional)
-(require 'nano-modeline)
-
 ;; Finished
 (provide 'nano)

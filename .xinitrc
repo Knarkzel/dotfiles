@@ -13,7 +13,7 @@ dunst &
 hsetroot &
 start-pulseaudio-x11 &
 xrdb -merge ~/.Xresources &
-#nvidia-settings --assign CurrentMetaMode="HDMI-0: nvidia-auto-select @1920x1080 +1920+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+1920+0, ForceFullCompositionPipeline=On}, DVI-I-1: nvidia-auto-select @1920x1080 +0+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+0+0, ForceFullCompositionPipeline=On}"
+nvidia-settings --assign CurrentMetaMode="HDMI-0: nvidia-auto-select @1920x1080 +1920+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+1920+0, ForceFullCompositionPipeline=On}, DVI-I-1: nvidia-auto-select @1920x1080 +0+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+0+0, ForceFullCompositionPipeline=On}"
 vmtouch -vtf ~/.emacs.d &
 hsetroot -solid "#353535"
 exec dwm

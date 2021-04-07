@@ -48,6 +48,10 @@
 (setq confirm-kill-emacs nil
       confirm-kill-processes nil)
 
+(setq comp-async-report-warnings-errors nil)
+
+(setq warning-minimum-level ':error)
+
 (setq display-line-numbers-type 'relative)
 
 (setq fast-but-imprecise-scrolling t)

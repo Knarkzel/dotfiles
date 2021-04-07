@@ -120,62 +120,62 @@
   (set-face 'font-lock-keyword-face                  'nano-face-salient))
 
 
-(defun nano-theme--mode-line ()
-  "Derive mode-line and header-line faces from nano-faces."
-  (set-face-attribute 'mode-line nil
-                      :height 0.1
-                      :foreground (if (display-graphic-p)
-                                      (face-background 'nano-face-default)
-                                    (face-foreground 'nano-face-default))
-                      :background (face-background 'nano-face-default)
-                      :underline  (if (display-graphic-p)
-                                      (face-background 'nano-face-subtle)
-                                    t)
-                      :overline nil
-                      :box nil)
-  (set-face-attribute 'mode-line-inactive nil
-                      :height 0.1
-                      :foreground (if (display-graphic-p)
-                                      (face-background 'nano-face-default)
-                                    (face-foreground 'nano-face-default))
-                      :background (face-background 'nano-face-default)
-                      :underline (if (display-graphic-p)
-                                     (face-background 'nano-face-subtle)
-                                   t)
-                      :overline nil
-                      :inherit nil
-                      :box nil)
-  
-  ;;(when (display-graphic-p)
-  (set-face-attribute 'header-line nil
-                       :weight 'light
-                       :foreground (face-foreground 'nano-face-default)
-                       :background (face-background 'nano-face-default)
+;; (defun nano-theme--mode-line ()
+;;   "Derive mode-line and header-line faces from nano-faces."
+;;   (set-face-attribute 'mode-line nil
+;;                       :height 0.1
+;;                       :foreground (if (display-graphic-p)
+;;                                       (face-background 'nano-face-default)
+;;                                     (face-foreground 'nano-face-default))
+;;                       :background (face-background 'nano-face-default)
+;;                       :underline  (if (display-graphic-p)
+;;                                       (face-background 'nano-face-subtle)
+;;                                     t)
+;;                       :overline nil
+;;                       :box nil)
+;;   (set-face-attribute 'mode-line-inactive nil
+;;                       :height 0.1
+;;                       :foreground (if (display-graphic-p)
+;;                                       (face-background 'nano-face-default)
+;;                                     (face-foreground 'nano-face-default))
+;;                       :background (face-background 'nano-face-default)
+;;                       :underline (if (display-graphic-p)
+;;                                      (face-background 'nano-face-subtle)
+;;                                    t)
+;;                       :overline nil
+;;                       :inherit nil
+;;                       :box nil)
 
-                       :overline nil
-                       :underline nil
-                       :box nil
-                       :box `(:line-width 1
-                                          :color ,(face-background 'nano-face-default)
-                                          :style nil)
-                       :inherit nil)
+;;   ;;(when (display-graphic-p)
+;;   (set-face-attribute 'header-line nil
+;;                        :weight 'light
+;;                        :foreground (face-foreground 'nano-face-default)
+;;                        :background (face-background 'nano-face-default)
 
-  ;; (when (not (display-graphic-p))
-  ;;   (set-face-attribute 'header-line nil
-  ;;                    :weight 'light
-  ;;                       :foreground (face-foreground 'nano-face-default)
-  ;;                       :background (face-background 'nano-face-subtle)
-  ;;                       :inverse-video t
-  ;;                       :overline nil
-  ;;                       :underline nil
-  ;;                       :box nil
-  ;;                            :inherit nil))
+;;                        :overline nil
+;;                        :underline nil
+;;                        :box nil
+;;                        :box `(:line-width 1
+;;                                           :color ,(face-background 'nano-face-default)
+;;                                           :style nil)
+;;                        :inherit nil)
 
-  ;; (set-face-attribute 'internal-border nil
-  ;;                     :background (face-foreground 'nano-face-default))
+;;   ;; (when (not (display-graphic-p))
+;;   ;;   (set-face-attribute 'header-line nil
+;;   ;;                    :weight 'light
+;;   ;;                       :foreground (face-foreground 'nano-face-default)
+;;   ;;                       :background (face-background 'nano-face-subtle)
+;;   ;;                       :inverse-video t
+;;   ;;                       :overline nil
+;;   ;;                       :underline nil
+;;   ;;                       :box nil
+;;   ;;                            :inherit nil))
 
-  (set-face-attribute 'internal-border nil
-                       :background (face-background 'nano-face-default)))
+;;   ;; (set-face-attribute 'internal-border nil
+;;   ;;                     :background (face-foreground 'nano-face-default))
+
+;;   (set-face-attribute 'internal-border nil
+;;                        :background (face-background 'nano-face-default)))
 
 
 (defun nano-theme--minibuffer ()

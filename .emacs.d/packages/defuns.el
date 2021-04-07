@@ -95,7 +95,7 @@
 
 (defun odd/open-config-folder ()
   (interactive)
-  (find-file "~/dotfiles/emacs/.emacs.d/packages"))
+  (find-file "~/.emacs.d/packages/packages.el"))
 
 (defun odd/m-x ()
   (interactive)
