@@ -8,12 +8,14 @@ xset m 0 0
 xset -dpms
 xset s off
 redshift -l 58:9 -t 6500K:2000K -b 0.65 &
-sxhkd &
+# sxhkd &
 dunst &
 hsetroot &
+xbanish &
 start-pulseaudio-x11 &
 xrdb -merge ~/.Xresources &
 nvidia-settings --assign CurrentMetaMode="HDMI-0: nvidia-auto-select @1920x1080 +1920+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+1920+0, ForceFullCompositionPipeline=On}, DVI-I-1: nvidia-auto-select @1920x1080 +0+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+0+0, ForceFullCompositionPipeline=On}"
 vmtouch -vtf ~/.emacs.d &
 hsetroot -solid "#353535"
-exec dwm
+xhost +local:
+exec dbus-launch --exit-with-session emacsclient -a "" -c

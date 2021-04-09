@@ -4,41 +4,23 @@
 
 ;; Author: Odd-Harald Myhren <knarkzel@gmail.com>
 
-(defun odd/cargo-install (files)
+(defun odd/kill-buffer-window ()
   (interactive)
-  (let ((folder "~/.cargo/bin/"))
-    (dolist (file files)
-      (when (not (file-exists-p (concat folder file)))
-        (when (y-or-n-p (concat "Install " file))
-          (async-shell-command
-           (concat "cargo install --git https://git.sr.ht/~knarkzel/" file) "*cargo-install*"))))))
+  (kill-buffer (current-buffer))
+  (when (not (one-window-p))
+    (delete-window)))
 
 (defun odd/cargo-doc ()
   (interactive)
-  (message "Generating docs...")
-  (async-shell-command "CARGO_TARGET_DIR=../target cargo doc --open &" "*cargo-doc*"))
+  (compile "cargo doc --open"))
 
 (defun odd/cargo-build ()
   (interactive)
-  (message "Building program...")
-  (async-shell-command "CARGO_TARGET_DIR=../target cargo build" "*cargo-build*"))
+  (compile "cargo build"))
 
 (defun odd/cargo-run ()
   (interactive)
-  (message "Running program...")
-  (async-shell-command "CARGO_TARGET_DIR=../target cargo run" "*cargo-run*"))
-
-(defun odd/get-feeds ()
-  (interactive)
-  (if (file-exists-p "~/.cargo/bin/feed")
-      (let ((file (read-file-name "Which file?")))
-        (insert (shell-command-to-string (concat odd/feed-path " '" file "'"))))
-    (message "Feed not found")))
-
-(defun odd/elfeed-search-eww-open (&optional use-generic-p)
-  (interactive "P")
-  (let ((browse-url-browser-function #'eww-browse-url))
-    (elfeed-search-browse-url use-generic-p)))
+  (compile "cargo run"))
 
 (defun odd/eshell-clear ()
   (interactive)
@@ -58,14 +40,9 @@
                            file ".tex"))
     (async-shell-command (concat "libreoffice " file ".docx"))))
 
-(defun odd/create-project ()
+(defun odd/m-x ()
   (interactive)
-  (let ((input (read-string "Enter file name: ")))
-    (make-directory input)
-    (make-directory (concat input "/images"))
-    (make-empty-file (concat input "/sources.bib"))
-    (make-empty-file (concat input "/" input ".org"))
-    (dired (concat default-directory input "/" input ".org"))))
+  (execute-extended-command ""))
 
 (defun odd/add-hooks (hook defuns)
   (interactive)
@@ -77,29 +54,23 @@
   (previous-window-any-frame)
   (delete-other-windows))
 
-(defun odd/hot-reload-cider ()
-  (interactive)
-  (let ((game "overworld-game")
-        (ns "overworld.core"))
-    (cider-insert-in-repl
-     (concat "(in-ns '" ns ")") t)
-    (sleep-for 0.01)
-    (cider-insert-in-repl
-     (concat "(on-gl (set-screen! " game " main-screen))") t))
-  (cider-switch-to-last-clojure-buffer)
-  (message "Reloaded session!"))
-
-(defun odd/dired-here ()
-  (interactive)
-  (dired "."))
-
 (defun odd/open-config-folder ()
   (interactive)
   (find-file "~/.emacs.d/packages/packages.el"))
 
-(defun odd/m-x ()
+(defun odd/create-project ()
   (interactive)
-  (execute-extended-command ""))
+  (let ((input (read-string "Enter file name: ")))
+    (make-directory input)
+    (make-directory (concat input "/images"))
+    (make-empty-file (concat input "/sources.bib"))
+    (make-empty-file (concat input "/" input ".org"))
+    (dired (concat default-directory input "/" input ".org"))))
+
+(defun odd/elfeed-search-eww-open (&optional use-generic-p)
+  (interactive "P")
+  (let ((browse-url-browser-function #'eww-browse-url))
+    (elfeed-search-browse-url use-generic-p)))
 
 (defvar elfeed-mpv-patterns
   '("youtu\\.?be" "videos\.lukesmith")

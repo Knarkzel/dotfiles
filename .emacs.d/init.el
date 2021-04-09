@@ -8,6 +8,7 @@
       (packages '("defaults.el"
                   "defuns.el"
                   "packages.el"
+		  "exwm.el"
                   "colors.el")))
   (dolist (package packages)
     (load-file (concat base package))))

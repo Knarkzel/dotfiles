@@ -148,17 +148,17 @@
 
 ;;   ;;(when (display-graphic-p)
 ;;   (set-face-attribute 'header-line nil
-;;                        :weight 'light
-;;                        :foreground (face-foreground 'nano-face-default)
-;;                        :background (face-background 'nano-face-default)
+;;                       :weight 'light
+;;                       :foreground (face-foreground 'nano-face-default)
+;;                       :background (face-background 'nano-face-default)
 
-;;                        :overline nil
-;;                        :underline nil
-;;                        :box nil
-;;                        :box `(:line-width 1
-;;                                           :color ,(face-background 'nano-face-default)
-;;                                           :style nil)
-;;                        :inherit nil)
+;;                       :overline nil
+;;                       :underline nil
+;;                       :box nil
+;;                       :box `(:line-width 1
+;;                                          :color ,(face-background 'nano-face-default)
+;;                                          :style nil)
+;;                       :inherit nil)
 
 ;;   ;; (when (not (display-graphic-p))
 ;;   ;;   (set-face-attribute 'header-line nil
@@ -175,7 +175,7 @@
 ;;   ;;                     :background (face-foreground 'nano-face-default))
 
 ;;   (set-face-attribute 'internal-border nil
-;;                        :background (face-background 'nano-face-default)))
+;;                       :background (face-background 'nano-face-default)))
 
 
 (defun nano-theme--minibuffer ()
@@ -192,7 +192,7 @@
   "Derive hl-line faces from nano faces."
   (with-eval-after-load 'hl-line
     (set-face-attribute 'hl-line nil
-                         :background nano-color-highlight)))
+                        :background nano-color-highlight)))
 
 
 
@@ -689,7 +689,7 @@ function is a convenience wrapper used by `describe-package-1'."
   "Derive many, many faces from the core nano faces."
   (nano-theme--basics)
   (nano-theme--font-lock)
-  (nano-theme--mode-line)
+  ;; (nano-theme--mode-line)
   (nano-theme--minibuffer)
   (nano-theme--buttons)
   (nano-theme--info)

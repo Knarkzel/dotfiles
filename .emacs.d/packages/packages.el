@@ -1,4 +1,4 @@
-;;; packages.el --- my selection of packages         -*- lexical-binding: t; -*-
+;; packages.el --- my selection of packages         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Odd-Harald Myhren
 
@@ -6,39 +6,38 @@
 
 (setq custom-packages '(aggressive-indent
                         ace-link
-                        cider clojure-mode
                         company
                         dired-ranger
                         evil evil-collection evil-commentary evil-leader evil-lispy
-                        eyebrowse
                         elfeed
                         eglot
                         fancy-battery
                         gcmh
                         helpful
                         emms
+                        leaf-convert
                         lispyville
+			            pulseaudio-control
+                        dmenu
+                        sudo-edit
+                        exwm
                         magit
                         marginalia
-                        org-ref
+                        org-ref org-roam
                         disk-usage
                         rainbow-delimiters rainbow-mode
                         rustic
                         selectrum selectrum-prescient
                         tree-sitter tree-sitter-langs
                         yasnippet yasnippet-snippets
-                        vterm
-                        vterm-toggle
+                        vterm vterm-toggle
+                        which-key
                         zoom))
 
 (let ((inhibit-message nil))
   (dolist (package custom-packages)
     (unless (package-installed-p package)
       (package-install package))))
-
-(leaf eyebrowse
-  :init
-  (eyebrowse-mode t))
 
 (leaf evil
   :init
@@ -61,20 +60,17 @@
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key
-      "1" 'eyebrowse-switch-to-window-config-0
-      "2" 'eyebrowse-switch-to-window-config-1
-      "3" 'eyebrowse-switch-to-window-config-2
-      "4" 'eyebrowse-switch-to-window-config-3
       "b" 'switch-to-buffer
-      "d" 'odd/dired-here
+      "d" 'dired-jump
       "e" 'eshell
       "f" 'find-file
       "g" 'magit
       "l" 'elfeed
       "o" 'odd/open-config-folder
       "p" project-prefix-map
-      "v" 'vterm-toggle-cd
-      "x" 'odd/m-x))
+      "v" 'vterm-toggle-cd))
+
+  (evil-define-key 'insert global-map (kbd "C-v") 'evil-paste-after)
 
   (evil-mode t))
 
@@ -90,63 +86,11 @@
 
   (yas-global-mode t))
 
-(leaf magit
-  :init
-  (setq magit-refresh-status-buffer nil
-        vc-handled-backends '(Git)))
-
-(leaf ediff
-  :init
-  (setq ediff-window-setup-function 'ediff-setup-windows-plain))
-
-(leaf fancy-battery
-  :init
-  (add-hook 'after-init-hook 'fancy-battery-mode))
-
-(leaf rainbow-delimiters
-  :init
-  (setq rainbow-delimiters-max-face-count 4)
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-
-(leaf zoom
-  :init
-  (setq zoom-size '(0.618 . 0.618))
-  (zoom-mode t))
-
-(leaf rainbow-mode
-  :init
-  (add-hook 'prog-mode-hook 'rainbow-mode))
-
-(leaf electric-pair
-  :init
-  (add-hook 'prog-mode-hook 'electric-pair-mode))
-
 (leaf eww
   :init
   (setq shr-max-image-proportion 0.25)
-
   (evil-define-key 'normal 'eww-mode-map (kbd "g l") 'ace-link-eww)
-
-  (add-hook 'eww-after-render-hook 'eww-readable))
-
-(leaf tramp
-  :init
-  (setq remote-file-name-inhibit-cache nil)
-  (setq vc-ignore-dir-regexp
-        (format "%s\\|%s"
-                vc-ignore-dir-regexp
-                tramp-file-name-regexp))
-  (setq tramp-verbose 1))
-
-(leaf cua-mode
-  :init
-  (cua-selection-mode t)
-  (evil-define-key 'insert global-map (kbd "C-v") 'cua-paste))
-
-(leaf tree-sitter
-  :init
-  (add-hook 'tree-sitter-mode-hook 'tree-sitter-hl-mode)
-  (global-tree-sitter-mode t))
+  :hook (eww-after-render-hook . eww-readable))
 
 (leaf eshell
   :init
@@ -219,24 +163,19 @@
 
 (leaf eglot
   :init
-  (add-hook 'rustic-mode-hook 'eglot-ensure)
-  (add-hook 'js-mode-hook 'eglot-ensure)
-  (evil-define-key 'normal eglot-mode-map (kbd "C-a") 'eglot-code-actions))
+  (evil-define-key 'normal eglot-mode-map (kbd "C-a") 'eglot-code-actions)
+  :hook ((rustic-mode-hook js-mode-hook) . eglot-ensure))
 
 (leaf rustic
   :require t
   :init
   (setq rustic-lsp-client 'eglot)
-  (setenv "CARGO_TARGET_DIR" "target/rust-analyzer")
-  (add-hook 'rustic-mode-hook (lambda () (interactive)
-                                (electric-pair-mode t)
-                                (define-key rustic-mode-map (kbd "<f2>")
-                                  (lambda () (interactive) (rustic-run-cargo-command "cargo run --release")))))
+  (add-hook 'rustic-mode-hook 'electric-pair-mode)
 
   (defhydra hydra-rustic (:color blue)
     "rustic-mode"
     ("a" rustic-cargo-add "cargo-add" :column "Rustic")
-    ("b" odd/cargo-build "cargo-build")
+    ("b" rustic-cargo-build "cargo-build")
     ("d" odd/cargo-doc "cargo-doc")
     ("r" odd/cargo-run "cargo-run")
     ("f" rustic-format-buffer "format" :column "Eglot")
@@ -304,36 +243,6 @@
                    aggressive-indent-mode
                    lispyville-mode)))
 
-(leaf clojure
-  :init
-  (leaf clojure-mode
-    :init
-    (odd/add-hooks 'clojure-mode-hook
-                   '(eldoc-mode
-                     evil-lispy-mode
-                     aggressive-indent-mode
-                     lispyville-mode)))
-  (leaf cider
-    :init
-    (setq cider-show-error-buffer nil
-          cider-repl-pop-to-buffer-on-connect nil
-          cider-repl-display-in-current-window t
-          cider-repl-buffer-size-limit 100000)
-
-    (defhydra hydra-clojure (:color blue)
-      "clojure-mode"
-      ("r" odd/hot-reload-cider "reload cider" :column "Reload"))
-
-    (evil-leader/set-key-for-mode 'clojure-mode "SPC" 'hydra-clojure/body)
-
-    (evil-define-key 'insert cider-repl-mode-map
-      (kbd "C-j") 'cider-repl-forward-input
-      (kbd "C-k") 'cider-repl-backward-input)
-    
-    (odd/add-hooks 'cider-repl-mode-hook
-                   '(lispyville-mode
-                     rainbow-delimiters-mode))))
-
 (leaf elfeed
   :require t
   :init
@@ -392,14 +301,16 @@
     (defhydra hydra-bibtex (:color blue)
       "bibtex-mode"
       ("i" yas-insert-snippet "yas-insert-snippet" :column "Yas"))
-    (evil-leader/set-key-for-mode 'bibtex-mode "SPC" 'hydra-bibtex/body)))
+    (evil-leader/set-key-for-mode 'bibtex-mode "SPC" 'hydra-bibtex/body))
 
-(leaf auto-insert
-  :init
-  (auto-insert-mode t)
-  (setq auto-insert-directory "~/.emacs.d/templates/"
-        auto-insert-query nil)
-  (define-auto-insert "\.org" "org-template.org"))
+  (leaf org-roam
+    :custom (org-roam-directory . "~/.emacs.d/org-roam")
+    :hook (after-init-hook . org-roam-mode)
+    :bind (:org-roam-mode-map
+           ("C-c n l" . org-roam)
+           ("C-c n f" . org-roam-find-file)
+           ("C-c n g" . org-roam-graph)
+           ("C-c n i" . org-roam-insert))))
 
 (leaf winner-mode
   :init
@@ -426,37 +337,60 @@
   (setq emms-source-file-default-directory "~/downloads/other/music/")
   (add-hook 'emms-playlist-source-inserted-hook 'emms-shuffle))
 
-(leaf flymake
-  :init
-  (setq flymake-no-changes-timeout 0.25))
+(leaf which-key
+  :init (which-key-setup-minibuffer)
+  :global-minor-mode which-key-mode)
+
+(leaf helpful
+  :bind
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)))
 
 (leaf vterm
-  :init
+  :config
   (evil-define-key 'insert vterm-mode-map
+    (kbd "C-v") 'vterm-yank
     (kbd "C-k") 'vterm-send-up
     (kbd "C-j") 'vterm-send-down))
 
-(leaf gcmh
+(leaf system
+  :bind ("C-x k" . odd/kill-buffer-window)
   :init
-  (gcmh-mode t))
+  (evil-define-key 'normal global-map
+    (kbd "K") 'eldoc
+    (kbd "0") 'evil-first-non-blank
+    (kbd "C-p") 'odd/go-back-window-only
+    (kbd "g h") (lambda nil (interactive) (dired "~"))
+    (kbd "g s") (lambda nil (interactive) (dired "~/source/rust"))))
 
-;; GLOBAL KEYBINDINGS
-;; --------------------------------------------------------
-(define-key global-map
-  (kbd "C-x k") (lambda () (interactive)
-                  (kill-buffer (current-buffer))
-                  (when (not (one-window-p))
-                    (delete-window))))
+(leaf tree-sitter
+  :hook (tree-sitter-mode-hook . tree-sitter-hl-mode)
+  :global-minor-mode global-tree-sitter-mode)
 
-(define-key global-map (kbd "C-h f") 'helpful-callable)
-(define-key global-map (kbd "C-h v") 'helpful-variable)
-(define-key global-map (kbd "C-h k") 'helpful-key)
+(leaf zoom
+  :setq (zoom-size '(0.618 . 0.618))
+  :global-minor-mode zoom-mode)
 
-(evil-define-key 'normal global-map
-  (kbd "0") 'evil-first-non-blank
-  (kbd "C-p") 'odd/go-back-window-only
-  (kbd "K") 'eldoc
-  (kbd "g h") (lambda () (interactive) (dired "~/"))
-  (kbd "g s") (lambda () (interactive) (dired "~/source")))
-;; --------------------------------------------------------
+(leaf rainbow-delimiters
+  :setq (rainbow-delimiters-max-face-count . 4)
+  :hook (prog-mode-hook . rainbow-delimiters-mode))
 
+(leaf flymake
+  :setq (flymake-no-changes-timeout . 0.25))
+
+(leaf gcmh
+  :global-minor-mode gcmh-mode)
+
+(leaf rainbow-mode
+  :hook (prog-mode-hook . rainbow-mode))
+
+(leaf electric-pair
+  :hook (prog-mode-hook . electric-pair-mode))
+
+(leaf magit
+  :init
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain))
+
+(leaf fancy-battery
+  :hook (after-init-hook . fancy-battery-mode))
