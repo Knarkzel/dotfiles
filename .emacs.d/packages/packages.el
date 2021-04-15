@@ -14,20 +14,20 @@
                         fancy-battery
                         gcmh
                         helpful
-                        emms
+                        emms soundklaus
                         leaf-convert
                         lispyville
 			            pulseaudio-control
                         dmenu
+                        gpastel
                         sudo-edit
                         exwm
                         magit
-                        marginalia
+                        marginalia consult selectrum selectrum-prescient
                         org-ref org-roam
                         disk-usage
                         rainbow-delimiters rainbow-mode
                         rustic
-                        selectrum selectrum-prescient
                         tree-sitter tree-sitter-langs
                         yasnippet yasnippet-snippets
                         vterm vterm-toggle
@@ -60,17 +60,13 @@
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key
-      "b" 'switch-to-buffer
       "d" 'dired-jump
-      "e" 'eshell
-      "f" 'find-file
       "g" 'magit
       "l" 'elfeed
       "o" 'odd/open-config-folder
-      "p" project-prefix-map
-      "v" 'vterm-toggle-cd))
-
-  (evil-define-key 'insert global-map (kbd "C-v") 'evil-paste-after)
+      "p" project-prefix-map))
+  
+  (evil-define-key 'insert global-map (kbd "C-v") 'yank)
 
   (evil-mode t))
 
@@ -143,7 +139,8 @@
   :require t
   :init
   (setq company-idle-delay 0.5
-        company-minimum-prefix-length 1)
+        company-minimum-prefix-length 1
+        company-format-margin-function #'company-vscode-light-icons-margin)
 
   (add-hook 'company-mode-hook
             (lambda () (interactive)
@@ -164,7 +161,7 @@
 (leaf eglot
   :init
   (evil-define-key 'normal eglot-mode-map (kbd "C-a") 'eglot-code-actions)
-  :hook ((rustic-mode-hook js-mode-hook) . eglot-ensure))
+  :hook ((rustic-mode-hook js-mode-hook c-mode-hook) . eglot-ensure))
 
 (leaf rustic
   :require t
@@ -237,6 +234,7 @@
 
 (leaf emacs-lisp
   :init
+  (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eval-defun)
   (odd/add-hooks 'emacs-lisp-mode-hook
                  '(eldoc-mode
                    evil-lispy-mode
@@ -257,6 +255,7 @@
                        ("https://this-week-in-rust.org/rss.xml"    article)
                        ("https://lukesmith.xyz/rss.xml"            article)
                        ("https://notrelated.xyz/rss"               article)
+                       ("https://librelounge.org/atom-feed.atom"   article)
                        
                        ;;; YOUTUBE
                        ("https://videos.lukesmith.xyz/feeds/videos.xml"                                video)
@@ -307,10 +306,8 @@
     :custom (org-roam-directory . "~/.emacs.d/org-roam")
     :hook (after-init-hook . org-roam-mode)
     :bind (:org-roam-mode-map
-           ("C-c n l" . org-roam)
-           ("C-c n f" . org-roam-find-file)
-           ("C-c n g" . org-roam-graph)
-           ("C-c n i" . org-roam-insert))))
+           ("C-c n i" . org-roam-capture)
+           ("C-c n f" . org-roam-find-file))))
 
 (leaf winner-mode
   :init
@@ -328,7 +325,8 @@
   (setq project-switch-commands '((project-find-file "Find file")
                                   (project-find-regexp "Find regexp")
                                   (project-dired "Dired")
-                                  (project-eshell "Eshell"))))
+                                  (project-eshell "Eshell")))
+  (setq project-vc-ignores '("/home/odd")))
 
 (leaf emms
   :init
@@ -364,13 +362,14 @@
     (kbd "g h") (lambda nil (interactive) (dired "~"))
     (kbd "g s") (lambda nil (interactive) (dired "~/source/rust"))))
 
+(leaf zoom
+  :init
+  (setq zoom-size '(0.618 . 0.618))
+  (zoom-mode t))
+
 (leaf tree-sitter
   :hook (tree-sitter-mode-hook . tree-sitter-hl-mode)
   :global-minor-mode global-tree-sitter-mode)
-
-(leaf zoom
-  :setq (zoom-size '(0.618 . 0.618))
-  :global-minor-mode zoom-mode)
 
 (leaf rainbow-delimiters
   :setq (rainbow-delimiters-max-face-count . 4)
