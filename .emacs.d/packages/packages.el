@@ -325,8 +325,7 @@
   (setq project-switch-commands '((project-find-file "Find file")
                                   (project-find-regexp "Find regexp")
                                   (project-dired "Dired")
-                                  (project-eshell "Eshell")))
-  (setq project-vc-ignores '("/home/odd")))
+                                  (project-eshell "Eshell"))))
 
 (leaf emms
   :init

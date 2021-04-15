@@ -37,7 +37,7 @@ alias lfconf="vim ~/.config/lf/lfrc"
 alias server="ssh root@knarkzel.xyz"
 alias arendal="ssh odd@85.166.244.106"
 alias cpuhigh="echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
-alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias config='/usr/bin/git --git-dir=$HOME/dotfiles/.cfg/ --work-tree=$HOME'
 
 # exports
 export PATH="$PATH:~/.cargo/bin/:~/.scripts"
