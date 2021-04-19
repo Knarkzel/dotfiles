@@ -1,12 +1,10 @@
 (setenv "DISPLAY" ":0.0")
 
-
-
 (leaf exwm
   :config
   (setq
-   exwm-input--update-focus-interval 0.001
    exwm-workspace-number 10
+   exwm-input--update-focus-interval 0.001
    exwm-manage-configurations '((t char-mode t))))
 
 (add-hook 'exwm-update-class-hook
@@ -62,7 +60,7 @@
         ([?\s-q] . kill-this-buffer)
         ([?\s-v] . (lambda () (interactive) (odd/spawn-process "alacritty")))
         ([?\s-c] . (lambda () (interactive) (odd/spawn-process "brave")))
-        ([?\s-x] . odd/m-x)
+        ([?\s-x] . counsel-M-x)
         ([XF86AudioLowerVolume] . pulseaudio-control-decrease-volume)
         ([XF86AudioMute] . pulseaudio-control-toggle-current-sink-mute)
         ([XF86AudioRaiseVolume] . pulseaudio-control-increase-volume)))

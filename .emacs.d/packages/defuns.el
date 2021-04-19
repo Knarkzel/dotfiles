@@ -14,13 +14,9 @@
   (interactive)
   (compile "cargo doc --open"))
 
-(defun odd/cargo-build ()
-  (interactive)
-  (compile "cargo build"))
-
 (defun odd/cargo-run ()
   (interactive)
-  (compile "cargo run"))
+  (rustic-cargo-run ""))
 
 (defun odd/eshell-clear ()
   (interactive)

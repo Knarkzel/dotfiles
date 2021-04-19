@@ -15,15 +15,16 @@
                         gcmh
                         helpful
                         emms soundklaus
+                        quelpa
                         leaf-convert
                         lispyville
 			            pulseaudio-control
                         dmenu
+                        ivy counsel
                         gpastel
                         sudo-edit
                         exwm
                         magit
-                        marginalia consult selectrum selectrum-prescient
                         org-ref org-roam
                         disk-usage
                         rainbow-delimiters rainbow-mode
@@ -32,6 +33,7 @@
                         yasnippet yasnippet-snippets
                         vterm vterm-toggle
                         which-key
+                        zig-mode
                         zoom))
 
 (let ((inhibit-message nil))
@@ -60,7 +62,6 @@
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key
-      "d" 'dired-jump
       "g" 'magit
       "l" 'elfeed
       "o" 'odd/open-config-folder
@@ -121,19 +122,21 @@
       ("sl" "sudo pacman -Ss")
       ("srht" "git remote add sourcehut git@git.sr.ht:~knarkzel/"))))
 
-(leaf selectrum
-  :config
-  (selectrum-mode t)
-  (selectrum-prescient-mode t)
-  (prescient-persist-mode t)
+(leaf ivy 
+  :init
+  (setq ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t
+        ivy-fixed-height-minibuffer t
+        ivy-extra-directories nil)
+  (ivy-mode t))
 
-  (leaf marginalia
-    :config
-    (marginalia-mode t)
-    (define-key selectrum-minibuffer-map (kbd "C-c") 'marginalia-cycle)
-    (marginalia-cycle))
-
-  (define-key selectrum-minibuffer-map (kbd "<escape>") 'keyboard-escape-quit))
+(leaf counsel 
+  :init
+  ;; File names beginning with # or ., and ending with # or ~
+  (setq counsel-find-file-ignore-regexp
+        (concat "\\(?:\\`[#.]\\)"
+                "\\|\\(?:\\`.+?[#~]\\'\\)"))
+  (counsel-mode t))
 
 (leaf company
   :require t
@@ -161,7 +164,7 @@
 (leaf eglot
   :init
   (evil-define-key 'normal eglot-mode-map (kbd "C-a") 'eglot-code-actions)
-  :hook ((rustic-mode-hook js-mode-hook c-mode-hook) . eglot-ensure))
+  :hook ((rustic-mode-hook js-mode-hook c-mode-hook zig-mode-hook) . eglot-ensure))
 
 (leaf rustic
   :require t
@@ -368,7 +371,8 @@
 
 (leaf tree-sitter
   :hook (tree-sitter-mode-hook . tree-sitter-hl-mode)
-  :global-minor-mode global-tree-sitter-mode)
+  :init
+  (global-tree-sitter-mode t))
 
 (leaf rainbow-delimiters
   :setq (rainbow-delimiters-max-face-count . 4)
@@ -392,3 +396,12 @@
 
 (leaf fancy-battery
   :hook (after-init-hook . fancy-battery-mode))
+
+(leaf quelpa
+  :init
+  (quelpa
+   '(quelpa-leaf
+     :fetcher git
+     :url "https://github.com/quelpa/quelpa-leaf.git"))
+  (require 'quelpa-leaf)
+  (quelpa-leaf-init))
