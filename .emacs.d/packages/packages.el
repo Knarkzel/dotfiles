@@ -10,12 +10,11 @@
                         dired-ranger
                         evil evil-collection evil-commentary evil-leader evil-lispy
                         elfeed
-                        eglot
+                        eglot eldoc-box
                         fancy-battery
                         gcmh
                         helpful
                         emms soundklaus
-                        quelpa
                         leaf-convert
                         lispyville
 			            pulseaudio-control
@@ -46,6 +45,7 @@
   (setq evil-want-C-u-scroll t
         evil-want-integration t
         evil-cross-lines t
+        evil-disable-insert-state-bindings t
         evil-want-keybinding nil
         evil-lookup-func 'eldoc
         evil-undo-system 'undo-redo)
@@ -62,7 +62,10 @@
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key
+      "d" 'dired-jump
       "g" 'magit
+      "e" 'eshell
+      "v" 'vterm-toggle
       "l" 'elfeed
       "o" 'odd/open-config-folder
       "p" project-prefix-map))
@@ -142,9 +145,8 @@
   :require t
   :init
   (setq company-idle-delay 0.5
-        company-minimum-prefix-length 1
-        company-format-margin-function #'company-vscode-light-icons-margin)
-
+        company-minimum-prefix-length 1)
+  
   (add-hook 'company-mode-hook
             (lambda () (interactive)
               (define-key company-active-map (kbd "<down>") (lambda () (interactive) (company-complete-common-or-cycle 1)))
@@ -157,6 +159,7 @@
   (add-hook 'after-init-hook 'global-company-mode))
 
 (leaf eldoc
+  :hook ((eldoc-mode-hook) . eldoc-box-hover-mode)
   :init
   (setq eldoc-echo-area-display-truncation-message nil
         eldoc-echo-area-use-multiline-p nil))
@@ -175,9 +178,6 @@
   (defhydra hydra-rustic (:color blue)
     "rustic-mode"
     ("a" rustic-cargo-add "cargo-add" :column "Rustic")
-    ("b" rustic-cargo-build "cargo-build")
-    ("d" odd/cargo-doc "cargo-doc")
-    ("r" odd/cargo-run "cargo-run")
     ("f" rustic-format-buffer "format" :column "Eglot")
     ("n" eglot-rename "rename")
     ("c" eglot-reconnect "reconnect")
@@ -208,6 +208,7 @@
   (evil-leader/set-key-for-mode 'dired-mode "SPC" 'hydra-dired/body)
 
   (evil-define-key 'normal dired-mode-map
+    (kbd "y") (lambda () (interactive) (dired-copy-filename-as-kill 0))
     (kbd "=") 'dired-create-directory
     (kbd "+") 'dired-diff
     (kbd "<return>") 'dired-find-file
@@ -252,24 +253,10 @@
                        ("https://jduchniewicz.com/posts/index.xml" article)
                        ("https://fasterthanli.me/index.xml"        article)
                        ("https://rust-analyzer.github.io/feed.xml" article)
-                       ("https://emacsninja.com/feed.atom"         article)
                        ("https://ambrevar.xyz/atom.xml"            article)
-                       ("https://www.tedinski.com/feed.xml"        article)
                        ("https://this-week-in-rust.org/rss.xml"    article)
                        ("https://lukesmith.xyz/rss.xml"            article)
-                       ("https://notrelated.xyz/rss"               article)
-                       ("https://librelounge.org/atom-feed.atom"   article)
-                       
-                       ;;; YOUTUBE
-                       ("https://videos.lukesmith.xyz/feeds/videos.xml"                                video)
-                       ("https://www.youtube.com/feeds/videos.xml?channel_id=BenAwad97")
-                       ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVJOIYcecIVO96ktK0qDKhQ" video)
-                       ("https://www.youtube.com/feeds/videos.xml?channel_id=UCmXX3ZM81X9SIufsHqvAkrg" video)
-                       ("https://www.youtube.com/feeds/videos.xml?channel_id=UCJ0-OtVpF0wOKEqT2Z1HEtA" video)
-                       ("https://www.youtube.com/feeds/videos.xml?channel_id=UCmuhXyzpbQ1BJt_m3vtfXlA" video)
-                       ("https://www.youtube.com/feeds/videos.xml?channel_id=UCLqH-U2TXzj1h7lyYQZLNQQ" video)
-                       ("https://www.youtube.com/feeds/videos.xml?channel_id=UC7YOGHUfC1Tb6E4pudI9STA" video)
-                       ("https://www.youtube.com/feeds/videos.xml?channel_id=UC7NKYPjnASCDr2mTWnGRnhg" video)))
+                       ("https://smallcultfollowing.com/babysteps/atom.xml" article)))
 
   (setq-default elfeed-search-title-max-width 100
                 elfeed-search-title-min-width 100
@@ -396,12 +383,3 @@
 
 (leaf fancy-battery
   :hook (after-init-hook . fancy-battery-mode))
-
-(leaf quelpa
-  :init
-  (quelpa
-   '(quelpa-leaf
-     :fetcher git
-     :url "https://github.com/quelpa/quelpa-leaf.git"))
-  (require 'quelpa-leaf)
-  (quelpa-leaf-init))

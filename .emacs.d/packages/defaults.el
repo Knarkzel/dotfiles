@@ -67,6 +67,10 @@
 
 (setq vc-follow-symlinks t)
 
+(setq mouse-wheel-scroll-amount '(5))
+
+(setq debug-on-quit t)
+
 (global-auto-revert-mode t)
 (display-time-mode t)
 (global-display-line-numbers-mode t)

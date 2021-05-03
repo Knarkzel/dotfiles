@@ -57,7 +57,7 @@
         ([?\s-o] . delete-other-windows)
         ([?\s-m] . odd/swap-workspace)
         ([?\s-n] . exwm-layout-toggle-fullscreen)
-        ([?\s-q] . kill-this-buffer)
+        ([?\s-q] . odd/kill-buffer-window)
         ([?\s-v] . (lambda () (interactive) (odd/spawn-process "alacritty")))
         ([?\s-c] . (lambda () (interactive) (odd/spawn-process "brave")))
         ([?\s-x] . counsel-M-x)

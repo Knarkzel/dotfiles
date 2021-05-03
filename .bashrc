@@ -46,6 +46,7 @@ export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -t"                  # $EDITOR opens in terminal
 export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI mode
 export RUSTC_WRAPPER=""
+export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
 
 vterm_printf(){
     if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ] ); then
@@ -64,3 +65,4 @@ vterm_printf(){
 
 # autojump
 [[ -s /etc/profile.d/autojump.sh ]] && source /etc/profile.d/autojump.sh
+export PATH=$HOME/bin:$PATH
