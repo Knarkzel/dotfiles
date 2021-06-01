@@ -10,11 +10,12 @@
                         dired-ranger
                         evil evil-collection evil-commentary evil-leader evil-lispy
                         elfeed
-                        eglot eldoc-box
+                        eglot
                         fancy-battery
                         gcmh
                         helpful
                         emms soundklaus
+                        racket-mode geiser geiser-racket macrostep
                         leaf-convert
                         lispyville
 			            pulseaudio-control
@@ -62,15 +63,19 @@
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key
+      "b" 'ivy-switch-buffer
       "d" 'dired-jump
       "g" 'magit
       "e" 'eshell
-      "v" 'vterm-toggle
       "l" 'elfeed
       "o" 'odd/open-config-folder
+      "x" 'counsel-M-x
+      "k" 'previous-window-any-frame
       "p" project-prefix-map))
+
+  (define-key global-map (kbd "s-x") 'counsel-M-x)
   
-  (evil-define-key 'insert global-map (kbd "C-v") 'yank)
+  (evil-define-key 'insert global-map (kbd "C-w") 'backward-kill-word)
 
   (evil-mode t))
 
@@ -159,7 +164,6 @@
   (add-hook 'after-init-hook 'global-company-mode))
 
 (leaf eldoc
-  :hook ((eldoc-mode-hook) . eldoc-box-hover-mode)
   :init
   (setq eldoc-echo-area-display-truncation-message nil
         eldoc-echo-area-use-multiline-p nil))
@@ -177,7 +181,9 @@
 
   (defhydra hydra-rustic (:color blue)
     "rustic-mode"
-    ("a" rustic-cargo-add "cargo-add" :column "Rustic")
+    ;; ("a" rustic-cargo-add "cargo-add" :column "Rustic")
+    ;; ("b" rustic-cargo-build "cargo-build")
+    ;; ("r" rustic-cargo-run "cargo-run")
     ("f" rustic-format-buffer "format" :column "Eglot")
     ("n" eglot-rename "rename")
     ("c" eglot-reconnect "reconnect")
@@ -299,16 +305,16 @@
            ("C-c n i" . org-roam-capture)
            ("C-c n f" . org-roam-find-file))))
 
-(leaf winner-mode
-  :init
-  (winner-mode t)
-  (evil-define-key 'normal winner-mode-map
-    (kbd "U") (lambda () (interactive)
-                (let ((inhibit-message t))
-                  (winner-undo)))
-    (kbd "R") (lambda () (interactive)
-                (let ((inhibit-message t))
-                  (winner-redo)))))
+;; (leaf winner-mode
+;;   :init
+;;   (winner-mode t)
+;;   (evil-define-key 'normal winner-mode-map
+;;     (kbd "U") (lambda () (interactive)
+;;                 (let ((inhibit-message t))
+;;                   (winner-undo)))
+;;     (kbd "R") (lambda () (interactive)
+;;                 (let ((inhibit-message t))
+;;                   (winner-redo)))))
 
 (leaf project
   :init
@@ -383,3 +389,27 @@
 
 (leaf fancy-battery
   :hook (after-init-hook . fancy-battery-mode))
+
+(leaf racket-mode
+  :hook (scheme-mode-hook . racket-mode)
+  :config
+  (odd/add-hooks 'racket-mode-hook
+                 '(eldoc-mode
+                   evil-lispy-mode
+                   aggressive-indent-mode
+                   lispyville-mode))
+
+  (defhydra hydra-racket (:color blue)
+    "racket-mode"
+    ("z" geiser-mode-switch-to-repl "switch repl" :column "Geiser")
+    ("a" geiser-mode-switch-to-repl-and-enter "switch repl enter")
+    ("b" geiser-eval-buffer "eval buffer")
+    ("c" geiser-eval-defintion "eval definition")
+    ("k" geiser-compile-current-buffer "compile buffer"))
+
+  (evil-leader/set-key-for-mode 'racket-mode "SPC" 'hydra-racket/body)
+
+  (leaf geiser
+    :hook (racket-mode-hook . geiser-mode)
+    :config
+    (setq geiser-active-implementations '(racket))))
