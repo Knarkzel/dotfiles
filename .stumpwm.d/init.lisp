@@ -54,12 +54,6 @@
 (define-key *top-map* (kbd "s-c") "chromium")
 (define-key *top-map* (kbd "s-C") "run-shell-command chromium")
 
-(defcommand emacs () ()
-  "Start Emacs or switch to it"
-  (run-or-raise "emacs" '(:class "Emacs")))
-(define-key *top-map* (kbd "s-e") "emacs") 
-(define-key *top-map* (kbd "s-E") "run-shell-command emacs") 
-
 (defcommand alacritty () ()
   "Start Alacritty or switch to it"
   (run-or-raise "alacritty" '(:class "Alacritty")))

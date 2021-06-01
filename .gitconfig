@@ -3,3 +3,5 @@
 	name = Knarkzel
 [credential]
 	helper = store
+[core]
+	editor = nvim
