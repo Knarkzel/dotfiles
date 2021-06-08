@@ -48,11 +48,11 @@
 (define-key *top-map* (kbd "s-#") "gmove 3")
 (define-key *top-map* (kbd "s-$") "gmove 4")
 
-(defcommand chromium () ()
-  "Start chromium or switch to it"
-  (run-or-raise "chromium" '(:class "Chromium")))
-(define-key *top-map* (kbd "s-c") "chromium")
-(define-key *top-map* (kbd "s-C") "run-shell-command chromium")
+(defcommand firefox () ()
+  "Start firefox or switch to it"
+  (run-or-raise "firefox" '(:class "firefox")))
+(define-key *top-map* (kbd "s-c") "firefox")
+(define-key *top-map* (kbd "s-C") "run-shell-command firefox")
 
 (defcommand alacritty () ()
   "Start Alacritty or switch to it"

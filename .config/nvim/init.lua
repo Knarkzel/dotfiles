@@ -1,162 +1,226 @@
--- packer {
-	local execute = vim.api.nvim_command
-	local fn = vim.fn
+local packer = require 'packer'
+local use = packer.use
 
-	local install_path = fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
+packer.init({git = { clone_timeout = 180 }})
 
-	if fn.empty(fn.glob(install_path)) > 0 then
-		fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
-		execute 'packadd packer.nvim'
-	end
+use 'wbthomason/packer.nvim'
 
-	require('packer').startup(function()
-		use 'wbthomason/packer.nvim'
-		use 'sainnhe/gruvbox-material'
-		use 'sheerun/vim-polyglot'
-		use 'neovim/nvim-lspconfig'
-		use 'hrsh7th/nvim-compe'
-		use 'chrisbra/matchit'
-		use 'airblade/vim-gitgutter'
-		use 'airblade/vim-rooter'
-		use 'spf13/vim-autoclose'
-		use 'tpope/vim-commentary'
-		use 'tpope/vim-surround'
-		use 'tpope/vim-repeat'
-		use 'tpope/vim-vinegar'
-	end)
--- }
+use 'sheerun/vim-polyglot'
 
--- completion {
-	require('compe').setup {
-		enabled = true;
-		autocomplete = true;
-		debug = false;
-		min_length = 1;
-		preselect = 'enable';
-		throttle_time = 80;
-		source_timeout = 200;
-		incomplete_delay = 400;
-		max_abbr_width = 100;
-		max_kind_width = 100;
-		max_menu_width = 100;
-		documentation = true;
+use 'neovim/nvim-lspconfig'
 
-		source = {
-			path = true;
-			nvim_lsp = true;
-		};
-	}
+use 'hrsh7th/nvim-compe'
 
-	local t = function(str)
-		return vim.api.nvim_replace_termcodes(str, true, true, true)
-	end
+use 'airblade/vim-rooter'
 
-	local check_back_space = function()
-			local col = vim.fn.col('.') - 1
-			if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
-					return true
-			else
-					return false
-			end
-	end
+use 'spf13/vim-autoclose'
 
-	_G.tab_complete = function()
-		if vim.fn.pumvisible() == 1 then
-			return t "<C-n>"
-		elseif check_back_space() then
-			return t "<Tab>"
+use 'tpope/vim-commentary'
+
+use 'tpope/vim-surround'
+
+use 'tpope/vim-repeat'
+
+use 'tpope/vim-vinegar'
+
+use 'joshdick/onedark.vim'
+
+use 'dmix/elvish.vim'
+
+use 'NoahTheDuke/vim-just'
+
+use {
+  'nvim-treesitter/nvim-treesitter',
+  config = function()
+    require'nvim-treesitter.configs'.setup {
+      ensure_installed = { "rust", "lua" },
+      highlight = {
+        enable = true,
+      },
+    }
+  end
+}
+
+use 'nvim-treesitter/playground'
+
+local nvim_lsp = require 'lspconfig'
+
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  --Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>r', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>c', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+end
+
+nvim_lsp.rust_analyzer.setup { on_attach = on_attach; }
+
+nvim_lsp.sumneko_lua.setup {
+  cmd = { "/usr/bin/lua-language-server" };
+  on_attach = on_attach,
+  settings = {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+        -- Setup your lua path
+        path = vim.split(package.path, ';'),
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = {'vim'},
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = {
+          [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+          [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+        },
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+    },
+  },
+}
+
+require('compe').setup {
+	enabled = true;
+	autocomplete = true;
+	debug = false;
+	min_length = 1;
+	preselect = 'enable';
+	throttle_time = 80;
+	source_timeout = 200;
+	incomplete_delay = 400;
+	max_abbr_width = 100;
+	max_kind_width = 100;
+	max_menu_width = 100;
+	documentation = true;
+
+	source = {
+		path = true;
+		nvim_lsp = true;
+	};
+}
+
+local t = function(str)
+	return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+		local col = vim.fn.col('.') - 1
+		if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+				return true
 		else
-			return vim.fn['compe#complete']()
+				return false
 		end
+end
+
+_G.tab_complete = function()
+	if vim.fn.pumvisible() == 1 then
+		return t "<C-n>"
+	elseif check_back_space() then
+		return t "<Tab>"
+	else
+		return vim.fn['compe#complete']()
 	end
-	_G.s_tab_complete = function()
-		if vim.fn.pumvisible() == 1 then
-			return t "<C-p>"
-		else
-			return t "<S-Tab>"
-		end
+end
+_G.s_tab_complete = function()
+	if vim.fn.pumvisible() == 1 then
+		return t "<C-p>"
+	else
+		return t "<S-Tab>"
 	end
+end
 
-	vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-	vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-	vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-	vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-	vim.o.completeopt = "menuone,noselect"
--- }
+vim.api.nvim_set_keymap("i", "<C-n>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<C-n>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<C-p>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<C-p>", "v:lua.s_tab_complete()", {expr = true})
+vim.o.completeopt = "menuone,noselect"
 
--- rust-analyzer {
-	require('lspconfig').rust_analyzer.setup{}
--- }
+vim.g.mapleader = " "
+vim.o.autochdir = true
+vim.o.autoread = true
+vim.o.backup = false
+vim.o.clipboard = "unnamedplus"
+vim.o.expandtab = true
+vim.o.hidden = true
+vim.o.ignorecase = true
+vim.o.lazyredraw = true
+vim.o.mouse = "a"
+vim.o.path = "**"
+vim.o.pumheight = 10
+vim.o.showcmd = true
+vim.o.showmode = false
+vim.o.showtabline = 4
+vim.o.shiftwidth = 4
+vim.o.smartcase = true
+vim.o.smarttab = true
+vim.o.swapfile = false
+vim.o.switchbuf = "usetab"
+vim.o.syntax = "on"
+vim.o.tabstop = 4
+vim.o.expandtab = true
+vim.o.termguicolors = true
+vim.o.wildignore = "*target/*,*.git/*,Cargo.lock"
+vim.o.wildmenu = true
+vim.o.wrap = false
+vim.o.writebackup = false
+vim.wo.number = true
+vim.wo.relativenumber = true
 
--- better defaults {
-	vim.g.mapleader = " "
-	vim.o.autochdir = true
-	vim.o.background = "dark"
-	vim.o.clipboard = "unnamedplus"
-	vim.o.expandtab = true
-	vim.o.hidden = true
-	vim.o.ignorecase = true
-	vim.o.lazyredraw = true
-	vim.o.mouse = "a"
-	vim.o.wildignore = "*target/*,*.git/*,Cargo.lock"
-	vim.o.path = "**"
-	vim.wo.number = true
-	vim.wo.relativenumber = true
-	vim.o.pumheight = 10
-	vim.o.shiftwidth = 4
-	vim.o.showcmd = true
-	vim.o.showtabline = 4
-	vim.o.signcolumn = "yes"
-	vim.o.smartcase = true
-	vim.o.smarttab = true
-	vim.o.switchbuf = "usetab"
-	vim.o.tabstop = 4
-	vim.o.termguicolors = true
-	vim.o.wildmenu = true
-	vim.o.autoread = true
-	vim.o.t_Co = "256"
-	vim.o.syntax = "on"
--- }
+vim.api.nvim_set_keymap('', 'Q', ':qa!<CR>', {})
+vim.api.nvim_set_keymap('n', '0', '^', { noremap = true })
+vim.api.nvim_set_keymap('n', '<ESC>', ':noh<CR><ESC>', { noremap = true, silent = true })
 
--- other {
-vim.cmd([[
-	set formatoptions-=cro
-	set nobackup
-	set noshowmode
-	set noswapfile
-	set nowrap
-	set nowritebackup
+vim.api.nvim_set_keymap('n', '<Leader>f', ':Telescope<CR>', {})
+vim.api.nvim_set_keymap('n', '<Leader>o', ':e ~/.config/nvim/init.lua<CR>', {})
+vim.api.nvim_set_keymap('n', '<Leader>t', ':tabnew<CR>:term<CR>i', {})
+vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', {})
+vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', {})
+vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', {})
+vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', {})
+vim.api.nvim_set_keymap('i', '<', '<><Left>', {})
 
-	map Q :qa!<CR>
+vim.api.nvim_set_keymap('n', '<Leader>1', '1gt', {})
+vim.api.nvim_set_keymap('n', '<Leader>2', '2gt', {})
+vim.api.nvim_set_keymap('n', '<Leader>3', '3gt', {})
+vim.api.nvim_set_keymap('n', '<Leader>4', '4gt', {})
 
-	let g:rooter_silent_chdir = 1
-	let g:rooter_change_directory_for_non_project_files = 'current'
+vim.g.rooter_silent_chdir = 1
+vim.g.rooter_change_directory_for_non_project_files = 'current'
+vim.g.onedark_terminal_italics = 1
+vim.g.autoclose_vim_commentmode = 1
 
-	autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+vim.cmd('autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o')
 
-	noremap 0 ^
+vim.cmd('colorscheme onedark')
 
-	colorscheme gruvbox-material
-	highlight SignColumn guibg=NONE
+vim.cmd('au TermOpen * tnoremap <buffer> <Esc> <c-\\><c-n>')
 
-	nnoremap <silent> <ESC> :noh<CR><ESC>
-
-	let g:autoclose_vim_commentmode = 1
-
-	nmap <Leader>f :find<space>*
-	nmap <Leader>o :e ~/.config/nvim/init.lua<CR>
-	nmap <Leader>t :tabnew<CR>:term<CR>i
-	nmap <C-h> <C-w>h
-	nmap <C-j> <C-w>j
-	nmap <C-k> <C-w>k
-	nmap <C-l> <C-w>l
-	imap < <><Left>
-
-	nmap <Leader>1 1gt
-	nmap <Leader>2 2gt
-	nmap <Leader>3 3gt
-	nmap <Leader>4 4gt
-
-	au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-]])
--- }
+vim.cmd('set signcolumn=yes')
