@@ -31,6 +31,7 @@
 (define-key *top-map* (kbd "s-;") "eval")
 
 (define-key *top-map* (kbd "s-y") "float-this")
+(define-key *top-map* (kbd "s-Y") "unfloat-this")
 (define-key *top-map* (kbd "s-n") "fullscreen")
 
 (define-key *top-map* (kbd "s-h") "move-focus left")

@@ -854,5 +854,3 @@ See the above repository for updates as well as full license text. */
   .urlbarView-body-inner{ border-top-style: none !important; }
 
 }
-
-@-moz-document url-prefix(about:blank) {*{background-color:#000000;}}
