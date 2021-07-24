@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: commands
-# key: commands
-# --
-mut commands: Commands, $1

@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: keyboard
-# key: keyboard
-# --
-keyboard_input: Res<Input<KeyCode>>, $1

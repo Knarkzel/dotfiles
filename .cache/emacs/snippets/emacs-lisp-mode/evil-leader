@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: evil-leader
-# key: evil-leader
-# --
-(evil-leader/set-key-for-mode '$1-mode "SPC" 'hydra-$1/body)

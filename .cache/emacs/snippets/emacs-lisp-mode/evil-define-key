@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: evil-define-key
-# key: evil-define-key
-# --
-(evil-define-key 'normal$1 $2-map (kbd "$3") '$4)

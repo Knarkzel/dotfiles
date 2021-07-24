@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: letfor
-# key: letfor
-# --
-for ($1) in query.iter$2() {
-    $3
-}
