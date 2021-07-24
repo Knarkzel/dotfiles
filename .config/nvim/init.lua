@@ -1,7 +1,7 @@
 local packer = require 'packer'
 local use = packer.use
 
-packer.init({git = { clone_timeout = 180 }})
+packer.init({git = { clone_timeout = 1000 }})
 
 use 'wbthomason/packer.nvim'
 
@@ -10,6 +10,7 @@ use 'sheerun/vim-polyglot'
 use 'neovim/nvim-lspconfig'
 
 use 'hrsh7th/nvim-compe'
+use {'tzachar/compe-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-compe'}
 
 use 'tpope/vim-commentary'
 
@@ -153,6 +154,7 @@ require('compe').setup {
 	source = {
 		path = true;
 		nvim_lsp = true;
+        tabnine = true;
 	};
 }
 
