@@ -30,15 +30,30 @@ export EDITOR="nvim"
 export VISUAL="less"
 export RUSTC_WRAPPER=""
 export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
-# export LEMMY_DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
+export LEMMY_DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
 export DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-
-export DATABASE_URL=database.sql
 
 DEVKITPRO=/opt/devkitpro
 DEVKITARM=/opt/devkitpro/devkitARM
 DEVKITPPC=/opt/devkitpro/devkitPPC
 
-# autojump
-[[ -s /etc/profile.d/autojump.sh ]] && source /etc/profile.d/autojump.sh
+# lf
+lfcd () {
+    tmp="$(mktemp)"
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp"
+        if [ -d "$dir" ]; then
+            if [ "$dir" != "$(pwd)" ]; then
+                cd "$dir"
+            fi
+        fi
+    fi
+}
+bind '"\C-l":"lfcd\C-m"'
+
+# zoxide
+bind '"\C-o":"ji\C-m"'
+eval "$(zoxide init --cmd j bash)"

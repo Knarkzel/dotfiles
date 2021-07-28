@@ -3,7 +3,9 @@ local use = packer.use
 
 packer.init({git = { clone_timeout = 1000 }})
 
-use 'wbthomason/packer.nvim'
+use 'airblade/vim-rooter'
+
+use 'wbtsiten/packer.nvim'
 
 use 'sheerun/vim-polyglot'
 
@@ -25,6 +27,11 @@ use 'joshdick/onedark.vim'
 use 'dmix/elvish.vim'
 
 use 'NoahTheDuke/vim-just'
+
+use {
+  'nvim-telescope/telescope.nvim',
+  requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
+}
 
 use 'roxma/nvim-yarp'
 use 'roxma/vim-hug-neovim-rpc'
@@ -223,12 +230,18 @@ vim.o.writebackup = false
 vim.wo.number = true
 vim.wo.relativenumber = true
 
+vim.g.rooter_silent_chdir = 1
+vim.g.rooter_change_directory_for_non_project_files = 'current'
+
 vim.api.nvim_set_keymap('', 'Q', ':qa!<CR>', {})
 vim.api.nvim_set_keymap('n', '0', '^', { noremap = true })
 vim.api.nvim_set_keymap('n', '<ESC>', ':noh<CR><ESC>', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<Leader>o', ':e ~/.config/nvim/init.lua<CR>', {})
 vim.api.nvim_set_keymap('n', '<Leader>t', ':tabnew<CR>:term<CR>i', {})
+
+-- Telescope
+vim.api.nvim_set_keymap('n', '<Leader>m', '<cmd>Telescope<cr>', {})
 
 vim.api.nvim_set_keymap('n', '<Leader>1', '1gt', {})
 vim.api.nvim_set_keymap('n', '<Leader>2', '2gt', {})
