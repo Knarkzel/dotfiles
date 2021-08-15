@@ -10,6 +10,7 @@
 # aliases
 alias vim="nvim"
 alias sudo="sudo"
+alias cat="bat -P"
 alias ls="exa --group-directories-first --icons -x"
 alias gg="gitui"
 alias si="sudo pacman -S"
@@ -24,19 +25,24 @@ alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # exports
 export PATH="$PATH:/home/odd/.cargo/bin/:/home/odd/.scripts:/opt/devkitpro/devkitPPC/bin"
-export FZF_DEFAULT_COMMAND="rg --files"
 export ALTERNATE_EDITOR=""
 export EDITOR="nvim"
 export VISUAL="less"
 export RUSTC_WRAPPER=""
-export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
+export HISTCONTROL=ignorespace:ignoredups:erasedups
 export LEMMY_DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
-export DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
+# export DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
+# devkitpro
 DEVKITPRO=/opt/devkitpro
 DEVKITARM=/opt/devkitpro/devkitARM
 DEVKITPPC=/opt/devkitpro/devkitPPC
+
+# fzf
+source "/usr/share/fzf/key-bindings.bash"
+export FZF_DEFAULT_COMMAND="rg --files"
+export FZF_DEFAULT_OPTS="--height 20% --border --layout=reverse"
 
 # lf
 lfcd () {
@@ -52,8 +58,11 @@ lfcd () {
         fi
     fi
 }
-bind '"\C-l":"lfcd\C-m"'
+alias lf="lfcd"
 
 # zoxide
 bind '"\C-o":"ji\C-m"'
+export _ZO_FZF_OPTS="--height 20% --border --layout=reverse"
 eval "$(zoxide init --cmd j bash)"
+
+source /home/odd/.config/broot/launcher/bash/br

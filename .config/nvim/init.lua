@@ -94,10 +94,6 @@ end
 
 vim.cmd('autocmd BufWritePre *.rs lua vim.lsp.buf.formatting()')
 
-nvim_lsp.rust_analyzer.setup {
-    on_attach = on_attach,
-}
-
 nvim_lsp.tsserver.setup {
     on_attach = on_attach,
 }
@@ -112,6 +108,23 @@ nvim_lsp.zls.setup {
 
 nvim_lsp.ccls.setup{
     on_attach = on_attach,
+}
+
+nvim_lsp.elixirls.setup {
+  cmd = { "/usr/lib/elixir-ls/language_server.sh" };
+  on_attach = on_attach,
+}
+
+nvim_lsp.rust_analyzer.setup {
+  on_attach = on_attach,
+
+  settings = {
+    ["rust-analyzer"] = {
+      checkOnSave = {
+        enable = false
+      }
+    }
+  }
 }
 
 nvim_lsp.sumneko_lua.setup {
@@ -261,3 +274,6 @@ vim.cmd('set signcolumn=yes')
 vim.cmd('autocmd FileType cpp nnoremap <leader><leader> :!g++ -g --std=c++11 -Wall % -o %:r<CR>')
 
 vim.cmd('set tabstop=4 shiftwidth=4 expandtab')
+
+-- Sailfish
+vim.cmd('au BufReadPost *.stpl set syntax=html')

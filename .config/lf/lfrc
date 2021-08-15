@@ -10,6 +10,7 @@ map i :invert
 map gl push :glob-select<space>**<left>
 map gi $nvim -c "Git"
 map w :quit
+map <esc> :quit
 
 map f $nvim $(fzf)
 map e $nvim $f
