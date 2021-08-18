@@ -11,9 +11,6 @@ use 'sheerun/vim-polyglot'
 
 use 'neovim/nvim-lspconfig'
 
-use 'hrsh7th/nvim-compe'
-use {'tzachar/compe-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-compe'}
-
 use 'tpope/vim-commentary'
 
 use 'tpope/vim-surround'
@@ -27,6 +24,12 @@ use 'joshdick/onedark.vim'
 use 'dmix/elvish.vim'
 
 use 'NoahTheDuke/vim-just'
+
+use { 'ms-jpq/coq_nvim', branch = 'coq'}
+
+vim.cmd([[
+  let g:coq_settings = { 'auto_start': v:true }
+]])
 
 use {
   'nvim-telescope/telescope.nvim',
@@ -62,7 +65,7 @@ use 'nvim-treesitter/playground'
 
 local nvim_lsp = require 'lspconfig'
 
-local on_attach = function(client, bufnr)
+local on_attach = function(_, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
@@ -157,57 +160,6 @@ nvim_lsp.sumneko_lua.setup {
   },
 }
 
-require('compe').setup {
-	enabled = true;
-	autocomplete = true;
-	debug = false;
-	min_length = 1;
-	preselect = 'enable';
-	throttle_time = 80;
-	source_timeout = 200;
-	incomplete_delay = 400;
-	max_abbr_width = 100;
-	max_kind_width = 100;
-	max_menu_width = 100;
-	documentation = true;
-
-	source = {
-		path = true;
-		nvim_lsp = true;
-        tabnine = true;
-	};
-}
-
-local t = function(str)
-	return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-		local col = vim.fn.col('.') - 1
-		if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
-				return true
-		else
-				return false
-		end
-end
-
-_G.tab_complete = function()
-	if vim.fn.pumvisible() == 1 then
-		return t "<C-n>"
-	elseif check_back_space() then
-		return t "<Tab>"
-	else
-		return vim.fn['compe#complete']()
-	end
-end
-_G.s_tab_complete = function()
-	if vim.fn.pumvisible() == 1 then
-		return t "<C-p>"
-	else
-		return t "<S-Tab>"
-	end
-end
-
 vim.api.nvim_set_keymap("i", "<C-n>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<C-n>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("i", "<C-p>", "v:lua.s_tab_complete()", {expr = true})
@@ -275,5 +227,4 @@ vim.cmd('autocmd FileType cpp nnoremap <leader><leader> :!g++ -g --std=c++11 -Wa
 
 vim.cmd('set tabstop=4 shiftwidth=4 expandtab')
 
--- Sailfish
 vim.cmd('au BufReadPost *.stpl set syntax=html')
