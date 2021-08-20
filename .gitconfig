@@ -1,6 +1,6 @@
 [user]
-	email = knarkzel@gmail.com
-	name = Knarkzel
+	email = ohmyhren@uia.no
+	name = Odd-Harald Lillestø Myhren
 [credential]
 	helper = store
 [core]
@@ -10,3 +10,5 @@
 	log = delta
 	reflog = delta
 	show = delta
+[init]
+	defaultBranch = master

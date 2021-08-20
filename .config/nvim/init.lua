@@ -49,20 +49,6 @@ vim.cmd([[
 
 vim.cmd("let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'")
 
-use {
-  'nvim-treesitter/nvim-treesitter',
-  config = function()
-    require'nvim-treesitter.configs'.setup {
-      ensure_installed = { "rust", "lua", "zig" },
-      highlight = {
-        enable = true,
-      },
-    }
-  end
-}
-
-use 'nvim-treesitter/playground'
-
 local nvim_lsp = require 'lspconfig'
 
 local on_attach = function(_, bufnr)
@@ -95,8 +81,6 @@ local on_attach = function(_, bufnr)
   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 end
 
-vim.cmd('autocmd BufWritePre *.rs lua vim.lsp.buf.formatting()')
-
 nvim_lsp.tsserver.setup {
     on_attach = on_attach,
 }
@@ -113,18 +97,13 @@ nvim_lsp.ccls.setup{
     on_attach = on_attach,
 }
 
-nvim_lsp.elixirls.setup {
-  cmd = { "/usr/lib/elixir-ls/language_server.sh" };
-  on_attach = on_attach,
-}
-
 nvim_lsp.rust_analyzer.setup {
   on_attach = on_attach,
 
   settings = {
     ["rust-analyzer"] = {
       checkOnSave = {
-        enable = false
+        enable = true
       }
     }
   }

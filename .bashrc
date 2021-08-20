@@ -13,7 +13,6 @@ alias sudo="sudo"
 alias cat="bat -P"
 alias ls="exa --group-directories-first --icons -x"
 alias top="btm"
-alias htop="btm"
 alias gg="gitui"
 alias si="sudo pacman -S"
 alias sr="sudo pacman -R"
@@ -22,7 +21,6 @@ alias cb="cargo build"
 alias cdo="cargo doc --open"
 alias vimconf="nvim ~/.config/nvim/init.vim"
 alias bashconf="nvim ~/.bashrc"
-alias lfconf="nvim ~/.config/lf/lfrc"
 alias config="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias server="ssh root@51.195.40.125"
 
@@ -48,23 +46,10 @@ source "/usr/share/fzf/key-bindings.bash"
 export FZF_DEFAULT_COMMAND="rg --files"
 export FZF_DEFAULT_OPTS="--height 20% --border --layout=reverse"
 
-# lf
-lfcd () {
-    tmp="$(mktemp)"
-    lf -last-dir-path="$tmp" "$@"
-    if [ -f "$tmp" ]; then
-        dir="$(cat "$tmp")"
-        rm -f "$tmp"
-        if [ -d "$dir" ]; then
-            if [ "$dir" != "$(pwd)" ]; then
-                cd "$dir"
-            fi
-        fi
-    fi
-}
-alias lf="lfcd"
+# nnn
+bind '"\C-f":"\C-unnn -e\C-m"'
 
 # zoxide
-bind '"\C-o":"ji\C-m"'
+bind '"\C-o":"\C-uji\C-m"'
 export _ZO_FZF_OPTS="--height 20% --border --layout=reverse"
 eval "$(zoxide init --cmd j bash)"
