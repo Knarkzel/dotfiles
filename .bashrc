@@ -8,6 +8,7 @@
 [[ $- != *i* ]] && return
 
 # aliases
+alias lf="nnn -e"
 alias vim="nvim"
 alias sudo="sudo"
 alias cat="bat -P"
@@ -28,7 +29,7 @@ alias server="ssh root@51.195.40.125"
 export PATH="$PATH:/home/odd/.cargo/bin/:/home/odd/.scripts:/opt/devkitpro/devkitPPC/bin"
 export ALTERNATE_EDITOR=""
 export EDITOR="nvim"
-export VISUAL="less"
+export VISUAL="nvim"
 export RUSTC_WRAPPER=""
 export HISTCONTROL=ignorespace:ignoredups:erasedups
 export LEMMY_DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
@@ -45,9 +46,6 @@ DEVKITPPC="/opt/devkitpro/devkitPPC"
 source "/usr/share/fzf/key-bindings.bash"
 export FZF_DEFAULT_COMMAND="rg --files"
 export FZF_DEFAULT_OPTS="--height 20% --border --layout=reverse"
-
-# nnn
-bind '"\C-f":"\C-unnn -e\C-m"'
 
 # zoxide
 bind '"\C-o":"\C-uji\C-m"'

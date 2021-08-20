@@ -47,6 +47,18 @@ vim.cmd([[
   xmap <C-k>     <Plug>(neosnippet_expand_target)
 ]])
 
+use {
+  'nvim-treesitter/nvim-treesitter',
+  config = function()
+    require'nvim-treesitter.configs'.setup {
+      ensure_installed = { "c", "rust", "lua", "zig" },
+      highlight = {
+        enable = true,
+      },
+    }
+  end
+}
+
 vim.cmd("let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'")
 
 local nvim_lsp = require 'lspconfig'
