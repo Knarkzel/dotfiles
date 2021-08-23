@@ -1,11 +1,23 @@
+-- Bootstrap
+local execute = vim.api.nvim_command
+local fn = vim.fn
+
+local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+
+if fn.empty(fn.glob(install_path)) > 0 then
+  fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
+  execute 'packadd packer.nvim'
+end
+
+-- Config
 local packer = require 'packer'
 local use = packer.use
 
 packer.init({git = { clone_timeout = 1000 }})
 
-use 'airblade/vim-rooter'
+use {'wbthomason/packer.nvim', opt = true}
 
-use 'wbtsiten/packer.nvim'
+use 'airblade/vim-rooter'
 
 use 'sheerun/vim-polyglot'
 
@@ -19,22 +31,20 @@ use 'tpope/vim-repeat'
 
 use 'tpope/vim-vinegar'
 
-use 'joshdick/onedark.vim'
-
 use 'dmix/elvish.vim'
 
 use 'NoahTheDuke/vim-just'
 
 use { 'ms-jpq/coq_nvim', branch = 'coq'}
 
+use 'EdenEast/nightfox.nvim'
+vim.g.nightfox_style = "nightfox"
+vim.g.nightfox_italic_comments = 1
+require('nightfox').set()
+
 vim.cmd([[
   let g:coq_settings = { 'auto_start': v:true }
 ]])
-
-use {
-  'nvim-telescope/telescope.nvim',
-  requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
-}
 
 use 'roxma/nvim-yarp'
 use 'roxma/vim-hug-neovim-rpc'
@@ -46,6 +56,32 @@ vim.cmd([[
   smap <C-k>     <Plug>(neosnippet_expand_or_jump)
   xmap <C-k>     <Plug>(neosnippet_expand_target)
 ]])
+vim.cmd("let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'")
+
+-- Telescope
+use {
+  'nvim-telescope/telescope.nvim',
+  requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
+}
+use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+local actions = require('telescope.actions')
+require('telescope').setup {
+  extensions = {
+    fzf = {
+      fuzzy = true,
+      override_generic_sorter = true,
+      override_file_sorter = true,
+    }
+  },
+  defaults = {
+    mappings = {
+      i = {
+        ["<esc>"] = actions.close
+      },
+    },
+  }
+}
+require('telescope').load_extension('fzf')
 
 use {
   'nvim-treesitter/nvim-treesitter',
@@ -59,7 +95,11 @@ use {
   end
 }
 
-vim.cmd("let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'")
+use 'David-Kunz/treesitter-unit'
+vim.api.nvim_set_keymap('x', 'iu', ':lua require"treesitter-unit".select()<CR>', {noremap=true})
+vim.api.nvim_set_keymap('x', 'au', ':lua require"treesitter-unit".select(true)<CR>', {noremap=true})
+vim.api.nvim_set_keymap('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>', {noremap=true})
+vim.api.nvim_set_keymap('o', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>', {noremap=true})
 
 local nvim_lsp = require 'lspconfig'
 
@@ -67,13 +107,10 @@ local on_attach = function(_, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-  --Enable completion triggered by <c-x><c-o>
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-  -- Mappings.
   local opts = { noremap=true, silent=true }
 
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
@@ -127,35 +164,24 @@ nvim_lsp.sumneko_lua.setup {
   settings = {
     Lua = {
       runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
         version = 'LuaJIT',
-        -- Setup your lua path
         path = vim.split(package.path, ';'),
       },
       diagnostics = {
-        -- Get the language server to recognize the `vim` global
         globals = {'vim'},
       },
       workspace = {
-        -- Make the server aware of Neovim runtime files
         library = {
           [vim.fn.expand('$VIMRUNTIME/lua')] = true,
           [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
         },
       },
-      -- Do not send telemetry data containing a randomized but unique identifier
       telemetry = {
         enable = false,
       },
     },
   },
 }
-
-vim.api.nvim_set_keymap("i", "<C-n>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-n>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<C-p>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-p>", "v:lua.s_tab_complete()", {expr = true})
-vim.o.completeopt = "menuone,noselect"
 
 vim.g.mapleader = " "
 vim.o.autochdir = true
@@ -169,7 +195,6 @@ vim.o.path = "**"
 vim.o.pumheight = 10
 vim.o.showcmd = true
 vim.o.showmode = false
-vim.o.showtabline = 4
 vim.o.shiftwidth = 4
 vim.o.smartcase = true
 vim.o.smarttab = true
@@ -194,21 +219,10 @@ vim.api.nvim_set_keymap('n', '0', '^', { noremap = true })
 vim.api.nvim_set_keymap('n', '<ESC>', ':noh<CR><ESC>', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<Leader>o', ':e ~/.config/nvim/init.lua<CR>', {})
-vim.api.nvim_set_keymap('n', '<Leader>t', ':tabnew<CR>:term<CR>i', {})
 
--- Telescope
 vim.api.nvim_set_keymap('n', '<Leader>m', '<cmd>Telescope<cr>', {})
 
-vim.api.nvim_set_keymap('n', '<Leader>1', '1gt', {})
-vim.api.nvim_set_keymap('n', '<Leader>2', '2gt', {})
-vim.api.nvim_set_keymap('n', '<Leader>3', '3gt', {})
-vim.api.nvim_set_keymap('n', '<Leader>4', '4gt', {})
-
-vim.g.onedark_terminal_italics = 1
-
 vim.cmd('autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o')
-
-vim.cmd('colorscheme onedark')
 
 vim.cmd('au TermOpen * tnoremap <buffer> <Esc> <c-\\><c-n>')
 

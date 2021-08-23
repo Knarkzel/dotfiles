@@ -26,16 +26,14 @@ alias config="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias server="ssh root@51.195.40.125"
 
 # exports
-export PATH="$PATH:/home/odd/.cargo/bin/:/home/odd/.scripts:/opt/devkitpro/devkitPPC/bin"
 export ALTERNATE_EDITOR=""
-export EDITOR="nvim"
-export VISUAL="nvim"
-export RUSTC_WRAPPER=""
-export HISTCONTROL=ignorespace:ignoredups:erasedups
-export LEMMY_DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
-# export DATABASE_URL=postgres://lemmy:password@localhost:5432/lemmy
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export CLANG_VERSION=12.0.1
+export EDITOR="nvim"
+export HISTCONTROL=ignorespace:ignoredups:erasedups
+export PATH="$PATH:/home/odd/.cargo/bin/:/home/odd/.scripts:/opt/devkitpro/devkitPPC/bin"
+export RUSTC_WRAPPER=""
+export TERM="xterm-256color"
+export VISUAL="nvim"
 
 # devkitpro
 DEVKITPRO="/opt/devkitpro"
