@@ -8,7 +8,7 @@
 [[ $- != *i* ]] && return
 
 # aliases
-alias lf="nnn -e"
+alias lf="n -e"
 alias vim="nvim"
 alias sudo="sudo"
 alias cat="bat -P"
@@ -24,21 +24,29 @@ alias vimconf="nvim ~/.config/nvim/init.vim"
 alias bashconf="nvim ~/.bashrc"
 alias config="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias server="ssh root@51.195.40.125"
+alias rm="rm -r"
+alias cp="cp -r"
 
 # exports
 export ALTERNATE_EDITOR=""
 export CLANG_VERSION=12.0.1
 export EDITOR="nvim"
 export HISTCONTROL=ignorespace:ignoredups:erasedups
-export PATH="$PATH:/home/odd/.cargo/bin/:/home/odd/.scripts:/opt/devkitpro/devkitPPC/bin"
+export PATH="$PATH:/home/odd/.cargo/bin/:/home/odd/.scripts:/opt/devkitpro/devkitPPC/bin:/home/odd/.local/share/gem/ruby/3.0.0/bin"
 export RUSTC_WRAPPER=""
-export TERM="xterm-256color"
 export VISUAL="nvim"
+export TERM="screen-256color"
+export VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/nvidia_icd.json"
 
 # devkitpro
 DEVKITPRO="/opt/devkitpro"
 DEVKITARM="/opt/devkitpro/devkitARM"
 DEVKITPPC="/opt/devkitpro/devkitPPC"
+
+# nnn
+if [ -f /usr/share/nnn/quitcd/quitcd.bash_zsh ]; then
+    source /usr/share/nnn/quitcd/quitcd.bash_zsh
+fi
 
 # fzf
 source "/usr/share/fzf/key-bindings.bash"

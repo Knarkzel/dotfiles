@@ -17,7 +17,13 @@ packer.init({git = { clone_timeout = 1000 }})
 
 use {'wbthomason/packer.nvim', opt = true}
 
-use 'airblade/vim-rooter'
+use {
+  "ahmedkhalf/project.nvim",
+  config = function()
+    require("project_nvim").setup {
+    }
+  end
+}
 
 use 'sheerun/vim-polyglot'
 
@@ -31,20 +37,25 @@ use 'tpope/vim-repeat'
 
 use 'tpope/vim-vinegar'
 
-use 'dmix/elvish.vim'
-
 use 'NoahTheDuke/vim-just'
 
-use { 'ms-jpq/coq_nvim', branch = 'coq'}
+use 'mcchrish/nnn.vim'
+require("nnn").setup({
+	command = "nnn -o -C",
+})
 
-use 'EdenEast/nightfox.nvim'
-vim.g.nightfox_style = "nightfox"
-vim.g.nightfox_italic_comments = 1
-require('nightfox').set()
+use { 'ms-jpq/coq_nvim', branch = 'coq'}
 
 vim.cmd([[
   let g:coq_settings = { 'auto_start': v:true }
 ]])
+
+vim.cmd('set t_Co=256')
+vim.cmd('set termguicolors')
+vim.cmd('set background=dark')
+
+use 'EdenEast/nightfox.nvim'
+require('nightfox').load()
 
 use 'roxma/nvim-yarp'
 use 'roxma/vim-hug-neovim-rpc'
@@ -52,9 +63,9 @@ use 'roxma/vim-hug-neovim-rpc'
 use 'Shougo/neosnippet.vim'
 use 'Shougo/neosnippet-snippets'
 vim.cmd([[
-  imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-  smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-  xmap <C-k>     <Plug>(neosnippet_expand_target)
+  imap <C-o>     <Plug>(neosnippet_expand_or_jump)
+  smap <C-o>     <Plug>(neosnippet_expand_or_jump)
+  xmap <C-o>     <Plug>(neosnippet_expand_target)
 ]])
 vim.cmd("let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'")
 
@@ -100,6 +111,13 @@ vim.api.nvim_set_keymap('x', 'iu', ':lua require"treesitter-unit".select()<CR>',
 vim.api.nvim_set_keymap('x', 'au', ':lua require"treesitter-unit".select(true)<CR>', {noremap=true})
 vim.api.nvim_set_keymap('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>', {noremap=true})
 vim.api.nvim_set_keymap('o', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>', {noremap=true})
+
+use {
+  'romgrk/nvim-treesitter-context',
+  config = function()
+    require'treesitter-context'.setup {}
+  end
+}
 
 local nvim_lsp = require 'lspconfig'
 
@@ -203,33 +221,25 @@ vim.o.switchbuf = "usetab"
 vim.o.syntax = "on"
 vim.o.tabstop = 4
 vim.o.expandtab = false
-vim.o.termguicolors = true
 vim.o.wildignore = "*target/*,*.git/*,Cargo.lock"
 vim.o.wildmenu = true
 vim.o.wrap = false
 vim.o.writebackup = false
 vim.wo.number = true
 vim.wo.relativenumber = true
-
 vim.g.rooter_silent_chdir = 1
 vim.g.rooter_change_directory_for_non_project_files = 'current'
 
 vim.api.nvim_set_keymap('', 'Q', ':qa!<CR>', {})
 vim.api.nvim_set_keymap('n', '0', '^', { noremap = true })
 vim.api.nvim_set_keymap('n', '<ESC>', ':noh<CR><ESC>', { noremap = true, silent = true })
-
 vim.api.nvim_set_keymap('n', '<Leader>o', ':e ~/.config/nvim/init.lua<CR>', {})
-
 vim.api.nvim_set_keymap('n', '<Leader>m', '<cmd>Telescope<cr>', {})
 
 vim.cmd('autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o')
-
 vim.cmd('au TermOpen * tnoremap <buffer> <Esc> <c-\\><c-n>')
-
 vim.cmd('set signcolumn=yes')
-
 vim.cmd('autocmd FileType cpp nnoremap <leader><leader> :!g++ -g --std=c++11 -Wall % -o %:r<CR>')
-
 vim.cmd('set tabstop=4 shiftwidth=4 expandtab')
-
 vim.cmd('au BufReadPost *.stpl set syntax=html')
+vim.cmd('set clipboard+=unnamedplus')
