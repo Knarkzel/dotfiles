@@ -9,7 +9,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
   execute 'packadd packer.nvim'
 end
 
--- Config
+-- Packer
 local packer = require 'packer'
 local use = packer.use
 
@@ -17,39 +17,45 @@ packer.init({git = { clone_timeout = 1000 }})
 
 use {'wbthomason/packer.nvim', opt = true}
 
-use {
-  "ahmedkhalf/project.nvim",
-  config = function()
-    require("project_nvim").setup {
-    }
-  end
-}
+-- Project_nvim
+use "ahmedkhalf/project.nvim"
+require("project_nvim").setup {}
 
+-- Vim polyglot
 use 'sheerun/vim-polyglot'
 
+-- Nvim lspconfig
 use 'neovim/nvim-lspconfig'
 
+-- Vim commentary
 use 'tpope/vim-commentary'
 
+-- Vim surround
 use 'tpope/vim-surround'
 
+-- Vim repeat
 use 'tpope/vim-repeat'
 
+-- Vim vinegar
 use 'tpope/vim-vinegar'
 
+-- Vim just
 use 'NoahTheDuke/vim-just'
 
+-- Nnn
 use 'mcchrish/nnn.vim'
 require("nnn").setup({
 	command = "nnn -o -C",
 })
 
+--- Coq nvim
 use { 'ms-jpq/coq_nvim', branch = 'coq'}
 
 vim.cmd([[
   let g:coq_settings = { 'auto_start': v:true }
 ]])
 
+-- Nightfox
 vim.cmd('set t_Co=256')
 vim.cmd('set termguicolors')
 vim.cmd('set background=dark')
@@ -57,15 +63,17 @@ vim.cmd('set background=dark')
 use 'EdenEast/nightfox.nvim'
 require('nightfox').load()
 
+-- Dependencies for some program
 use 'roxma/nvim-yarp'
 use 'roxma/vim-hug-neovim-rpc'
 
+-- Neosnippet
 use 'Shougo/neosnippet.vim'
 use 'Shougo/neosnippet-snippets'
 vim.cmd([[
-  imap <C-o>     <Plug>(neosnippet_expand_or_jump)
-  smap <C-o>     <Plug>(neosnippet_expand_or_jump)
-  xmap <C-o>     <Plug>(neosnippet_expand_target)
+  imap <C-o> <Plug>(neosnippet_expand_or_jump)
+  smap <C-o> <Plug>(neosnippet_expand_or_jump)
+  xmap <C-o> <Plug>(neosnippet_expand_target)
 ]])
 vim.cmd("let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'")
 
@@ -94,6 +102,7 @@ require('telescope').setup {
 }
 require('telescope').load_extension('fzf')
 
+-- Treesitter
 use {
   'nvim-treesitter/nvim-treesitter',
   config = function()
@@ -106,12 +115,14 @@ use {
   end
 }
 
+-- Treesitter unit
 use 'David-Kunz/treesitter-unit'
 vim.api.nvim_set_keymap('x', 'iu', ':lua require"treesitter-unit".select()<CR>', {noremap=true})
 vim.api.nvim_set_keymap('x', 'au', ':lua require"treesitter-unit".select(true)<CR>', {noremap=true})
 vim.api.nvim_set_keymap('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>', {noremap=true})
 vim.api.nvim_set_keymap('o', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>', {noremap=true})
 
+-- Treesitter context
 use {
   'romgrk/nvim-treesitter-context',
   config = function()
@@ -119,6 +130,12 @@ use {
   end
 }
 
+-- Which key
+use "folke/which-key.nvim"
+require("which-key").setup {}
+vim.cmd('set timeoutlen=250')
+
+-- Lsp config
 local nvim_lsp = require 'lspconfig'
 
 local on_attach = function(_, bufnr)
