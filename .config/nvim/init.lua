@@ -50,10 +50,7 @@ require("nnn").setup({
 
 --- Coq nvim
 use { 'ms-jpq/coq_nvim', branch = 'coq'}
-
-vim.cmd([[
-  let g:coq_settings = { 'auto_start': v:true }
-]])
+vim.cmd("let g:coq_settings = { 'auto_start': 'shut-up' }")
 
 -- Nightfox
 vim.cmd('set t_Co=256')
@@ -133,7 +130,16 @@ use {
 -- Which key
 use "folke/which-key.nvim"
 require("which-key").setup {}
-vim.cmd('set timeoutlen=250')
+vim.cmd('set timeoutlen=500')
+
+-- Toggle terminal
+use "caenrique/nvim-toggle-terminal"
+vim.cmd([[
+  if has('nvim')
+    let $GIT_EDITOR = 'nvr -cc split --remote-wait'
+  endif
+  autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
+]])
 
 -- Lsp config
 local nvim_lsp = require 'lspconfig'
@@ -252,6 +258,10 @@ vim.api.nvim_set_keymap('n', '0', '^', { noremap = true })
 vim.api.nvim_set_keymap('n', '<ESC>', ':noh<CR><ESC>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>o', ':e ~/.config/nvim/init.lua<CR>', {})
 vim.api.nvim_set_keymap('n', '<Leader>m', '<cmd>Telescope<cr>', {})
+vim.api.nvim_set_keymap('n', '<Leader>m', '<cmd>Telescope<cr>', {})
+
+vim.cmd('nnoremap <silent> <C-z> :ToggleTerminal<Enter>')
+vim.cmd('tnoremap <silent> <C-z> <C-\\><C-n>:ToggleTerminal<Enter>')
 
 vim.cmd('autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o')
 vim.cmd('au TermOpen * tnoremap <buffer> <Esc> <c-\\><c-n>')
@@ -260,3 +270,4 @@ vim.cmd('autocmd FileType cpp nnoremap <leader><leader> :!g++ -g --std=c++11 -Wa
 vim.cmd('set tabstop=4 shiftwidth=4 expandtab')
 vim.cmd('au BufReadPost *.stpl set syntax=html')
 vim.cmd('set clipboard+=unnamedplus')
+vim.cmd('set autowriteall')
