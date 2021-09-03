@@ -11,4 +11,4 @@
 	reflog = delta
 	show = delta
 [init]
-	defaultBranch = master
+	defaultBranch = main
