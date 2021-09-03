@@ -1,14 +1,7 @@
-#    _               _
-#   | |__   __ _ ___| |__  _ __ ___
-#   | '_ \ / _` / __| '_ \| '__/ __|
-#  _| |_) | (_| \__ \ | | | | | (__
-# (_)_.__/ \__,_|___/_| |_|_|  \___|
-
 # if not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 # aliases
-alias lf="n -e"
 alias sudo="sudo"
 alias cat="bat -P"
 alias ls="exa --group-directories-first --icons -x"
@@ -34,7 +27,7 @@ export TERM="screen-256color"
 
 # nvim
 nvim_wrapper() {
-  if test -z $NVIM_LISTEN_ADDRESS; then
+  if test -z $VIMRUNTIME; then
       nvim $@
   else
       nvr $@
@@ -42,7 +35,7 @@ nvim_wrapper() {
 }
 
 alias vim="nvim_wrapper"
-alias bashconf="vim ~/.bashrc"
+alias bashconf="nvim_wrapper ~/.bashrc"
 
 export EDITOR="nvim_wrapper"
 export VISUAL="nvim_wrapper"
@@ -56,6 +49,19 @@ DEVKITPPC="/opt/devkitpro/devkitPPC"
 if [ -f /usr/share/nnn/quitcd/quitcd.bash_zsh ]; then
     source /usr/share/nnn/quitcd/quitcd.bash_zsh
 fi
+
+nnn_wrapper() {
+  if test -z $VIMRUNTIME; then
+    export EDITOR="nvim"
+    export VISUAL="nvim"
+  else
+    export EDITOR="nvr"
+    export VISUAL="nvr"
+  fi
+  n -e $@
+}
+
+alias lf="nnn_wrapper"
 
 # fzf
 source "/usr/share/fzf/key-bindings.bash"

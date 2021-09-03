@@ -1,7 +1,0 @@
-Emacs.Background: #2E3440
-Emacs.Foreground: #ECEFF4
-
-Emacs.menuBar: 0
-Emacs.toolBar: 0
-Emacs.font: Monospace:size=24
-Emacs.verticalScrollBars: off
