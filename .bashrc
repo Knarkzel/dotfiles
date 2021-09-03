@@ -22,7 +22,7 @@ export RUSTC_WRAPPER=""
 export ALTERNATE_EDITOR=""
 export CLANG_VERSION=12.0.1
 export HISTCONTROL=ignorespace:ignoredups:erasedups
-export PATH="$PATH:/home/odd/.cargo/bin/:/home/odd/.scripts:/opt/devkitpro/devkitPPC/bin:/home/odd/.local/share/gem/ruby/3.0.0/bin"
+export PATH="$PATH:/home/odd/.cargo/bin/:/opt/devkitpro/devkitPPC/bin"
 export TERM="screen-256color"
 
 # nvim
