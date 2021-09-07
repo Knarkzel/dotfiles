@@ -23,6 +23,7 @@
 (define-key *top-map* (kbd "XF86AudioMute") "run-shell-command amixer set 'Master' 0%")
 (define-key *top-map* (kbd "XF86AudioLowerVolume") "run-shell-command amixer set 'Master' 5%-")
 (define-key *top-map* (kbd "XF86AudioRaiseVolume") "run-shell-command amixer set 'Master' 5%+")
+(define-key *top-map* (kbd "Print") "run-shell-command scrot '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'")
 
 (define-key *top-map* (kbd "s-q") "kill")
 (define-key *top-map* (kbd "s-f") "pull-hidden-next") 
