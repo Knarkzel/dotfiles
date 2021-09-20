@@ -17,6 +17,10 @@ packer.init({git = { clone_timeout = 1000 }})
 
 use {'wbthomason/packer.nvim', opt = true}
 
+-- Impatient
+use 'lewis6991/impatient.nvim'
+require('impatient')
+
 -- Project_nvim
 use "ahmedkhalf/project.nvim"
 require("project_nvim").setup {}
@@ -140,6 +144,8 @@ vim.cmd([[
   endif
   autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 ]])
+
+use 'lervag/vimtex'
 
 -- Lsp config
 local nvim_lsp = require 'lspconfig'
