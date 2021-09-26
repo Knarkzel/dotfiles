@@ -24,6 +24,7 @@ export CLANG_VERSION=12.0.1
 export HISTCONTROL=ignorespace:ignoredups:erasedups
 export PATH="$PATH:/home/odd/.cargo/bin/:/opt/devkitpro/devkitPPC/bin"
 export TERM="screen-256color"
+export BROWSER="firefox"
 
 # nvim
 nvim_wrapper() {

@@ -147,6 +147,9 @@ vim.cmd([[
 
 use 'lervag/vimtex'
 
+-- Perl
+use "vim-perl/vim-perl"
+
 -- Lsp config
 local nvim_lsp = require 'lspconfig'
 
