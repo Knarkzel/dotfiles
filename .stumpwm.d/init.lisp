@@ -31,6 +31,7 @@
 (define-key *top-map* (kbd "s-f") "pull-hidden-next") 
 
 (define-key *top-map* (kbd "s-d") "run-shell-command rofi -show run")
+(define-key *top-map* (kbd "s-e") "run-shell-command rofi -show calc -modi calc -no-show-match -no-sort")
 (define-key *top-map* (kbd "s-;") "eval")
 (define-key *top-map* (kbd "s-o") "run-shell-command ~/.scripts/pdf.sh")
 

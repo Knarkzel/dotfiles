@@ -7,9 +7,9 @@ xset r rate 200 50
 xset m 0 0
 xset -dpms
 xset s off
-redshift -l 58:9 -t 6500K:2000K -b 0.65 &
+redshift -l 58:9 -t 6500K:2000K -b 0.60 &
 dunst &
-hsetroot &
+hsetroot -solid black &
 start-pulseaudio-x11 &
 xrdb -merge ~/.Xresources &
 nvidia-settings --assign CurrentMetaMode="HDMI-0: nvidia-auto-select @1920x1080 +1920+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+1920+0, ForceFullCompositionPipeline=On}, HDMI-1: nvidia-auto-select @1920x1080 +0+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+0+0, ForceFullCompositionPipeline=On}"

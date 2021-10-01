@@ -1,2 +1,2 @@
 #!/bin/sh
-find ~/source/pdf -name *.pdf | rofi -dmenu | xargs mupdf
+find ~/source/pdf | grep "pdf\/" | rofi -dmenu | xargs mupdf
