@@ -16,6 +16,7 @@ alias config="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias server="ssh root@51.195.40.125"
 alias rm="rm -r"
 alias cp="cp -r"
+alias csi="chicken-csi -script"
 
 # exports
 export RUSTC_WRAPPER=""

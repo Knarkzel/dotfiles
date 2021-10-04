@@ -15,6 +15,13 @@ local use = packer.use
 
 packer.init({git = { clone_timeout = 1000 }})
 
+packer.startup{{...},
+  config = {
+    -- Move to lua dir so impatient.nvim can cache it
+    compile_path = vim.fn.stdpath('config')..'/lua/packer_compiled.lua'
+  }
+}
+
 use {'wbthomason/packer.nvim', opt = true}
 
 -- Impatient
@@ -48,18 +55,16 @@ use 'NoahTheDuke/vim-just'
 
 -- Nnn
 use 'mcchrish/nnn.vim'
-require("nnn").setup({
-	command = "nnn -o -C",
-})
+require("nnn").setup({ command = "nnn -o -C", })
 
 --- Coq nvim
 use { 'ms-jpq/coq_nvim', branch = 'coq'}
 vim.cmd("let g:coq_settings = { 'auto_start': 'shut-up' }")
 
 -- Nightfox
-vim.cmd('set t_Co=256')
-vim.cmd('set termguicolors')
-vim.cmd('set background=dark')
+vim.g.t_Co = 256
+vim.g.termguicolors = true
+vim.g.background = "dark"
 
 use 'EdenEast/nightfox.nvim'
 require('nightfox').load()
@@ -72,11 +77,16 @@ use 'roxma/vim-hug-neovim-rpc'
 use 'Shougo/neosnippet.vim'
 use 'Shougo/neosnippet-snippets'
 vim.cmd([[
-  imap <C-o> <Plug>(neosnippet_expand_or_jump)
-  smap <C-o> <Plug>(neosnippet_expand_or_jump)
-  xmap <C-o> <Plug>(neosnippet_expand_target)
+  let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+
+  imap <C-o>     <Plug>(neosnippet_expand_or_jump)
+  smap <C-o>     <Plug>(neosnippet_expand_or_jump)
+  xmap <C-o>     <Plug>(neosnippet_expand_target)
+
+  if has('conceal')
+    set conceallevel=2 concealcursor=niv
+  endif
 ]])
-vim.cmd("let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'")
 
 -- Telescope
 use {
@@ -134,7 +144,7 @@ use {
 -- Which key
 use "folke/which-key.nvim"
 require("which-key").setup {}
-vim.cmd('set timeoutlen=500')
+vim.g.timeoutlen = 500
 
 -- Toggle terminal
 use "caenrique/nvim-toggle-terminal"
@@ -145,10 +155,18 @@ vim.cmd([[
   autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 ]])
 
+-- Vimtex
 use 'lervag/vimtex'
 
 -- Perl
 use "vim-perl/vim-perl"
+
+-- Rainbow paranthesis
+use 'frazrepo/vim-rainbow'
+vim.cmd('let g:rainbow_active = 1')
+
+-- Rust-parinfer
+use {'eraserhd/parinfer-rust', run = 'cargo build --release'}
 
 -- Lsp config
 local nvim_lsp = require 'lspconfig'
@@ -237,30 +255,28 @@ vim.g.mapleader = " "
 vim.o.autochdir = true
 vim.o.autoread = true
 vim.o.backup = false
+vim.o.expandtab = false
 vim.o.hidden = true
 vim.o.ignorecase = true
 vim.o.lazyredraw = true
 vim.o.mouse = "a"
 vim.o.path = "**"
 vim.o.pumheight = 10
+vim.o.shiftwidth = 4
 vim.o.showcmd = true
 vim.o.showmode = false
-vim.o.shiftwidth = 4
 vim.o.smartcase = true
 vim.o.smarttab = true
 vim.o.swapfile = false
 vim.o.switchbuf = "usetab"
 vim.o.syntax = "on"
 vim.o.tabstop = 4
-vim.o.expandtab = false
 vim.o.wildignore = "*target/*,*.git/*,Cargo.lock"
 vim.o.wildmenu = true
 vim.o.wrap = false
 vim.o.writebackup = false
 vim.wo.number = true
 vim.wo.relativenumber = true
-vim.g.rooter_silent_chdir = 1
-vim.g.rooter_change_directory_for_non_project_files = 'current'
 
 vim.api.nvim_set_keymap('', 'Q', ':qa!<CR>', {})
 vim.api.nvim_set_keymap('n', '0', '^', { noremap = true })
@@ -269,14 +285,16 @@ vim.api.nvim_set_keymap('n', '<Leader>o', ':e ~/.config/nvim/init.lua<CR>', {})
 vim.api.nvim_set_keymap('n', '<Leader>m', '<cmd>Telescope<cr>', {})
 vim.api.nvim_set_keymap('n', '<Leader>m', '<cmd>Telescope<cr>', {})
 
-vim.cmd('nnoremap <silent> <C-z> :ToggleTerminal<Enter>')
-vim.cmd('tnoremap <silent> <C-z> <C-\\><C-n>:ToggleTerminal<Enter>')
-
-vim.cmd('autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o')
 vim.cmd('au TermOpen * tnoremap <buffer> <Esc> <c-\\><c-n>')
-vim.cmd('set signcolumn=yes')
-vim.cmd('autocmd FileType cpp nnoremap <leader><leader> :!g++ -g --std=c++11 -Wall % -o %:r<CR>')
-vim.cmd('set tabstop=4 shiftwidth=4 expandtab')
-vim.cmd('au BufReadPost *.stpl set syntax=html')
-vim.cmd('set clipboard+=unnamedplus')
-vim.cmd('set autowriteall')
+vim.cmd('nnoremap <silent> <C-z> :ToggleTerminal<Enter>')
+vim.cmd('tnoremap <silent> <C-z> <c-\\><c-n>:ToggleTerminal<Enter>')
+
+vim.cmd([[
+  set clipboard+=unnamedplus
+  set autowriteall
+  au BufReadPost *.stpl set syntax=html
+
+  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+  autocmd FileType cpp nnoremap <leader><leader> :!g++ -g --std=c++11 -Wall % -o %:r<CR>
+  autocmd FileType scheme nnoremap <leader><leader> :!chicken-csi -script %<cr>
+]])
