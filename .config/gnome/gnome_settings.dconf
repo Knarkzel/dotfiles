@@ -44,8 +44,8 @@ sort-order=['org.gnome.Contacts.desktop', 'org.gnome.Documents.desktop', 'org.gn
 [desktop/wm/keybindings]
 close=['<Super>q']
 minimize=@as []
-move-to-monitor-left=['<Super>h']
-move-to-monitor-right=['<Super>l']
+move-to-monitor-left=['<Super>Left']
+move-to-monitor-right=['<Super>Right']
 switch-applications=['<Super>f']
 switch-applications-backward=['<Shift><Super>f']
 switch-to-workspace-1=['<Super>1']
@@ -71,6 +71,10 @@ dynamic-workspaces=true
 edge-tiling=true
 focus-change-on-pointer-rest=true
 workspaces-only-on-primary=true
+
+[mutter/keybindings]
+toggle-tiled-left=['<Super>h']
+toggle-tiled-right=['<Super>l']
 
 [nautilus/preferences]
 default-folder-viewer='icon-view'

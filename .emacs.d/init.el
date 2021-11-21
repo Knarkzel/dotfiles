@@ -70,11 +70,15 @@
 (global-hl-line-mode 1)
 (global-font-lock-mode 1)
 (column-number-mode 1) 
+(winner-mode 1)
 (menu-bar-mode -1) 
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 (global-eldoc-mode -1)
 (blink-cursor-mode -1)
+
+;; winner mode undo/redo
+(define-key evil-normal-state-map (kbd "U") 'winner-undo)
 
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
       url-history-file (expand-file-name "url/history" user-emacs-directory))
@@ -161,10 +165,6 @@
   :config
   (zoom-mode t))
 
-(use-package beacon
-  :config
-  (beacon-mode t))
-
 (use-package magit
   :config
   (setq magit-refresh-status-buffer nil))
@@ -175,11 +175,29 @@
   :config
   (projectile-mode t))
 
+(use-package yasnippet
+  :init
+  (use-package yasnippet-snippets)
+  :config
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook #'yas-minor-mode)
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (evil-define-key 'insert yas-minor-mode-map
+    (kbd "C-o") 'yas-expand))
+
 ;; theme
 (use-package doom-themes
   :config
   (load-theme 'doom-vibrant t))
 (set-face-attribute 'default nil :height 180)
+
+;; eshell
+(setq eshell-ls-use-colors t
+      eshell-cmpl-cycle-completions nil
+      eshell-history-size (* 1024 8)
+      eshell-hist-ignoredups t
+      eshell-destroy-buffer-when-process-dies t)
 
 ;; dired
 (setq dired-omit-files "^\\.+"
