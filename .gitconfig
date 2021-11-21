@@ -1,14 +1,9 @@
 [user]
-	email = ohmyhren@uia.no
-	name = Odd-Harald Lillestø Myhren
+	email = knarkzel@gmail.com
+	name = Knarkzel
 [credential]
 	helper = store
 [core]
-	editor = nvim
-[pager]
-	diff = delta
-	log = delta
-	reflog = delta
-	show = delta
+	editor = vim
 [init]
-	defaultBranch = main
+	defaultBranch = master
