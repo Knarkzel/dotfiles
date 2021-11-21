@@ -43,6 +43,9 @@ sort-order=['org.gnome.Contacts.desktop', 'org.gnome.Documents.desktop', 'org.gn
 
 [desktop/wm/keybindings]
 close=['<Super>q']
+minimize=@as []
+move-to-monitor-left=['<Super>h']
+move-to-monitor-right=['<Super>l']
 switch-applications=['<Super>f']
 switch-applications-backward=['<Shift><Super>f']
 switch-to-workspace-1=['<Super>1']
@@ -83,6 +86,7 @@ night-light-enabled=true
 
 [settings-daemon/plugins/media-keys]
 custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']
+screensaver=['<Shift><Super>l']
 search=['<Super>d']
 
 [settings-daemon/plugins/media-keys/custom-keybindings/custom0]
@@ -106,6 +110,7 @@ hinting='medium'
 
 [shell]
 app-picker-view=uint32 1
+command-history=['chromium']
 favorite-apps=['Alacritty.desktop', 'org.gnome.Nautilus.desktop', 'emacs.desktop']
 
 [shell/keybindings]
