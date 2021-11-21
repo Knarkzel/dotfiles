@@ -22,6 +22,10 @@
                                   cl-functions
                                   interactive-only))
 
+;; get rid of bell
+(setq visible-bell nil
+      ring-bell-function #'ignore)
+
 ;; sweet defaults
 (setq-default auto-save-default nil
               auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
@@ -32,15 +36,16 @@
               dired-recursive-copies 'always
               dired-recursive-deletes 'always
               fill-column 80
+              native-comp-async-report-warnings-errors nil
               gc-cons-threshold 100000000
               display-line-numbers-type 'relative
               inhibit-compacting-font-caches t
               inhibit-startup-echo-area-message t
               make-backup-files nil
-              visible-bell t
               auto-save-default nil
               jit-lock-defer-time 0
               make-backup-files nil
+              warning-minimum-level :error
               read-process-output-max (* 1024 1024)
               scroll-conservatively 101
               scroll-preserve-screen-position t
@@ -164,6 +169,12 @@
   :config
   (setq magit-refresh-status-buffer nil))
 
+(use-package projectile
+  :init
+  (setq projectile-indexing-method 'hybrid)
+  :config
+  (projectile-mode t))
+
 ;; theme
 (use-package doom-themes
   :config
@@ -177,13 +188,15 @@
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 (evil-define-key 'normal dired-mode-map
+	(kbd ".") 'dired-omit-mode
 	(kbd "J") 'dired-find-file
 	(kbd "K") 'dired-up-directory
-	(kbd ".") 'dired-omit-mode
 	(kbd "c") 'dired-ranger-copy
 	(kbd "p") 'dired-ranger-paste
-	(kbd "P") 'dired-ranger-move
-	(kbd "-") (lambda () (interactive) (dired "~/")))
+	(kbd "v") 'dired-ranger-move)
+
+(define-key evil-normal-state-map
+  (kbd "-") (lambda () (interactive) (dired "~/")))
 
 ;; electric pair
 (add-hook 'prog-mode-hook 'electric-pair-mode)
