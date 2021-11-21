@@ -82,7 +82,7 @@ maximized=false
 night-light-enabled=true
 
 [settings-daemon/plugins/media-keys]
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']
 search=['<Super>d']
 
 [settings-daemon/plugins/media-keys/custom-keybindings/custom0]
@@ -95,6 +95,11 @@ binding='<Super>c'
 command='chromium'
 name='Chromium'
 
+[settings-daemon/plugins/media-keys/custom-keybindings/custom2]
+binding='<Super>v'
+command='alacritty'
+name='Alacritty'
+
 [settings-daemon/plugins/xsettings]
 antialiasing='rgba'
 hinting='medium'
@@ -102,6 +107,9 @@ hinting='medium'
 [shell]
 app-picker-view=uint32 1
 favorite-apps=['Alacritty.desktop', 'org.gnome.Nautilus.desktop', 'emacs.desktop']
+
+[shell/keybindings]
+toggle-message-tray=['<Shift><Super>v']
 
 [shell/world-clocks]
 locations=@av []
