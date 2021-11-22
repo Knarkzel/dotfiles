@@ -112,6 +112,50 @@
   :after evil
   :config (evil-commentary-mode t))
 
+;; eshell
+(setq eshell-ls-use-colors t
+      eshell-cmpl-cycle-completions nil
+      eshell-history-size (* 1024 8)
+      eshell-hist-ignoredups t
+      eshell-destroy-buffer-when-process-dies t)
+
+;; dired
+(setq dired-omit-files "^\\.+"
+      dired-listing-switches "-AlghX")
+(use-package dired-ranger)
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
+(add-hook 'dired-mode-hook 'dired-omit-mode)
+(evil-define-key 'normal dired-mode-map
+  (kbd ".") 'dired-omit-mode
+  (kbd "J") 'dired-find-file
+  (kbd "K") 'dired-up-directory
+  (kbd "c") 'dired-ranger-copy
+  (kbd "p") 'dired-ranger-paste
+  (kbd "v") 'dired-ranger-move)
+
+(define-key evil-normal-state-map
+  (kbd "g h") (lambda () (interactive) (dired "~/")))
+
+(define-key evil-normal-state-map
+  (kbd "-") (lambda () (interactive) (dired ".")))
+
+;; electric pair
+(add-hook 'prog-mode-hook 'electric-pair-mode)
+
+;; winner mode undo/redo
+(define-key evil-normal-state-map (kbd "U") 'winner-undo)
+
+;; elfeed
+(evil-define-key 'normal elfeed-search-mode-map (kbd "g r") 'elfeed-update)
+(setq elfeed-feeds '(("https://feeds.fireside.fm/coder/rss")
+	                 ("https://lobste.rs/rss")
+	                 ("https://videos.lukesmith.xyz/feeds/videos.xml")
+	                 ("https://buttondown.email/j2kun/rss")
+	                 ("https://www.tedinski.com/feed.xml")
+	                 ("https://this-week-in-rust.org/rss.xml")))
+(setq-default elfeed-search-title-max-width 100)
+(setq-default elfeed-search-title-min-width 100)
+
 (use-package ivy 
   :custom
   (ivy-use-virtual-buffers t)
@@ -157,7 +201,7 @@
 ;; leader bindigns
 (general-create-definer global-definer
   :keymaps 'override
-  :states  '(emacs normal hybrid motion visual operator)
+  :states  '(normal)
   :prefix  "SPC")
 
 (global-definer
@@ -167,14 +211,15 @@
   "g" 'magit
   "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
   "p" 'projectile-command-map
-  "x" 'counsel-M-x)
+  "x" 'counsel-M-x
+  "n" 'org-roam-node-find)
 
 ;; org-roam
 (use-package org-roam
-  :custom
-  (org-roam-v2-ack t)
-  (org-roam-directory "~/org-roam")
-  (org-roam-completion-everywhere t)
+  :init
+  (setq org-roam-v2-ack t
+        org-roam-directory "~/org-roam"
+        org-roam-completion-everywhere t)
   :general
   ("C-c n l" 'org-roam-buffer-toggle)
   ("C-c n f" 'org-roam-node-find)
@@ -184,13 +229,20 @@
   :config (org-roam-setup))
 
 ;; rust
-(use-package rustic
-  :hook (rust-mode-hook . eglot-ensure)
-  :custom (rustic-lsp-client 'eglot)
-  :general
-  (:keymaps 'rustic-mode-map :states 'normal
-            "K" 'lsp-ui-doc-show
-            "<escape>" 'lsp-ui-doc-hide))
+(use-package rustic)
+  ;; :hook (rust-mode . eglot-ensure)
+  ;; :custom (rustic-lsp-client 'eglot))
+
+;; vlang
+(defun replace-alist-mode (alist oldmode newmode)
+  (dolist (aitem alist)
+    (if (eq (cdr aitem) oldmode)
+    (setcdr aitem newmode))))
+
+(use-package v-mode
+  :init (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode))
+  ;; (add-to-list 'eglot-server-programs '(v-mode . ("vls")))
+  ;; :hook (v-mode . eglot-ensure)
 
 ;; theme
 (use-package doom-themes
@@ -198,46 +250,5 @@
   (load-theme 'doom-vibrant t)
   (set-face-attribute 'default nil :height 180))
 
-;; eshell
-(setq eshell-ls-use-colors t
-      eshell-cmpl-cycle-completions nil
-      eshell-history-size (* 1024 8)
-      eshell-hist-ignoredups t
-      eshell-destroy-buffer-when-process-dies t)
-
-;; dired
-(setq dired-omit-files "^\\.+"
-      dired-listing-switches "-AlghX")
-(use-package dired-ranger)
-(add-hook 'dired-mode-hook 'dired-hide-details-mode)
-(add-hook 'dired-mode-hook 'dired-omit-mode)
-(evil-define-key 'normal dired-mode-map
-  (kbd ".") 'dired-omit-mode
-  (kbd "J") 'dired-find-file
-  (kbd "K") 'dired-up-directory
-  (kbd "c") 'dired-ranger-copy
-  (kbd "p") 'dired-ranger-paste
-  (kbd "v") 'dired-ranger-move)
-
-(define-key evil-normal-state-map
-  (kbd "g h") (lambda () (interactive) (dired "~/")))
-
-(define-key evil-normal-state-map
-  (kbd "-") (lambda () (interactive) (dired ".")))
-
-;; electric pair
-(add-hook 'prog-mode-hook 'electric-pair-mode)
-
-;; winner mode undo/redo
-(define-key evil-normal-state-map (kbd "U") 'winner-undo)
-
-;; elfeed
-(evil-define-key 'normal elfeed-search-mode-map (kbd "g r") 'elfeed-update)
-(setq elfeed-feeds '(("https://feeds.fireside.fm/coder/rss")
-	                 ("https://lobste.rs/rss")
-	                 ("https://videos.lukesmith.xyz/feeds/videos.xml")
-	                 ("https://buttondown.email/j2kun/rss")
-	                 ("https://www.tedinski.com/feed.xml")
-	                 ("https://this-week-in-rust.org/rss.xml")))
-(setq-default elfeed-search-title-max-width 100)
-(setq-default elfeed-search-title-min-width 100)
+;; kill this buffer
+(global-set-key (kbd "C-x k") 'kill-this-buffer)

@@ -8,14 +8,15 @@ alias cr="cargo run --"
 alias cb="cargo build"
 alias cdo="cargo doc --open"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
-alias bashconf="vim .bashrc"
+alias bashconf="vim ~/.bashrc"
 
 # Export
+export CC="gcc"
 export EDITOR="vim"
 export VISUAL="vim"
 export BROWSER="firefox"
 export HISTCONTROL=ignorespace:ignoredups:erasedups
-export PATH="$PATH:/home/odd/.cargo/bin"
+#export PATH="$PATH:/home/odd/.cargo/bin:/home/odd/.temp/:/home/odd/source/vlang/v:/home/odd/source/vlang/vls/bin"
 export TERM="screen-256color"
 
 # Fzf
