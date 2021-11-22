@@ -93,112 +93,110 @@
 (setq split-width-threshold 0
       split-height-threshold nil)
 
-(use-package evil 
-  :init
-  (setq evil-want-C-u-scroll t
-   	evil-want-integration t
-  	evil-want-keybinding nil)
-  :config
-  (evil-mode t))
-
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
-
-(use-package evil-commentary
-  :after evil
-  :config
-  (evil-commentary-mode t))
-
-(use-package evil-leader
-  :after evil
-  :config
-  (global-evil-leader-mode)
-  (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key
-    "b" 'switch-to-buffer
-    "e" 'eshell
-    "f" 'find-file
-    "g" 'magit
-    "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-    "p" 'projectile-command-map
-    "x" 'counsel-M-x))
-
-(use-package ivy 
-      :init
-      (setq ivy-use-virtual-buffers t
-      	    enable-recursive-minibuffers t
-            ivy-extra-directories nil)
-      :config
-      (ivy-mode t))
-
-(use-package counsel 
-  :init
-  ;; File names beginning with # or ., and ending with # or ~
-  (setq counsel-find-file-ignore-regexp
-        (concat "\\(?:\\`[#.]\\)"
-                "\\|\\(?:\\`.+?[#~]\\'\\)"))
-  :config  
-  (counsel-mode t))
-
-(use-package which-key
-  :init
-  (setq which-key-idle-delay 0.5)
-  :config  
-  (which-key-mode t))
-
-(use-package company
-  :init
-  (setq company-idle-delay 0.25
-        company-minimum-prefix-length 1)
-  :config
-  (add-hook 'after-init-hook 'global-company-mode))
-
-(use-package zoom
-  :init
-  (setq zoom-size '(0.618 . 0.618))
-  :config
-  (zoom-mode t))
-
-(use-package magit
-  :config
-  (setq magit-refresh-status-buffer nil))
-
-(use-package projectile
-  :init
-  (setq projectile-indexing-method 'hybrid)
-  :config
-  (projectile-mode t))
-
-(use-package yasnippet
-  :init
-  (use-package yasnippet-snippets)
-  :config
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook #'yas-minor-mode)
-  (define-key yas-minor-mode-map (kbd "<tab>") nil)
-  (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (evil-define-key 'insert yas-minor-mode-map
-    (kbd "C-o") 'yas-expand))
+(use-package general)
 
 (use-package eglot)
 
-;; languages
-(use-package rustic
+(use-package evil 
   :init
-  (setq rustic-lsp-client 'eglot)
-  :config
-  (add-hook 'rust-mode-hook 'eglot-ensure)
-  (evil-define-key 'normal rustic-mode-map
-    (kbd "K") 'lsp-ui-doc-show
-    (kbd "<escape>") 'lsp-ui-doc-hide))
+  (setq evil-want-C-u-scroll t
+   	    evil-want-integration t
+  	    evil-want-keybinding nil)
+  :config (evil-mode t))
+
+(use-package evil-collection
+  :after evil
+  :config (evil-collection-init))
+
+(use-package evil-commentary
+  :after evil
+  :config (evil-commentary-mode t))
+
+(use-package ivy 
+  :custom
+  (ivy-use-virtual-buffers t)
+  (enable-recursive-minibuffers t)
+  (ivy-extra-directories nil)
+  :config (ivy-mode t))
+
+(use-package counsel 
+  :custom (counsel-find-file-ignore-regexp
+           (concat "\\(?:\\`[#.]\\)" "\\|\\(?:\\`.+?[#~]\\'\\)"))
+  :config (counsel-mode t))
+
+(use-package which-key
+  :custom (which-key-idle-delay 0.5)
+  :config (which-key-mode t))
+
+(use-package company
+  :hook (prog-mode . global-company-mode)
+  :custom
+  (company-idle-delay 0.25)
+  (company-minimum-prefix-length 1))
+
+(use-package zoom
+  :custom (zoom-size '(0.618 . 0.618))
+  :config (zoom-mode t))
+
+(use-package magit
+  :custom (magit-refresh-status-buffer nil))
+
+(use-package projectile
+  :custom (projectile-indexing-method 'hybrid)
+  :config (projectile-mode t))
+
+;; snippets
+(use-package yasnippet
+  :hook (prog-mode . yas-minor-mode)
+  :init
+  (use-package yasnippet-snippets)
+  :general 
+  (:keymaps 'yas-minor-mode-map :states 'insert
+            "C-o" 'yas-expand))
+
+;; leader bindigns
+(general-create-definer global-definer
+  :keymaps 'override
+  :states  '(emacs normal hybrid motion visual operator)
+  :prefix  "SPC")
+
+(global-definer
+  "b" 'switch-to-buffer
+  "e" 'eshell
+  "f" 'find-file
+  "g" 'magit
+  "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+  "p" 'projectile-command-map
+  "x" 'counsel-M-x)
+
+;; org-roam
+(use-package org-roam
+  :custom
+  (org-roam-v2-ack t)
+  (org-roam-directory "~/org-roam")
+  (org-roam-completion-everywhere t)
+  :general
+  ("C-c n l" 'org-roam-buffer-toggle)
+  ("C-c n f" 'org-roam-node-find)
+  ("C-c n i" 'org-roam-node-insert)
+  (:keymaps 'org-mode-map :states 'normal
+            "C-i" 'completion-at-point)
+  :config (org-roam-setup))
+
+;; rust
+(use-package rustic
+  :hook (rust-mode-hook . eglot-ensure)
+  :custom (rustic-lsp-client 'eglot)
+  :general
+  (:keymaps 'rustic-mode-map :states 'normal
+            "K" 'lsp-ui-doc-show
+            "<escape>" 'lsp-ui-doc-hide))
 
 ;; theme
 (use-package doom-themes
   :config
-  (load-theme 'doom-vibrant t))
-(set-face-attribute 'default nil :height 180)
+  (load-theme 'doom-vibrant t)
+  (set-face-attribute 'default nil :height 180))
 
 ;; eshell
 (setq eshell-ls-use-colors t
@@ -214,12 +212,12 @@
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 (evil-define-key 'normal dired-mode-map
-	(kbd ".") 'dired-omit-mode
-	(kbd "J") 'dired-find-file
-	(kbd "K") 'dired-up-directory
-	(kbd "c") 'dired-ranger-copy
-	(kbd "p") 'dired-ranger-paste
-	(kbd "v") 'dired-ranger-move)
+  (kbd ".") 'dired-omit-mode
+  (kbd "J") 'dired-find-file
+  (kbd "K") 'dired-up-directory
+  (kbd "c") 'dired-ranger-copy
+  (kbd "p") 'dired-ranger-paste
+  (kbd "v") 'dired-ranger-move)
 
 (define-key evil-normal-state-map
   (kbd "g h") (lambda () (interactive) (dired "~/")))
@@ -236,10 +234,10 @@
 ;; elfeed
 (evil-define-key 'normal elfeed-search-mode-map (kbd "g r") 'elfeed-update)
 (setq elfeed-feeds '(("https://feeds.fireside.fm/coder/rss")
-	       ("https://lobste.rs/rss")
-	       ("https://videos.lukesmith.xyz/feeds/videos.xml")
-	       ("https://buttondown.email/j2kun/rss")
-	       ("https://www.tedinski.com/feed.xml")
-	       ("https://this-week-in-rust.org/rss.xml")))
+	                 ("https://lobste.rs/rss")
+	                 ("https://videos.lukesmith.xyz/feeds/videos.xml")
+	                 ("https://buttondown.email/j2kun/rss")
+	                 ("https://www.tedinski.com/feed.xml")
+	                 ("https://this-week-in-rust.org/rss.xml")))
 (setq-default elfeed-search-title-max-width 100)
 (setq-default elfeed-search-title-min-width 100)
