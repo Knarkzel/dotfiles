@@ -45,7 +45,6 @@
               auto-save-default nil
               jit-lock-defer-time 0
               make-backup-files nil
-              warning-minimum-level :error
               read-process-output-max (* 1024 1024)
               scroll-conservatively 101
               scroll-preserve-screen-position t
@@ -76,9 +75,6 @@
 (tool-bar-mode -1)
 (global-eldoc-mode -1)
 (blink-cursor-mode -1)
-
-;; winner mode undo/redo
-(define-key evil-normal-state-map (kbd "U") 'winner-undo)
 
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
       url-history-file (expand-file-name "url/history" user-emacs-directory))
@@ -186,6 +182,18 @@
   (evil-define-key 'insert yas-minor-mode-map
     (kbd "C-o") 'yas-expand))
 
+(use-package eglot)
+
+;; languages
+(use-package rustic
+  :init
+  (setq rustic-lsp-client 'eglot)
+  :config
+  (add-hook 'rust-mode-hook 'eglot-ensure)
+  (evil-define-key 'normal rustic-mode-map
+    (kbd "K") 'lsp-ui-doc-show
+    (kbd "<escape>") 'lsp-ui-doc-hide))
+
 ;; theme
 (use-package doom-themes
   :config
@@ -214,10 +222,16 @@
 	(kbd "v") 'dired-ranger-move)
 
 (define-key evil-normal-state-map
-  (kbd "-") (lambda () (interactive) (dired "~/")))
+  (kbd "g h") (lambda () (interactive) (dired "~/")))
+
+(define-key evil-normal-state-map
+  (kbd "-") (lambda () (interactive) (dired ".")))
 
 ;; electric pair
 (add-hook 'prog-mode-hook 'electric-pair-mode)
+
+;; winner mode undo/redo
+(define-key evil-normal-state-map (kbd "U") 'winner-undo)
 
 ;; elfeed
 (evil-define-key 'normal elfeed-search-mode-map (kbd "g r") 'elfeed-update)
