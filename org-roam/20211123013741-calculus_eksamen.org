@@ -1,0 +1,17 @@
+:PROPERTIES:
+:ID:       1717b90e-33f5-4980-85a1-bd51d79db3a4
+:END:
+#+title: Calculus Eksamen
+Ting jeg må øve på:
+
+- [ ] Delbrøk og integraler
+  - 2/(x + 1)(x^2 + 1)
+- [ ] sin^k(t)cos^k(t) integraler
+  - sin^3(t)cos^3(t)
+- [ ] Huske de forskjellige integrasjonsmetodene
+
+equation
+
+\[
+e^{pi} = -1
+\]
