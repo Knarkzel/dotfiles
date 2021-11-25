@@ -283,3 +283,20 @@
 
 ;; writeroom
 (use-package writeroom-mode)
+
+;; bind <f11> to comfy-mode
+(defun comfy-mode ()
+  (interactive)
+  (let ((fullscreen (frame-parameter nil 'fullscreen)))
+  (if fullscreen
+      (progn
+        (writeroom-mode -1)
+        (focus-mode -1))
+    (progn
+        (writeroom-mode t)
+        (focus-mode t))))
+  (toggle-frame-fullscreen))
+(global-set-key (kbd "<f11>") 'comfy-mode)
+
+;; disable company-mode for eshell
+(add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
