@@ -4,6 +4,10 @@ xset r rate 200 50
 xset m 0 0
 xset -dpms
 xset s off
+if ! pgrep -x "xbanish" > /dev/null
+then
+	nohup xbanish >/dev/null 2>&1 &
+fi
 
 # if not running interactively, don't do anything
 [[ $- != *i* ]] && return
@@ -23,7 +27,7 @@ export EDITOR="vim"
 export VISUAL="vim"
 export BROWSER="firefox"
 export HISTCONTROL=ignorespace:ignoredups:erasedups
-#export PATH="$PATH:/home/odd/.cargo/bin:/home/odd/.temp/:/home/odd/source/vlang/v:/home/odd/source/vlang/vls/bin"
+export PATH="$PATH:/home/odd/source/v"
 export TERM="screen-256color"
 
 # Fzf

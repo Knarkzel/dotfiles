@@ -10,8 +10,5 @@ Ting jeg må øve på:
   - sin^3(t)cos^3(t)
 - [ ] Huske de forskjellige integrasjonsmetodene
 
-equation
-
-\[
-e^{pi} = -1
-\]
+Gjør oppgave 6, 8, 10 fra file:///home/odd/downloads/Ma178-eksamen-H20-bm.pdf.
+Løsningsforslag: file:///home/odd/downloads/Ma178-eksamen-H20-bm_L%C3%B8sningsforslag.pdf.

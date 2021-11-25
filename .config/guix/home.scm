@@ -31,4 +31,6 @@
                "gnome-tweaks"
                "xcape"
                "vim"
+	       "tcc"
+	       "ccls"
                "alacritty"))))

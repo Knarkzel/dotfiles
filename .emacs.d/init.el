@@ -156,17 +156,17 @@
 (setq-default elfeed-search-title-max-width 100)
 (setq-default elfeed-search-title-min-width 100)
 
-(use-package ivy 
-  :custom
-  (ivy-use-virtual-buffers t)
-  (enable-recursive-minibuffers t)
-  (ivy-extra-directories nil)
-  :config (ivy-mode t))
+(use-package selectrum
+  :init (selectrum-mode +1))
 
-(use-package counsel 
-  :custom (counsel-find-file-ignore-regexp
-           (concat "\\(?:\\`[#.]\\)" "\\|\\(?:\\`.+?[#~]\\'\\)"))
-  :config (counsel-mode t))
+(use-package orderless
+  :custom
+  (completion-styles '(orderless))
+  (orderless-skip-highlighting (lambda () selectrum-is-active))
+  (selectrum-highlight-candidates-function #'orderless-highlight-matches))
+
+(use-package marginalia
+  :init (marginalia-mode t))
 
 (use-package which-key
   :custom (which-key-idle-delay 0.5)
@@ -176,7 +176,9 @@
   :hook (prog-mode . global-company-mode)
   :custom
   (company-idle-delay 0.25)
-  (company-minimum-prefix-length 1))
+  (company-minimum-prefix-length 1)
+  (company-icon-size 0)
+  (company-icon-margin 1))
 
 (use-package zoom
   :custom (zoom-size '(0.618 . 0.618))
@@ -211,7 +213,7 @@
   "g" 'magit
   "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
   "p" 'projectile-command-map
-  "x" 'counsel-M-x
+  "x" 'execute-extended-command
   "n" 'org-roam-node-find)
 
 ;; org-roam
@@ -230,8 +232,6 @@
 
 ;; rust
 (use-package rustic)
-  ;; :hook (rust-mode . eglot-ensure)
-  ;; :custom (rustic-lsp-client 'eglot))
 
 ;; vlang
 (defun replace-alist-mode (alist oldmode newmode)
@@ -239,10 +239,22 @@
     (if (eq (cdr aitem) oldmode)
     (setcdr aitem newmode))))
 
+(defun odd/v-format-buffer ()
+  "Format the current buffer using the 'v fmt -w'."
+  (interactive)
+  (when (eq major-mode 'v-mode)
+    (save-window-excursion
+      (shell-command (concat  "v fmt -w " (buffer-file-name))))
+    (revert-buffer
+      :ignore-auto
+      :noconfirm)))
+
 (use-package v-mode
-  :init (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode))
-  ;; (add-to-list 'eglot-server-programs '(v-mode . ("vls")))
-  ;; :hook (v-mode . eglot-ensure)
+  :init
+  (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode)
+  (setenv "PATH" (concat (getenv "PATH") ":/home/odd/source/v"))
+  (add-hook 'v-mode-hook
+            (lambda () (setq after-save-hook '(odd/v-format-buffer)))))
 
 ;; theme
 (use-package doom-themes
@@ -250,5 +262,24 @@
   (load-theme 'doom-vibrant t)
   (set-face-attribute 'default nil :height 180))
 
+;; tree sitter
+(use-package tree-sitter
+  :init
+  (use-package tree-sitter-langs)
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-mode-hook 'tree-sitter-hl-mode))
+
 ;; kill this buffer
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+;; paste with alt-v
+(global-set-key (kbd "M-v") 'evil-paste-after)
+
+;; hook eglot to c-mode
+(add-hook 'c-mode-hook 'eglot-ensure)
+
+;; focus
+(use-package focus)
+
+;; writeroom
+(use-package writeroom-mode)
