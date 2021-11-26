@@ -1,6 +1,0 @@
-:PROPERTIES:
-:ID:       a644590b-b9ea-4d26-9e0a-d4e663eecaa2
-:END:
-#+title: Languages
-I like languages.
-There's also [[id:8cfc13b2-3b96-4104-9f86-b8e446a54025][Emacs]].

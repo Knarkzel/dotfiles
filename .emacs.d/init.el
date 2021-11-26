@@ -273,7 +273,11 @@
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 
 ;; paste with alt-v
-(global-set-key (kbd "M-v") 'evil-paste-after)
+(defun odd/paste ()
+  (interactive)
+  (evil-paste-before 1)
+  (evil-forward-char 1))
+(global-set-key (kbd "M-v") 'odd/paste)
 
 ;; hook eglot to c-mode
 (add-hook 'c-mode-hook 'eglot-ensure)
@@ -288,11 +292,11 @@
 (defun comfy-mode ()
   (interactive)
   (let ((fullscreen (frame-parameter nil 'fullscreen)))
-  (if fullscreen
+    (if fullscreen
+        (progn
+          (writeroom-mode -1)
+          (focus-mode -1))
       (progn
-        (writeroom-mode -1)
-        (focus-mode -1))
-    (progn
         (writeroom-mode t)
         (focus-mode t))))
   (toggle-frame-fullscreen))
