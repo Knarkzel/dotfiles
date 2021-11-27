@@ -1,2 +1,9 @@
-# Honor per-interactive-shell startup file
-if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
+#
+# ~/.bash_profile
+#
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+
+if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+  exec startx
+fi

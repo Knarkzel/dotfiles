@@ -5,5 +5,10 @@
 	helper = store
 [core]
 	editor = vim
+[pager]
+	diff = delta
+	log = delta
+	reflog = delta
+	show = delta
 [init]
 	defaultBranch = master
