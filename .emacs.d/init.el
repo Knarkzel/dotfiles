@@ -260,7 +260,7 @@
 (use-package doom-themes
   :config
   (load-theme 'doom-vibrant t)
-  (set-face-attribute 'default nil :height 180))
+  (set-face-attribute 'default nil :family "Monospace" :height 200))
 
 ;; tree sitter
 (use-package tree-sitter

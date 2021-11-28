@@ -1,7 +1,7 @@
 # aliases
 alias sudo="sudo"
 alias cat="bat -P"
-alias ls="exa --group-directories-first --icons -x"
+alias ls="exa --group-directories-first -x"
 alias top="btm"
 alias gg="gitui"
 alias si="sudo pacman -S"
@@ -10,10 +10,7 @@ alias cr="cargo run --"
 alias cb="cargo build"
 alias cdo="cargo doc --open"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
-alias server="ssh root@51.195.40.125"
-alias rm="rm -r"
-alias cp="cp -r"
-alias csi="chicken-csi -script"
+alias bashconf="vim ~/.bashrc"
 
 # exports
 export RUSTC_WRAPPER=""
@@ -23,21 +20,8 @@ export HISTCONTROL=ignorespace:ignoredups:erasedups
 export PATH="$PATH:/home/odd/.cargo/bin/:/opt/devkitpro/devkitPPC/bin"
 export TERM="screen-256color"
 export BROWSER="firefox"
-
-# nvim
-nvim_wrapper() {
-  if test -z $VIMRUNTIME; then
-      nvim $@
-  else
-      nvr $@
-  fi
-}
-
-alias vim="nvim_wrapper"
-alias bashconf="nvim_wrapper ~/.bashrc"
-
-export EDITOR="nvim_wrapper"
-export VISUAL="nvim_wrapper"
+export EDITOR="vim"
+export VISUAL="vim"
 
 # devkitpro
 DEVKITPRO="/opt/devkitpro"
@@ -48,19 +32,7 @@ DEVKITPPC="/opt/devkitpro/devkitPPC"
 if [ -f /usr/share/nnn/quitcd/quitcd.bash_zsh ]; then
     source /usr/share/nnn/quitcd/quitcd.bash_zsh
 fi
-
-nnn_wrapper() {
-  if test -z $VIMRUNTIME; then
-    export EDITOR="nvim"
-    export VISUAL="nvim"
-  else
-    export EDITOR="nvr"
-    export VISUAL="nvr"
-  fi
-  n -e $@
-}
-
-alias lf="nnn_wrapper"
+alias lf="nnn -e"
 
 # fzf
 source "/usr/share/fzf/key-bindings.bash"

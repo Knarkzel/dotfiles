@@ -1,1 +1,0 @@
-/gnu/store/fxbppk3pqzdi3zzy0xl5vg1ir6c5jzq5-shell-profile
