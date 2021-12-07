@@ -112,13 +112,6 @@
   :after evil
   :config (evil-commentary-mode t))
 
-;; eshell
-(setq eshell-ls-use-colors t
-      eshell-cmpl-cycle-completions nil
-      eshell-history-size (* 1024 8)
-      eshell-hist-ignoredups t
-      eshell-destroy-buffer-when-process-dies t)
-
 ;; dired
 (setq dired-omit-files "^\\.+"
       dired-listing-switches "-AlghX")
@@ -200,21 +193,30 @@
   (:keymaps 'yas-minor-mode-map :states 'insert
             "C-o" 'yas-expand))
 
-;; leader bindigns
-(general-create-definer global-definer
-  :keymaps 'override
-  :states  '(normal)
-  :prefix  "SPC")
+;; clear eshell
+(defun odd/clear ()
+  (interactive)
+  (let ((input (eshell-get-old-input)))
+      (eshell/clear 1)
+      (eshell-emit-prompt)
+      (insert input)))
 
-(global-definer
-  "b" 'switch-to-buffer
-  "e" 'eshell
-  "f" 'find-file
-  "g" 'magit
-  "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-  "p" 'projectile-command-map
-  "x" 'execute-extended-command
-  "n" 'org-roam-node-find)
+;; eshell
+(use-package eshell
+  :ensure nil
+  :hook (eshell-mode . (lambda ()
+                         (company-mode -1)))
+  :init
+  (setq eshell-ls-use-colors t
+      eshell-cmpl-cycle-completions nil
+      eshell-history-size (* 1024 8)
+      eshell-hist-ignoredups t
+      eshell-destroy-buffer-when-process-dies t)
+  (add-to-list 'load-path "~/.emacs.d/packages")
+  (require 'eshell-toggle)
+  :general
+  (:keymaps 'eshell-mode-map :states 'insert
+            "C-l" 'odd/clear))
 
 ;; org-roam
 (use-package org-roam
@@ -231,7 +233,9 @@
   :config (org-roam-setup))
 
 ;; rust
-(use-package rustic)
+(use-package rustic
+  :init
+  (setq rustic-lsp-client 'eglot))
 
 ;; vlang
 (defun replace-alist-mode (alist oldmode newmode)
@@ -250,7 +254,9 @@
       :noconfirm)))
 
 (use-package v-mode
+  :hook (v-mode . eglot-ensure)
   :init
+  (add-to-list 'eglot-server-programs '(v-mode . ("vls")))
   (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode)
   (setenv "PATH" (concat (getenv "PATH") ":/home/odd/source/v"))
   (add-hook 'v-mode-hook
@@ -294,5 +300,27 @@
   (writeroom-mode 'toggle))
 (global-set-key (kbd "<f11>") 'comfy-mode)
 
-;; disable company-mode for eshell
-(add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
+;; disable company-mode for eshell, fix autocomplete
+
+
+;; eldoc 
+(setq eldoc-echo-area-use-multiline-p nil)
+
+;; serve directory
+(use-package simple-httpd)
+
+;; leader bindigns
+(general-create-definer global-definer
+  :keymaps 'override
+  :states  '(normal)
+  :prefix  "SPC")
+
+(global-definer
+  "b" 'switch-to-buffer
+  "e" 'eshell-toggle
+  "f" 'find-file
+  "g" 'magit
+  "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+  "p" 'projectile-command-map
+  "x" 'execute-extended-command
+  "n" 'org-roam-node-find)
