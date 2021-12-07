@@ -173,10 +173,6 @@
   (company-icon-size 0)
   (company-icon-margin 1))
 
-(use-package zoom
-  :custom (zoom-size '(0.618 . 0.618))
-  :config (zoom-mode t))
-
 (use-package magit
   :custom (magit-refresh-status-buffer nil))
 
@@ -200,6 +196,10 @@
       (eshell/clear 1)
       (eshell-emit-prompt)
       (insert input)))
+
+;; good ol' habit
+(defun eshell/vim (file)
+  (find-file file))
 
 ;; eshell
 (use-package eshell
@@ -299,9 +299,6 @@
   (interactive)
   (writeroom-mode 'toggle))
 (global-set-key (kbd "<f11>") 'comfy-mode)
-
-;; disable company-mode for eshell, fix autocomplete
-
 
 ;; eldoc 
 (setq eldoc-echo-area-use-multiline-p nil)
