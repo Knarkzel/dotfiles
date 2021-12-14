@@ -95,7 +95,12 @@
 
 (use-package general)
 
-(use-package eglot)
+(use-package eglot
+  :hook (prog-mode . (add-hook 'before-save-hook 'eglot-format nil t))
+  :general
+  (:keymaps 'eglot-mode-map :states 'normal
+            "g r" 'eglot-rename
+            "C-a" 'eglot-code-actions))
 
 (use-package evil 
   :init
@@ -174,6 +179,9 @@
   (company-icon-margin 1))
 
 (use-package magit
+  :general
+  (:keymaps 'magit-mode-map :states 'normal
+            "-" (lambda () (interactive) (dired ".")))
   :custom (magit-refresh-status-buffer nil))
 
 (use-package projectile
@@ -254,6 +262,7 @@
       :noconfirm)))
 
 (use-package v-mode
+  :after eglot
   :hook (v-mode . eglot-ensure)
   :init
   (add-to-list 'eglot-server-programs '(v-mode . ("vls")))
@@ -321,3 +330,20 @@
   "p" 'projectile-command-map
   "x" 'execute-extended-command
   "n" 'org-roam-node-find)
+
+;; C-u should be more like shell
+(general-define-key
+ :states 'insert
+ "C-u" (lambda ()
+         (interactive)
+         (kill-line 0)
+         (indent-according-to-mode)))
+
+;; Binaries should be opened with hexl
+(add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
+(add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
+
+;; ^ > 0
+(general-define-key
+ :states 'normal
+ "0" 'evil-first-non-blank)
