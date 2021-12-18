@@ -35,6 +35,7 @@
               delete-old-versions t
               dired-recursive-copies 'always
               dired-recursive-deletes 'always
+              dired-clean-confirm-killing-deleted-buffers nil
               fill-column 80
               native-comp-async-report-warnings-errors nil
               gc-cons-threshold 100000000
@@ -95,13 +96,6 @@
 
 (use-package general)
 
-(use-package eglot
-  :hook (prog-mode . (add-hook 'before-save-hook 'eglot-format nil t))
-  :general
-  (:keymaps 'eglot-mode-map :states 'normal
-            "g r" 'eglot-rename
-            "C-a" 'eglot-code-actions))
-
 (use-package evil 
   :init
   (setq evil-want-C-u-scroll t
@@ -136,6 +130,32 @@
 
 (define-key evil-normal-state-map
   (kbd "-") (lambda () (interactive) (dired ".")))
+
+;; lsp
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l"
+        lsp-idle-delay 0.500
+        lsp-log-io nil
+        lsp-headerline-breadcrumb-enable nil
+        lsp-lens-enable nil
+        lsp-signature-auto-activate nil)
+  :general
+  (:keymaps 'prog-mode-map :states 'normal
+            "g r" 'lsp-rename
+            "C-a" 'lsp-execute-code-action))
+(use-package flycheck)
+(use-package lsp-ui
+  :init
+  (setq lsp-ui-doc-max-width 45
+        lsp-ui-doc-max-height 20
+        lsp-ui-doc-show-with-cursor t
+        lsp-ui-doc-show-with-mouse nil
+        lsp-ui-doc-delay 0.25))
+
+;; rust
+(use-package rustic
+  :hook (rustic-mode . lsp-deferred))
 
 ;; electric pair
 (add-hook 'prog-mode-hook 'electric-pair-mode)
@@ -240,11 +260,6 @@
             "C-i" 'completion-at-point)
   :config (org-roam-setup))
 
-;; rust
-(use-package rustic
-  :init
-  (setq rustic-lsp-client 'eglot))
-
 ;; vlang
 (defun replace-alist-mode (alist oldmode newmode)
   (dolist (aitem alist)
@@ -262,10 +277,7 @@
       :noconfirm)))
 
 (use-package v-mode
-  :after eglot
-  :hook (v-mode . eglot-ensure)
   :init
-  (add-to-list 'eglot-server-programs '(v-mode . ("vls")))
   (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode)
   (setenv "PATH" (concat (getenv "PATH") ":/home/odd/source/v"))
   (add-hook 'v-mode-hook
@@ -274,7 +286,7 @@
 ;; theme
 (use-package doom-themes
   :config
-  (load-theme 'doom-vibrant t)
+  (load-theme 'doom-material t)
   (set-face-attribute 'default nil :family "Monospace" :height 200))
 
 ;; tree sitter
@@ -294,9 +306,6 @@
   (evil-forward-char 1))
 (global-set-key (kbd "M-v") 'odd/paste)
 
-;; hook eglot to c-mode
-(add-hook 'c-mode-hook 'eglot-ensure)
-
 ;; focus
 (use-package focus)
 
@@ -311,6 +320,9 @@
 
 ;; eldoc 
 (setq eldoc-echo-area-use-multiline-p nil)
+(setq eldoc-echo-area-display-truncation-message nil)
+(add-function :before-until (local 'eldoc-documentation-function)         
+ #'prog-mode-eldoc-function)
 
 ;; serve directory
 (use-package simple-httpd)
@@ -342,6 +354,7 @@
 ;; Binaries should be opened with hexl
 (add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
+(add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
 
 ;; ^ > 0
 (general-define-key
