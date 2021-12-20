@@ -15,7 +15,7 @@ alias bashconf="vim ~/.bashrc"
 # exports
 export RUSTC_WRAPPER=""
 export ALTERNATE_EDITOR=""
-export CLANG_VERSION=12.0.1
+export CLANG_VERSION=13.0.0
 export HISTCONTROL=ignorespace:ignoredups:erasedups
 export PATH="$PATH:/home/odd/.cargo/bin/:/opt/devkitpro/devkitPPC/bin"
 export TERM="screen-256color"

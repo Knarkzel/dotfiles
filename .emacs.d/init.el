@@ -360,3 +360,10 @@
 (general-define-key
  :states 'normal
  "0" 'evil-first-non-blank)
+
+;; devkitpro
+(setenv "DEVKITPRO" "/opt/devkitpro")
+(setenv "DEVKITARM" "/opt/devkitpro/devkitARM")
+(setenv "DEVKITPPC" "/opt/devkitpro/devkitPPC")
+(setenv "CLANG_VERSION" "13.0.0")
+(setenv "PATH" (concat "/opt/devkitpro/tools/bin" (getenv "PATH")))

@@ -11,3 +11,4 @@ image/gif=eog.desktop;
 application/rss+xml=snownews.desktop
 video/x-matroska=totem.desktop
 inode/directory=chromium.desktop
+x-scheme-handler/discord-455712169795780630=discord-455712169795780630.desktop
