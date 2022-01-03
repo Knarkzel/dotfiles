@@ -277,11 +277,18 @@
       :noconfirm)))
 
 (use-package v-mode
+  :hook (v-mode . lsp-deferred)
   :init
   (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode)
   (setenv "PATH" (concat (getenv "PATH") ":/home/odd/source/v"))
   (add-hook 'v-mode-hook
             (lambda () (setq after-save-hook '(odd/v-format-buffer)))))
+
+(add-to-list 'lsp-language-id-configuration '(v-mode . "vlang"))
+(lsp-register-client
+ (make-lsp-client :new-connection (lsp-stdio-connection "vls")
+                  :activation-fn (lsp-activate-on "vlang")
+                  :server-id 'vlang))
 
 ;; theme
 (use-package doom-themes
