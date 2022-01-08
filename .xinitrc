@@ -9,11 +9,8 @@ xset -dpms
 xset s off
 redshift -l 58:9 -t 6500K:2000K -b 0.60 &
 dunst &
-hsetroot -solid black &
+hsetroot -solid "#7d6f57" &
 xbanish &
-start-pulseaudio-x11 &
-xrdb -merge ~/.Xresources &
-#nvidia-settings --assign CurrentMetaMode="HDMI-0: nvidia-auto-select @1920x1080 +1920+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+1920+0, ForceFullCompositionPipeline=On}, HDMI-1: nvidia-auto-select @1920x1080 +0+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+0+0, ForceFullCompositionPipeline=On}"
-#nvidia-settings -a 'AllowFlipping=0' &
 source /etc/X11/xinit/xinitrc.d/50-systemd-user.sh &
-exec stumpwm
+xrandr --auto --output DP-1 --mode 1920x1080 --left-of HDMI-0 &
+exec dwm 2>> ~/.dwm.log

@@ -123,7 +123,7 @@
   (kbd "K") 'dired-up-directory
   (kbd "c") 'dired-ranger-copy
   (kbd "p") 'dired-ranger-paste
-  (kbd "v") 'dired-ranger-move)
+  (kbd "P") 'dired-ranger-move)
 
 (define-key evil-normal-state-map
   (kbd "g h") (lambda () (interactive) (dired "~/")))
@@ -277,10 +277,9 @@
       :noconfirm)))
 
 (use-package v-mode
-  :hook (v-mode . lsp-deferred)
+  ;; :hook (v-mode . lsp-deferred)
   :init
   (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode)
-  (setenv "PATH" (concat (getenv "PATH") ":/home/odd/source/v"))
   (add-hook 'v-mode-hook
             (lambda () (setq after-save-hook '(odd/v-format-buffer)))))
 
