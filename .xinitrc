@@ -14,4 +14,4 @@ xbanish &
 source /etc/X11/xinit/xinitrc.d/50-systemd-user.sh &
 xrandr --auto --output DP-1 --mode 1920x1080 --left-of HDMI-0 &
 nohup ~/.scripts/statusbar.sh > /dev/null &
-exec dwm 2>> ~/.dwm.log
+exec ~/.scripts/dwm.sh
