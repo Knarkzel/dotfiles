@@ -91,9 +91,6 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
-(setq split-width-threshold 0
-      split-height-threshold nil)
-
 (use-package general)
 
 (use-package evil 
@@ -164,6 +161,7 @@
 (define-key evil-normal-state-map (kbd "U") 'winner-undo)
 
 ;; elfeed
+(use-package elfeed)
 (evil-define-key 'normal elfeed-search-mode-map (kbd "g r") 'elfeed-update)
 (setq elfeed-feeds '(("https://feeds.fireside.fm/coder/rss")
 	                 ("https://lobste.rs/rss")
@@ -251,6 +249,7 @@
   :init
   (setq org-roam-v2-ack t
         org-roam-directory "~/org-roam"
+        org-agenda-files (directory-files-recursively "~/org-roam" "\\.org$")
         org-roam-completion-everywhere t)
   :general
   ("C-c n l" 'org-roam-buffer-toggle)
@@ -277,17 +276,10 @@
       :noconfirm)))
 
 (use-package v-mode
-  ;; :hook (v-mode . lsp-deferred)
   :init
   (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode)
   (add-hook 'v-mode-hook
             (lambda () (setq after-save-hook '(odd/v-format-buffer)))))
-
-(add-to-list 'lsp-language-id-configuration '(v-mode . "vlang"))
-(lsp-register-client
- (make-lsp-client :new-connection (lsp-stdio-connection "vls")
-                  :activation-fn (lsp-activate-on "vlang")
-                  :server-id 'vlang))
 
 ;; theme
 (use-package doom-themes
@@ -333,6 +325,10 @@
 ;; serve directory
 (use-package simple-httpd)
 
+;; vterm
+(setq vterm-always-compile-module t)
+(use-package vterm)
+
 ;; leader bindigns
 (general-create-definer global-definer
   :keymaps 'override
@@ -340,6 +336,7 @@
   :prefix  "SPC")
 
 (global-definer
+  "a" 'org-agenda
   "b" 'switch-to-buffer
   "e" 'eshell-toggle
   "f" 'find-file
@@ -347,7 +344,8 @@
   "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
   "p" 'projectile-command-map
   "x" 'execute-extended-command
-  "n" 'org-roam-node-find)
+  "n" 'org-roam-node-find
+  "v" 'vterm)
 
 ;; C-u should be more like shell
 (general-define-key
@@ -373,3 +371,12 @@
 (setenv "DEVKITPPC" "/opt/devkitpro/devkitPPC")
 (setenv "CLANG_VERSION" "13.0.0")
 (setenv "PATH" (concat "/opt/devkitpro/tools/bin" (getenv "PATH")))
+
+;; css-mode
+(add-hook 'css-mode-hook 'rainbow-mode)
+
+;; move those pesky backups
+(setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
+
+;; org-agenda
+(setq org-agenda-start-on-weekday nil)
