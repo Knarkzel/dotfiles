@@ -126,9 +126,11 @@
               (setq mode-line-format nil)
               (setq-default mode-line-format nil)))
 
+;; general
 (use-package general
   :straight t)
 
+;; evil
 (use-package evil 
   :straight t
   :custom
@@ -137,6 +139,12 @@
   (evil-want-keybinding nil)
   :init
   (evil-mode t)
+  (use-package evil-collection
+    :straight t
+    :config (evil-collection-init))
+  (use-package evil-commentary
+    :straight t
+    :config (evil-commentary-mode t))
   (defun odd/paste ()
     (interactive)
     (evil-paste-before 1)
@@ -144,16 +152,6 @@
   (global-set-key (kbd "M-v") 'odd/paste)
   :general
   ("0" 'evil-first-non-blank))
-
-(use-package evil-collection
-  :straight t
-  :after evil
-  :config (evil-collection-init))
-
-(use-package evil-commentary
-  :straight t
-  :after evil
-  :config (evil-commentary-mode t))
 
 ;; dired
 (use-package dired
@@ -289,21 +287,17 @@
   (:keymaps 'yas-minor-mode-map :states 'insert
             "C-o" 'yas-expand))
 
-;; clear eshell
-(defun odd/clear ()
-  (interactive)
-  (let ((input (eshell-get-old-input)))
-      (eshell/clear 1)
-      (eshell-emit-prompt)
-      (insert input)))
-
-;; good ol' habit
-(defun eshell/vim (file)
-  (find-file file))
-
 ;; eshell
 (use-package eshell
   :init
+  (defun odd/clear ()
+    (interactive)
+    (let ((input (eshell-get-old-input)))
+      (eshell/clear 1)
+      (eshell-emit-prompt)
+      (insert input)))
+  (defun eshell/vim (file)
+    (find-file file))
   (add-to-list 'load-path "~/.emacs.d/packages")
   (require 'eshell-toggle)
   :hook (eshell-mode . (lambda () (company-mode -1)))
