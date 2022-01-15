@@ -1,11 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 cd ~/org-roam
 if [[ `git status --porcelain` ]]; then
-	# Changes
 	git add .
 	git commit -m "cron-job push"
 	git push origin master
+	notify-send "Pushed org-roam changes..."
 else
-	# No changes
 	git pull origin master
 fi

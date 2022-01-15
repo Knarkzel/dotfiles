@@ -1,13 +1,18 @@
-(eval-and-compile
-  (customize-set-variable
-   'package-archives '(("org" . "https://orgmode.org/elpa/")
-                       ("melpa" . "https://melpa.org/packages/")
-                       ("gnu" . "https://elpa.gnu.org/packages/")))
-  (package-initialize)
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (require 'use-package))
+;; straight
+(setq package-enable-at-startup nil)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(straight-use-package 'use-package)
 
 ;; compile for everything
 (setq comp-deferred-compilation t)
@@ -51,7 +56,6 @@
               scroll-preserve-screen-position t
               tab-width 4
               truncate-lines t
-	          use-package-always-ensure t
               vc-follow-symlinks t)
 
 (setq kill-buffer-query-functions
@@ -70,7 +74,6 @@
 (global-hl-line-mode 1)
 (global-font-lock-mode 1)
 (column-number-mode 1) 
-(winner-mode 1)
 (menu-bar-mode -1) 
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
@@ -91,104 +94,171 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
-(use-package general)
+(add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
+(add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
+(add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
+
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+;; theme
+(use-package doom-themes
+  :config
+  (load-theme 'doom-solarized-light t))
+
+;; clean up the frame
+(use-package frame
+  :config
+  (setq-default default-frame-alist
+                (append (list
+                '(font . "Monospace:size=20")
+                '(internal-border-width . 0)
+                '(left-fringe    . 0)
+                '(right-fringe   . 0)
+                '(tool-bar-lines . 0)
+                '(menu-bar-lines . 0)
+                '(vertical-scroll-bars . nil))))
+  (setq-default window-resize-pixelwise t)
+  (setq-default frame-resize-pixelwise t))
+
+;; get rid of the mode-line
+(add-hook 'prog-mode-hook
+          (lambda ()
+              (setq mode-line-format nil)
+              (setq-default mode-line-format nil)))
+
+(use-package general
+  :straight t)
 
 (use-package evil 
+  :straight t
+  :custom
+  (evil-want-C-u-scroll t)
+  (evil-want-integration t)
+  (evil-want-keybinding nil)
   :init
-  (setq evil-want-C-u-scroll t
-   	    evil-want-integration t
-  	    evil-want-keybinding nil)
-  :config (evil-mode t))
+  (evil-mode t)
+  (defun odd/paste ()
+    (interactive)
+    (evil-paste-before 1)
+    (evil-forward-char 1))
+  (global-set-key (kbd "M-v") 'odd/paste)
+  :general
+  ("0" 'evil-first-non-blank))
 
 (use-package evil-collection
+  :straight t
   :after evil
   :config (evil-collection-init))
 
 (use-package evil-commentary
+  :straight t
   :after evil
   :config (evil-commentary-mode t))
 
 ;; dired
-(setq dired-omit-files "^\\.+"
-      dired-listing-switches "-AlghX")
-(use-package dired-ranger)
-(add-hook 'dired-mode-hook 'dired-hide-details-mode)
-(add-hook 'dired-mode-hook 'dired-omit-mode)
-(evil-define-key 'normal dired-mode-map
-  (kbd ".") 'dired-omit-mode
-  (kbd "J") 'dired-find-file
-  (kbd "K") 'dired-up-directory
-  (kbd "c") 'dired-ranger-copy
-  (kbd "p") 'dired-ranger-paste
-  (kbd "P") 'dired-ranger-move)
-
-(define-key evil-normal-state-map
-  (kbd "g h") (lambda () (interactive) (dired "~/")))
-
-(define-key evil-normal-state-map
-  (kbd "-") (lambda () (interactive) (dired ".")))
+(use-package dired
+  :after evil
+  :init
+  (use-package dired-ranger
+    :straight t)
+  :hook ((dired-mode . dired-hide-details-mode)
+         (dired-mode . dired-omit-mode))
+  :custom
+  (dired-omit-files "^\\.+")
+  (dired-listing-switches "-AlghX")
+  :config
+  (evil-define-key 'normal dired-mode-map
+    (kbd ".") 'dired-omit-mode
+    (kbd "J") 'dired-find-file
+    (kbd "K") 'dired-up-directory
+    (kbd "c") 'dired-ranger-copy
+    (kbd "p") 'dired-ranger-paste
+    (kbd "P") 'dired-ranger-move)
+  :general
+  (:keymaps 'global :states 'normal
+            "g h" (lambda () (interactive) (dired "~/"))
+            "-" (lambda () (interactive) (dired "."))))
 
 ;; lsp
 (use-package lsp-mode
+  :straight t
   :init
-  (setq lsp-keymap-prefix "C-c l"
-        lsp-idle-delay 0.500
-        lsp-log-io nil
-        lsp-headerline-breadcrumb-enable nil
-        lsp-lens-enable nil
-        lsp-signature-auto-activate nil)
+  (use-package flycheck
+    :straight t)
+  (use-package lsp-ui
+    :straight t
+    :custom
+    (lsp-ui-doc-max-width 45)
+    (lsp-ui-doc-max-height 20)
+    (lsp-ui-doc-show-with-cursor t)
+    (lsp-ui-doc-show-with-mouse nil)
+    (lsp-ui-doc-delay 0.25))
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-idle-delay 0.500)
+  (lsp-log-io nil)
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-lens-enable nil)
+  (lsp-signature-auto-activate nil)
   :general
   (:keymaps 'prog-mode-map :states 'normal
             "g r" 'lsp-rename
             "C-a" 'lsp-execute-code-action))
-(use-package flycheck)
-(use-package lsp-ui
-  :init
-  (setq lsp-ui-doc-max-width 45
-        lsp-ui-doc-max-height 20
-        lsp-ui-doc-show-with-cursor t
-        lsp-ui-doc-show-with-mouse nil
-        lsp-ui-doc-delay 0.25))
 
 ;; rust
 (use-package rustic
+  :straight t
   :hook (rustic-mode . lsp-deferred))
 
 ;; electric pair
-(add-hook 'prog-mode-hook 'electric-pair-mode)
+(use-package electric-pair
+  :hook (prog-mode . electric-pair-mode))
 
 ;; winner mode undo/redo
-(define-key evil-normal-state-map (kbd "U") 'winner-undo)
+(use-package winner-mode
+  :init (winner-mode t)
+  :general
+  (:keymaps 'global :states 'normal
+            "U" 'winner-undo))
 
 ;; elfeed
-(use-package elfeed)
-(evil-define-key 'normal elfeed-search-mode-map (kbd "g r") 'elfeed-update)
-(setq elfeed-feeds '(("https://feeds.fireside.fm/coder/rss")
+(use-package elfeed
+  :straight t
+  :custom
+  (elfeed-feeds '(("https://feeds.fireside.fm/coder/rss")
 	                 ("https://lobste.rs/rss")
 	                 ("https://videos.lukesmith.xyz/feeds/videos.xml")
 	                 ("https://buttondown.email/j2kun/rss")
 	                 ("https://www.tedinski.com/feed.xml")
 	                 ("https://this-week-in-rust.org/rss.xml")))
-(setq-default elfeed-search-title-max-width 100)
-(setq-default elfeed-search-title-min-width 100)
+  (elfeed-search-title-max-width 100)
+  (elfeed-search-title-min-width 100)
+  :general
+  (:keymaps 'elfeed-search-mode-map :states 'normal
+            "g r" 'elfeed-update))
 
 (use-package selectrum
-  :init (selectrum-mode +1))
+  :straight t
+  :init (selectrum-mode t))
 
 (use-package orderless
+  :straight t
   :custom
   (completion-styles '(orderless))
   (orderless-skip-highlighting (lambda () selectrum-is-active))
   (selectrum-highlight-candidates-function #'orderless-highlight-matches))
 
 (use-package marginalia
+  :straight t
   :init (marginalia-mode t))
 
 (use-package which-key
+  :straight t
   :custom (which-key-idle-delay 0.5)
   :config (which-key-mode t))
 
 (use-package company
+  :straight t
   :hook (prog-mode . global-company-mode)
   :custom
   (company-idle-delay 0.25)
@@ -197,20 +267,24 @@
   (company-icon-margin 1))
 
 (use-package magit
+  :straight t
   :general
   (:keymaps 'magit-mode-map :states 'normal
             "-" (lambda () (interactive) (dired ".")))
   :custom (magit-refresh-status-buffer nil))
 
 (use-package projectile
+  :straight t
   :custom (projectile-indexing-method 'hybrid)
   :config (projectile-mode t))
 
 ;; snippets
 (use-package yasnippet
+  :straight t
   :hook (prog-mode . yas-minor-mode)
   :init
-  (use-package yasnippet-snippets)
+  (use-package yasnippet-snippets
+    :straight t)
   :general 
   (:keymaps 'yas-minor-mode-map :states 'insert
             "C-o" 'yas-expand))
@@ -229,23 +303,23 @@
 
 ;; eshell
 (use-package eshell
-  :ensure nil
-  :hook (eshell-mode . (lambda ()
-                         (company-mode -1)))
   :init
-  (setq eshell-ls-use-colors t
-      eshell-cmpl-cycle-completions nil
-      eshell-history-size (* 1024 8)
-      eshell-hist-ignoredups t
-      eshell-destroy-buffer-when-process-dies t)
   (add-to-list 'load-path "~/.emacs.d/packages")
   (require 'eshell-toggle)
+  :hook (eshell-mode . (lambda () (company-mode -1)))
+  :custom
+  (eshell-ls-use-colors t)
+  (eshell-cmpl-cycle-completions nil)
+  (eshell-history-size (* 1024 8))
+  (eshell-hist-ignoredups t)
+  (eshell-destroy-buffer-when-process-dies t)
   :general
   (:keymaps 'eshell-mode-map :states 'insert
             "C-l" 'odd/clear))
 
 ;; org-roam
 (use-package org-roam
+  :straight t
   :init
   (setq org-roam-v2-ack t
         org-roam-directory "~/org-roam"
@@ -260,76 +334,56 @@
   :config (org-roam-setup))
 
 ;; vlang
-(defun replace-alist-mode (alist oldmode newmode)
-  (dolist (aitem alist)
-    (if (eq (cdr aitem) oldmode)
-    (setcdr aitem newmode))))
-
-(defun odd/v-format-buffer ()
-  "Format the current buffer using the 'v fmt -w'."
-  (interactive)
-  (when (eq major-mode 'v-mode)
-    (save-window-excursion
-      (shell-command (concat  "v fmt -w " (buffer-file-name))))
-    (revert-buffer
-      :ignore-auto
-      :noconfirm)))
-
 (use-package v-mode
+  :straight t
   :init
+  (defun replace-alist-mode (alist oldmode newmode)
+    (dolist (aitem alist)
+      (if (eq (cdr aitem) oldmode)
+          (setcdr aitem newmode))))
+  (defun odd/v-format-buffer ()
+    "Format the current buffer using the 'v fmt -w'."
+    (interactive)
+    (when (eq major-mode 'v-mode)
+      (save-window-excursion
+        (shell-command (concat  "v fmt -w " (buffer-file-name))))
+      (revert-buffer
+       :ignore-auto
+       :noconfirm)))
   (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode)
   (add-hook 'v-mode-hook
             (lambda () (setq after-save-hook '(odd/v-format-buffer)))))
 
-;; theme
-(use-package doom-themes
-  :config
-  (load-theme 'doom-material t)
-  (set-face-attribute 'default nil :family "Monospace" :height 200))
-
 ;; tree sitter
 (use-package tree-sitter
+  :straight t
   :init
-  (use-package tree-sitter-langs)
+  (use-package tree-sitter-langs
+    :straight t)
   (global-tree-sitter-mode)
   (add-hook 'tree-sitter-mode-hook 'tree-sitter-hl-mode))
 
-;; kill this buffer
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
-
-;; paste with alt-v
-(defun odd/paste ()
-  (interactive)
-  (evil-paste-before 1)
-  (evil-forward-char 1))
-(global-set-key (kbd "M-v") 'odd/paste)
-
-;; focus
-(use-package focus)
-
-;; writeroom
-(use-package writeroom-mode)
-
-;; bind <f11> to comfy-mode
-(defun comfy-mode ()
-  (interactive)
-  (writeroom-mode 'toggle))
-(global-set-key (kbd "<f11>") 'comfy-mode)
-
 ;; eldoc 
-(setq eldoc-echo-area-use-multiline-p nil)
-(setq eldoc-echo-area-display-truncation-message nil)
-(add-function :before-until (local 'eldoc-documentation-function)         
- #'prog-mode-eldoc-function)
+(use-package eldoc
+  :custom
+  (eldoc-echo-area-use-multiline-p nil)
+  (eldoc-echo-area-display-truncation-message nil)
+  (add-function :before-until (local 'eldoc-documentation-function) #'prog-mode-eldoc-function))
 
 ;; serve directory
-(use-package simple-httpd)
+(use-package simple-httpd
+  :straight t)
 
-;; vterm
-(setq vterm-always-compile-module t)
-(use-package vterm)
+;; css-mode
+(use-package css-mode
+  :hook (css-mode . rainbow-mode))
 
-;; leader bindigns
+;; org-agenda
+(use-package org-agenda
+  :custom
+  (org-agenda-start-on-weekday nil))
+
+;; leader bindings
 (general-create-definer global-definer
   :keymaps 'override
   :states  '(normal)
@@ -343,67 +397,4 @@
   "g" 'magit
   "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
   "p" 'projectile-command-map
-  "x" 'execute-extended-command
-  "n" 'org-roam-node-find
-  "v" 'vterm)
-
-;; C-u should be more like shell
-(general-define-key
- :states 'insert
- "C-u" (lambda ()
-         (interactive)
-         (kill-line 0)
-         (indent-according-to-mode)))
-
-;; Binaries should be opened with hexl
-(add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
-(add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
-(add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
-
-;; ^ > 0
-(general-define-key
- :states 'normal
- "0" 'evil-first-non-blank)
-
-;; devkitpro
-(setenv "DEVKITPRO" "/opt/devkitpro")
-(setenv "DEVKITARM" "/opt/devkitpro/devkitARM")
-(setenv "DEVKITPPC" "/opt/devkitpro/devkitPPC")
-(setenv "CLANG_VERSION" "13.0.0")
-(setenv "PATH" (concat "/opt/devkitpro/tools/bin" (getenv "PATH")))
-
-;; css-mode
-(add-hook 'css-mode-hook 'rainbow-mode)
-
-;; move those pesky backups
-(setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
-
-;; org-agenda
-(setq org-agenda-start-on-weekday nil)
-
-;; work with org-agenda dispatcher [c] "Today Clocked Tasks" to view today's clocked tasks.
-(defun org-agenda-log-mode-colorize-block ()
-  "Set different line spacing based on clock time duration."
-  (save-excursion
-    (let* ((colors (cl-case (alist-get 'background-mode (frame-parameters))
-                                 ('light
-                                  (list "#F6B1C3" "#FFFF9D" "#BEEB9F" "#ADD5F7"))
-                                 ('dark
-                                  (list "#aa557f" "DarkGreen" "DarkSlateGray" "DarkSlateBlue"))))
-           pos
-           duration)
-      (nconc colors colors)
-      (goto-char (point-min))
-      (while (setq pos (next-single-property-change (point) 'duration))
-        (goto-char pos)
-        (when (and (not (equal pos (point-at-eol)))
-                   (setq duration (org-get-at-bol 'duration)))
-          ;; larger duration bar height
-          (let ((line-height (if (< duration 15) 1.0 (+ 0.5 (/ duration 30))))
-                (ov (make-overlay (point-at-bol) (1+ (point-at-eol)))))
-            (overlay-put ov 'face `(:background ,(car colors) :foreground "black"))
-            (setq colors (cdr colors))
-            (overlay-put ov 'line-height line-height)
-            (overlay-put ov 'line-spacing (1- line-height))))))))
-
-(add-hook 'org-agenda-finalize-hook #'org-agenda-log-mode-colorize-block)
+  "x" 'execute-extended-command)
