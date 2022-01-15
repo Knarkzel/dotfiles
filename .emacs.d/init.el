@@ -21,7 +21,7 @@
 (setq byte-compile-warnings '(not nresolved
                                   free-vars
                                   callargs
-                                  redefine
+                                  rdefine
                                   obsolete
                                   noruntime
                                   cl-functions
@@ -56,6 +56,7 @@
               scroll-preserve-screen-position t
               tab-width 4
               truncate-lines t
+              split-width-threshold nil
               vc-follow-symlinks t)
 
 (setq kill-buffer-query-functions
@@ -163,7 +164,7 @@
          (dired-mode . dired-omit-mode))
   :custom
   (dired-omit-files "^\\.+")
-  (dired-listing-switches "-AlghX")
+  (dired-listing-switches "--group-directories-first --dereference -Al")
   :config
   (evil-define-key 'normal dired-mode-map
     (kbd ".") 'dired-omit-mode
