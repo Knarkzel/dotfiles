@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 while true; do
 	date +"%T" | xargs -I {} xsetroot -name ' {} '
 	sleep 1

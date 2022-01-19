@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+DMENU="$HOME/.scripts/dmenu"
+MUPDF="$HOME/.scripts/mupdf"
+declare -A booklist; declare -a index
+while read i; do
+    location="$i"
+    title="${i##*/}"
+    booklist[$title]="$location"; index+=( "$title" )
+done < <(cat "$HOME/.cache/pdfcache" | cut -f 1)
+select="$(printf '%s\n' "${index[@]}" | $DMENU -p pdf)"
+[ -z "$select" ] && exit 1
+exec $MUPDF "${booklist[$select]}" &
+exit 0

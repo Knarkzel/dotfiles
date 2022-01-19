@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+dmenufont="monospace:size=18"
+col_gray1="#282828"
+col_gray2="#ffffff"
+col_gray3="#ebdbb2"
+col_gray4="#fbf1c7"
+col_cyan="#928374"
+dmenu -fn $dmenufont -nb $col_gray1 -nf $col_gray3 -sb $col_cyan -sf $col_gray4 $@

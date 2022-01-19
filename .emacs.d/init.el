@@ -152,7 +152,8 @@
     (evil-forward-char 1))
   (global-set-key (kbd "M-v") 'odd/paste)
   :general
-  ("0" 'evil-first-non-blank))
+  (:keymaps 'global :states 'normal
+            "0" 'evil-first-non-blank))
 
 ;; dired
 (use-package dired
@@ -227,6 +228,7 @@
   (elfeed-feeds '(("https://feeds.fireside.fm/coder/rss")
 	                 ("https://lobste.rs/rss")
 	                 ("https://videos.lukesmith.xyz/feeds/videos.xml")
+                     ("https://unixsheikh.com/feed.rss")
 	                 ("https://buttondown.email/j2kun/rss")
 	                 ("https://www.tedinski.com/feed.xml")
 	                 ("https://this-week-in-rust.org/rss.xml")))
