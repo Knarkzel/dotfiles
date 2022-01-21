@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+BACKUP="$HOME/source/backup"
+
+if [ -z "$1" ]; then
+    printf "archive <link> [flags]\n"
+else
+    cd $BACKUP
+    if [[ $1 == *youtube.com* ]]; then
+        mkdir -p mp4 && cd mp4
+        notify-send "Downloading mp4 to $(pwd)"
+        yt-dlp "$1" "${@:2}"
+    elif [[ $1 == *.pdf* ]]; then
+        mkdir -p pdf && cd pdf
+        notify-send "Downloading pdf to $(pwd)"
+        wget "$1" "${@:2}"
+    elif [[ $1 == *.epub* ]]; then
+        mkdir -p epub && cd epub
+        notify-send "Downloading epub to $(pwd)"
+        wget "$1" "${@:2}"
+    else
+        mkdir -p html && cd html
+        notify-send "Downloading html to $(pwd)"
+        wget -mpEk "$1" "${@:2}"
+    fi
+fi

@@ -380,6 +380,11 @@
   :custom
   (org-agenda-start-on-weekday nil))
 
+;; aggressive-indent
+(use-package aggressive-indent
+  :ensure t
+  :init (global-aggressive-indent-mode t))
+
 ;; leader bindings
 (general-create-definer global-definer
   :keymaps 'override

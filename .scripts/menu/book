@@ -8,7 +8,7 @@ while read i; do
     title="${i##*/}"
     booklist[$title]="$location"; index+=( "$title" )
 done < <(cat "$HOME/.cache/pdfcache" | cut -f 1)
-select="$(printf '%s\n' "${index[@]}" | $DMENU -p pdf)"
+select="$(printf '%s\n' "${index[@]}" | $DMENU -p "pdf" -l 5)"
 [ -z "$select" ] && exit 1
 exec $MUPDF "${booklist[$select]}" &
 exit 0

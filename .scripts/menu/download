@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+LINK="$(xclip -o)"
+DOWNLOAD="$HOME/.scripts/archive"
+
+if [[ $LINK == *http* ]]; then
+    $DOWNLOAD $LINK
+fi
