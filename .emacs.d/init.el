@@ -382,8 +382,30 @@
 
 ;; aggressive-indent
 (use-package aggressive-indent
-  :ensure t
+  :straight t
   :init (global-aggressive-indent-mode t))
+
+;; org-download
+(use-package org-download
+  :straight t
+  :init
+  (setq-default org-download-image-dir "~/downloads/images")
+  (add-hook 'dired-mode-hook 'org-download-enable)
+  (add-hook 'org-mode-hook 'org-download-enable))
+
+;; lisp
+(add-hook 'elisp-lisp-mode-hook
+          (lambda () (add-hook 'local-write-file-hooks 'check-parens)))
+
+(use-package adjust-parens
+  :straight t
+  :init
+  (add-hook 'emacs-lisp-mode-hook 'adjust-parens-mode))
+
+(use-package evil-lispy
+  :straight t
+  :init
+  (add-hook 'emacs-lisp-mode-hook 'evil-lispy-mode))
 
 ;; leader bindings
 (general-create-definer global-definer
@@ -400,3 +422,6 @@
   "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
   "p" 'projectile-command-map
   "x" 'execute-extended-command)
+
+(load "server")
+(unless (server-running-p) (server-start))

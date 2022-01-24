@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-DMENU="$HOME/.scripts/dmenu.sh"
+DMENU="$HOME/.scripts/dmenu"
 CACHE="$HOME/.cache/pdfcache"
 [ ! -f "$CACHE" ] && touch "$CACHE"
 

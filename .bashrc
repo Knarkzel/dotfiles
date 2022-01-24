@@ -11,6 +11,7 @@ alias cb="cargo build"
 alias cdo="cargo doc --open"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias bashconf="vim ~/.bashrc"
+alias mupdf="~/.scripts/mupdf"
 
 # exports
 export RUSTC_WRAPPER=""
