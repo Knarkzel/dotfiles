@@ -3,7 +3,7 @@
 DMENU="$HOME/.scripts/dmenu"
 MUPDF="$HOME/.scripts/mupdf"
 declare -A booklist; declare -a index
-while read i; do
+while read -r i; do
     location="$i"
     title="${i##*/}"
     booklist[$title]="$location"; index+=( "$title" )

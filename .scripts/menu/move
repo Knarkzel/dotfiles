@@ -5,8 +5,8 @@ DMENU="$HOME/.scripts/dmenu"
 FILE=$(find $FOLDER -type f | sort | $DMENU -l 5)
 FILENAME=$(basename -- "$FILE")
 EXTENSION="${FILENAME##*.}"
-if [[ ! -z $EXTENSION ]]; then
-    cd $BACKUP && mkdir -p $EXTENSION && cd $EXTENSION
+if [[ -n $EXTENSION ]]; then
+    cd "$BACKUP" && mkdir -p "$EXTENSION" && cd "$EXTENSION" || exit
     NAME=$($DMENU -l 0 -p <<< "$FILENAME")
     mv "$FILE" "./$NAME"
 fi

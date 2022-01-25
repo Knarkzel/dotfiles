@@ -407,6 +407,20 @@
   :init
   (add-hook 'emacs-lisp-mode-hook 'evil-lispy-mode))
 
+;; haskell
+(use-package haskell-mode
+  :hook ((haskell-mode . lsp-deferred)
+         (haskell-iterate-mode . lsp-deferred))
+  :straight t)
+
+(use-package lsp-haskell
+  :straight t
+  :config
+  (setq lsp-haskell-server-path "haskell-language-server"))
+
+;; bash
+(add-hook 'sh-mode-hook 'flycheck-mode)
+
 ;; leader bindings
 (general-create-definer global-definer
   :keymaps 'override

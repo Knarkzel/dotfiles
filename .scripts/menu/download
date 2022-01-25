@@ -4,5 +4,5 @@ LINK="$(xclip -o)"
 DOWNLOAD="$HOME/.scripts/archive"
 
 if [[ $LINK == *http* ]]; then
-    $DOWNLOAD $LINK
+    $DOWNLOAD "$LINK"
 fi

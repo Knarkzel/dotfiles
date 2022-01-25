@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 menu="$HOME/.scripts/menu"
-option=$(find $menu -type f -printf "%f\n" | grep -v "$menu$" | sort | $HOME/.scripts/dmenu -p "option" -l 5)
+option=$(find "$menu" -type f -printf "%f\n" | grep -v "$menu$" | sort | "$HOME"/.scripts/dmenu -p "option" -l 5)
 exec "$menu/$option"
