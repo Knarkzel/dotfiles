@@ -9,7 +9,7 @@ xset -dpms
 xset s off
 redshift -l 58:9 -t 6500K:2000K -b 0.60 &
 dunst &
-hsetroot -solid "#7d6f57" &
+hsetroot -solid "#ffffff" &
 xbanish &
 source /etc/X11/xinit/xinitrc.d/50-systemd-user.sh &
 xrandr --auto --output DP-1 --mode 1920x1080 --left-of HDMI-0 &

@@ -1,4 +1,6 @@
 # aliases
+alias vim="emacsclient -nw"
+alias emacs="emacsclient -nw"
 alias sudo="sudo"
 alias cat="bat -P"
 alias ls="exa --group-directories-first -x"
@@ -11,6 +13,7 @@ alias cb="cargo build"
 alias cdo="cargo doc --open"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias bashconf="vim ~/.bashrc"
+alias termconf="vim ~/.config/alacritty/alacritty.yml"
 alias mupdf="~/.scripts/mupdf"
 
 # exports
@@ -28,12 +31,6 @@ export VISUAL="vim"
 DEVKITPRO="/opt/devkitpro"
 DEVKITARM="/opt/devkitpro/devkitARM"
 DEVKITPPC="/opt/devkitpro/devkitPPC"
-
-# nnn
-if [ -f /usr/share/nnn/quitcd/quitcd.bash_zsh ]; then
-    source /usr/share/nnn/quitcd/quitcd.bash_zsh
-fi
-alias lf="nnn -e"
 
 # fzf
 source "/usr/share/fzf/key-bindings.bash"

@@ -380,11 +380,6 @@
   :custom
   (org-agenda-start-on-weekday nil))
 
-;; aggressive-indent
-(use-package aggressive-indent
-  :straight t
-  :init (global-aggressive-indent-mode t))
-
 ;; org-download
 (use-package org-download
   :straight t
@@ -420,6 +415,21 @@
 
 ;; bash
 (add-hook 'sh-mode-hook 'flycheck-mode)
+
+;; utf-8 in terminal
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8) ;; also see `my-frame-config'
+(set-keyboard-coding-system 'utf-8)
+(set-locale-environment "en_NZ.UTF-8")
+(setq-default buffer-file-coding-system 'utf-8)
+(when (boundp 'default-buffer-file-coding-system) ;; obsolete since 23.2
+  (setq default-buffer-file-coding-system 'utf-8))
+;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+;; xclip for terminal
+(custom-set-variables '(x-select-enable-clipboard t))
 
 ;; leader bindings
 (general-create-definer global-definer
