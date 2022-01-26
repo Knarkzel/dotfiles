@@ -2,7 +2,7 @@
 alias vim="emacsclient -nw"
 alias emacs="emacsclient -nw"
 alias sudo="sudo"
-alias cat="bat -P"
+alias cat="bat --paging=never --theme='Solarized (light)'"
 alias ls="exa --group-directories-first -x"
 alias top="btm"
 alias gg="gitui"
@@ -35,9 +35,10 @@ DEVKITPPC="/opt/devkitpro/devkitPPC"
 # fzf
 source "/usr/share/fzf/key-bindings.bash"
 export FZF_DEFAULT_COMMAND="rg --files"
-export FZF_DEFAULT_OPTS="--height 20% --border --layout=reverse"
+export FZF_DEFAULT_OPTS_LIGHT="--color fg:-1,bg:-1,hl:33,fg+:235,bg+:-1,hl+:33 --color info:33,prompt:33,pointer:33,marker:234,spinner:33"
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS_LIGHT --height 20% --border --layout=reverse"
 
 # zoxide
 bind '"\C-o":"\C-uji\C-m"'
-export _ZO_FZF_OPTS="--height 20% --border --layout=reverse"
+export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS"
 eval "$(zoxide init --cmd j bash)"

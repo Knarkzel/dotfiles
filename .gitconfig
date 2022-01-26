@@ -4,11 +4,14 @@
 [credential]
 	helper = store
 [core]
-	editor = vim
+    editor = emacsclient -nw
 [pager]
-	diff = delta
-	log = delta
-	reflog = delta
-	show = delta
+	diff = delta --light
+	log = delta --light
+	reflog = delta --light
+	show = delta --light
 [init]
 	defaultBranch = master
+[delta]
+    line-numbers = true
+    side-by-side = true
