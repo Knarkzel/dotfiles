@@ -17,7 +17,7 @@
 ;; compile for everything
 (setq comp-deferred-compilation t)
 
-;; ignore byte-compile warnings
+;; ignore byte-compile warnings                                
 (setq byte-compile-warnings '(not nresolved
                                   free-vars
                                   callargs
@@ -74,7 +74,8 @@
 (global-display-line-numbers-mode 1)
 (global-hl-line-mode 1)
 (global-font-lock-mode 1)
-(column-number-mode 1) 
+(column-number-mode 1)
+(winner-mode 1)
 (menu-bar-mode -1) 
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
@@ -111,7 +112,7 @@
   :config
   (setq-default default-frame-alist
                 (append (list
-                '(font . "Monospace:size=20")
+                '(font . "Monospace:size=28")
                 '(internal-border-width . 0)
                 '(left-fringe    . 0)
                 '(right-fringe   . 0)
@@ -127,37 +128,20 @@
               (setq mode-line-format nil)
               (setq-default mode-line-format nil)))
 
-;; general
-(use-package general
-  :straight t)
-
-;; evil
-(use-package evil 
+;; superior keybin
+(use-package xah-fly-keys
   :straight t
-  :custom
-  (evil-want-C-u-scroll t)
-  (evil-want-integration t)
-  (evil-want-keybinding nil)
   :init
-  (evil-mode t)
-  (use-package evil-collection
-    :straight t
-    :config (evil-collection-init))
-  (use-package evil-commentary
-    :straight t
-    :config (evil-commentary-mode t))
-  (defun odd/paste ()
-    (interactive)
-    (evil-paste-before 1)
-    (evil-forward-char 1))
-  (global-set-key (kbd "M-v") 'odd/paste)
-  :general
-  (:keymaps 'global :states 'normal
-            "0" 'evil-first-non-blank))
+  (require 'xah-fly-keys)
+  (xah-fly-keys-set-layout "colemak")
+  (global-set-key (kbd "<escape>") 'xah-fly-command-mode-activate)
+  (xah-fly-keys))
+
+;; eshell on spc spc
+(define-key xah-fly-leader-key-map (kbd "SPC") 'eshell-toggle)
 
 ;; dired
 (use-package dired
-  :after evil
   :init
   (use-package dired-ranger
     :straight t)
@@ -165,20 +149,8 @@
          (dired-mode . dired-omit-mode))
   :custom
   (dired-omit-files "^\\.+")
-  (dired-listing-switches "--group-directories-first --dereference -Al")
-  :config
-  (evil-define-key 'normal dired-mode-map
-    (kbd ".") 'dired-omit-mode
-    (kbd "J") 'dired-find-file
-    (kbd "K") 'dired-up-directory
-    (kbd "c") 'dired-ranger-copy
-    (kbd "p") 'dired-ranger-paste
-    (kbd "P") 'dired-ranger-move)
-  :general
-  (:keymaps 'global :states 'normal
-            "g h" (lambda () (interactive) (dired "~/"))
-            "-" (lambda () (interactive) (dired "."))))
-
+  (dired-listing-switches "--group-directories-first --dereference -Al"))
+  
 ;; lsp
 (use-package lsp-mode
   :straight t
@@ -199,11 +171,7 @@
   (lsp-log-io nil)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-lens-enable nil)
-  (lsp-signature-auto-activate nil)
-  :general
-  (:keymaps 'prog-mode-map :states 'normal
-            "g r" 'lsp-rename
-            "C-a" 'lsp-execute-code-action))
+  (lsp-signature-auto-activate nil))
 
 ;; rust
 (use-package rustic
@@ -213,13 +181,6 @@
 ;; electric pair
 (use-package electric-pair
   :hook (prog-mode . electric-pair-mode))
-
-;; winner mode undo/redo
-(use-package winner-mode
-  :init (winner-mode t)
-  :general
-  (:keymaps 'global :states 'normal
-            "U" 'winner-undo))
 
 ;; elfeed
 (use-package elfeed
@@ -233,10 +194,7 @@
 	                 ("https://www.tedinski.com/feed.xml")
 	                 ("https://this-week-in-rust.org/rss.xml")))
   (elfeed-search-title-max-width 100)
-  (elfeed-search-title-min-width 100)
-  :general
-  (:keymaps 'elfeed-search-mode-map :states 'normal
-            "g r" 'elfeed-update))
+  (elfeed-search-title-min-width 100))
 
 (use-package selectrum
   :straight t
@@ -262,16 +220,13 @@
   :straight t
   :hook (prog-mode . global-company-mode)
   :custom
-  (company-idle-delay 0.25)
+  (company-idle-delay 0.5)
   (company-minimum-prefix-length 1)
   (company-icon-size 0)
   (company-icon-margin 1))
 
 (use-package magit
   :straight t
-  :general
-  (:keymaps 'magit-mode-map :states 'normal
-            "-" (lambda () (interactive) (dired ".")))
   :custom (magit-refresh-status-buffer nil))
 
 (use-package projectile
@@ -285,10 +240,7 @@
   :hook (prog-mode . yas-minor-mode)
   :init
   (use-package yasnippet-snippets
-    :straight t)
-  :general 
-  (:keymaps 'yas-minor-mode-map :states 'insert
-            "C-o" 'yas-expand))
+    :straight t))
 
 ;; eshell
 (use-package eshell
@@ -303,16 +255,13 @@
     (find-file file))
   (add-to-list 'load-path "~/.emacs.d/packages")
   (require 'eshell-toggle)
-  :hook (eshell-mode . (lambda () (company-mode -1)))
+  (add-hook 'eshell-mode-hook (lambda () (interactive) (company-mode -1)))
   :custom
   (eshell-ls-use-colors t)
   (eshell-cmpl-cycle-completions nil)
   (eshell-history-size (* 1024 8))
   (eshell-hist-ignoredups t)
-  (eshell-destroy-buffer-when-process-dies t)
-  :general
-  (:keymaps 'eshell-mode-map :states 'insert
-            "C-l" 'odd/clear))
+  (eshell-destroy-buffer-when-process-dies t))
 
 ;; org-roam
 (use-package org-roam
@@ -322,12 +271,6 @@
         org-roam-directory "~/org-roam"
         org-agenda-files (directory-files-recursively "~/org-roam" "\\.org$")
         org-roam-completion-everywhere t)
-  :general
-  ("C-c n l" 'org-roam-buffer-toggle)
-  ("C-c n f" 'org-roam-node-find)
-  ("C-c n i" 'org-roam-node-insert)
-  (:keymaps 'org-mode-map :states 'normal
-            "C-i" 'completion-at-point)
   :config (org-roam-setup))
 
 ;; vlang
@@ -397,11 +340,6 @@
   :init
   (add-hook 'emacs-lisp-mode-hook 'adjust-parens-mode))
 
-(use-package evil-lispy
-  :straight t
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'evil-lispy-mode))
-
 ;; haskell
 (use-package haskell-mode
   :hook ((haskell-mode . lsp-deferred)
@@ -431,21 +369,7 @@
 ;; xclip for terminal
 (custom-set-variables '(x-select-enable-clipboard t))
 
-;; leader bindings
-(general-create-definer global-definer
-  :keymaps 'override
-  :states  '(normal)
-  :prefix  "SPC")
-
-(global-definer
-  "a" 'org-agenda
-  "b" 'switch-to-buffer
-  "e" 'eshell-toggle
-  "f" 'find-file
-  "g" 'magit
-  "o" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-  "p" 'projectile-command-map
-  "x" 'execute-extended-command)
-
+;; emacsclient
 (load "server")
 (unless (server-running-p) (server-start))
+

