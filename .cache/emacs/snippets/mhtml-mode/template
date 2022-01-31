@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: template
-# key: template
+# key: :t
 # --
 <!DOCTYPE html>
 <html lang="en">
@@ -12,6 +12,6 @@
     <link rel="stylesheet" href="index.css">
   </head>
   <body>
-	<script src="index.js"></script>
+    $2
   </body>
 </html>

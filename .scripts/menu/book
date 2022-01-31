@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-DMENU="$HOME/.scripts/dmenu"
+set -Eeuxo pipefail
 MUPDF="$HOME/.scripts/mupdf"
 declare -A booklist; declare -a index
 while read -r i; do
@@ -8,7 +7,7 @@ while read -r i; do
     title="${i##*/}"
     booklist[$title]="$location"; index+=( "$title" )
 done < <(cat "$HOME/.cache/pdfcache" | cut -f 1)
-select="$(printf '%s\n' "${index[@]}" | $DMENU -p "pdf" -l 5)"
+select="$(printf '%s\n' "${index[@]}" | dmenu -p "pdf" -l 5)"
 [ -z "$select" ] && exit 1
 exec $MUPDF "${booklist[$select]}" &
 exit 0

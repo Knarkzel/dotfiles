@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-DMENU="$HOME/.scripts/dmenu"
 CACHE="$HOME/.cache/pdfcache"
 [ ! -f "$CACHE" ] && touch "$CACHE"
 
@@ -14,7 +13,7 @@ if [ -f "$1" ]; then
     fi
     mupdf "$1" $page &
     wait
-    input=$(echo "$page"|$DMENU -l 0 -p "$(basename -s .pdf "$1")" 2>/dev/null)
+    input=$(echo "$page"|dmenu -l 0 -p "$(basename -s .pdf "$1")" 2>/dev/null)
     
     case $input in
 	''|*[!0-9]*) page=$page;;

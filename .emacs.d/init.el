@@ -41,7 +41,7 @@
               dired-recursive-copies 'always
               dired-recursive-deletes 'always
               dired-clean-confirm-killing-deleted-buffers nil
-              fill-column 80
+              fill-column 100
               native-comp-async-report-warnings-errors nil
               gc-cons-threshold 100000000
               display-line-numbers-type 'relative
@@ -76,6 +76,7 @@
 (global-font-lock-mode 1)
 (column-number-mode 1)
 (winner-mode 1)
+(recentf-mode 1)
 (menu-bar-mode -1) 
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
@@ -101,6 +102,18 @@
 (add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+;; Prevents issue where you have to press backspace twice when
+;; trying to remove the first character that fails a search
+(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
+(defadvice isearch-search (after isearch-no-fail activate)
+  (unless isearch-success
+    (ad-disable-advice 'isearch-search 'after 'isearch-no-fail)
+    (ad-activate 'isearch-search)
+    (isearch-repeat (if isearch-forward 'forward))
+    (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
+    (ad-activate 'isearch-search)))
 
 ;; theme
 (use-package doom-themes
@@ -128,7 +141,7 @@
               (setq mode-line-format nil)
               (setq-default mode-line-format nil)))
 
-;; superior keybin
+;; superior keybindings
 (use-package xah-fly-keys
   :straight t
   :init
@@ -137,18 +150,18 @@
   (global-set-key (kbd "<escape>") 'xah-fly-command-mode-activate)
   (xah-fly-keys))
 
-;; eshell on spc spc
-(define-key xah-fly-leader-key-map (kbd "SPC") 'eshell-toggle)
+;; keybindings
+(define-key xah-fly-command-map (kbd "k") 'loccur-isearch)
+(define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
+(define-key xah-fly-command-map (kbd "F") 'grep)
 
 ;; dired
 (use-package dired
   :init
-  (use-package dired-ranger
-    :straight t)
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . dired-omit-mode))
   :custom
-  (dired-omit-files "^\\.+")
+  (dired-omit-files "^\\.+\\|$")
   (dired-listing-switches "--group-directories-first --dereference -Al"))
   
 ;; lsp
@@ -167,7 +180,7 @@
     (lsp-ui-doc-delay 0.25))
   :custom
   (lsp-keymap-prefix "C-c l")
-  (lsp-idle-delay 0.500)
+  (lsp-idle-delay 1.0)
   (lsp-log-io nil)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-lens-enable nil)
@@ -213,14 +226,14 @@
 
 (use-package which-key
   :straight t
-  :custom (which-key-idle-delay 0.5)
+  :custom (which-key-idle-delay 1.0)
   :config (which-key-mode t))
 
 (use-package company
   :straight t
   :hook (prog-mode . global-company-mode)
   :custom
-  (company-idle-delay 0.5)
+  (company-idle-delay 1.0)
   (company-minimum-prefix-length 1)
   (company-icon-size 0)
   (company-icon-margin 1))
@@ -237,10 +250,11 @@
 ;; snippets
 (use-package yasnippet
   :straight t
-  :hook (prog-mode . yas-minor-mode)
   :init
-  (use-package yasnippet-snippets
-    :straight t))
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
+  (yas-global-mode t))
 
 ;; eshell
 (use-package eshell
@@ -351,6 +365,9 @@
   :config
   (setq lsp-haskell-server-path "haskell-language-server"))
 
+(use-package loccur
+  :straight t)
+
 ;; bash
 (add-hook 'sh-mode-hook 'flycheck-mode)
 
@@ -372,4 +389,3 @@
 ;; emacsclient
 (load "server")
 (unless (server-running-p) (server-start))
-

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -Eeuxo pipefail
 BACKUP="$HOME/source/backup"
 
 if [ -z "$1" ]; then
