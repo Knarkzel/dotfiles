@@ -14,10 +14,8 @@
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
 
-;; compile for everything
 (setq comp-deferred-compilation t)
 
-;; ignore byte-compile warnings                                
 (setq byte-compile-warnings '(not nresolved
                                   free-vars
                                   callargs
@@ -27,11 +25,23 @@
                                   cl-functions
                                   interactive-only))
 
-;; get rid of bell
+(setq-default default-frame-alist
+              (append (list
+                       '(font . "Monospace:size=28")
+                       '(internal-border-width . 0)
+                       '(left-fringe    . 0)
+                       '(right-fringe   . 0)
+                       '(tool-bar-lines . 0)
+                       '(menu-bar-lines . 0)
+                       '(vertical-scroll-bars . nil))))
+(setq-default window-resize-pixelwise t)
+(setq-default frame-resize-pixelwise t)
+(setq mode-line-format nil)
+(setq-default mode-line-format nil)
+
 (setq visible-bell nil
       ring-bell-function #'ignore)
 
-;; sweet defaults
 (setq-default auto-save-default nil
               auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
               backup-by-copying t
@@ -103,8 +113,6 @@
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 
-;; Prevents issue where you have to press backspace twice when
-;; trying to remove the first character that fails a search
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
 (defadvice isearch-search (after isearch-no-fail activate)
@@ -117,29 +125,9 @@
 
 ;; theme
 (use-package doom-themes
+  :straight t
   :config
   (load-theme 'doom-solarized-light t))
-
-;; clean up the frame
-(use-package frame
-  :config
-  (setq-default default-frame-alist
-                (append (list
-                '(font . "Monospace:size=28")
-                '(internal-border-width . 0)
-                '(left-fringe    . 0)
-                '(right-fringe   . 0)
-                '(tool-bar-lines . 0)
-                '(menu-bar-lines . 0)
-                '(vertical-scroll-bars . nil))))
-  (setq-default window-resize-pixelwise t)
-  (setq-default frame-resize-pixelwise t))
-
-;; get rid of the mode-line
-(add-hook 'prog-mode-hook
-          (lambda ()
-              (setq mode-line-format nil)
-              (setq-default mode-line-format nil)))
 
 ;; superior keybindings
 (use-package xah-fly-keys
@@ -161,7 +149,7 @@
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . dired-omit-mode))
   :custom
-  (dired-omit-files "^\\.+\\|$")
+  (dired-omit-files "^\\.")
   (dired-listing-switches "--group-directories-first --dereference -Al"))
   
 ;; lsp
@@ -366,6 +354,9 @@
   (setq lsp-haskell-server-path "haskell-language-server"))
 
 (use-package loccur
+  :straight t)
+
+(use-package sudo-edit
   :straight t)
 
 ;; bash

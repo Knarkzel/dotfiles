@@ -2,5 +2,5 @@
 set -Eeuxo pipefail
 BASE="$HOME/source/backup/youtube"
 CHANNEL=$(ls "$BASE" | xargs -I {} basename -- "{}" | dmenu)
-VIDEO=$(fd -0 . "$BASE/$CHANNEL" | xargs -0 -I {} basename -- "{}" | dmenu)
+VIDEO=$(fd -0 . "$BASE/$CHANNEL" | xargs -0 -I {} basename -- "{}" | shuf | dmenu)
 mpv "$BASE/$CHANNEL/$VIDEO"

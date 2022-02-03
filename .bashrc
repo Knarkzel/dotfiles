@@ -1,6 +1,6 @@
 # aliases
-alias vim="emacsclient -nw"
-alias emacs="emacsclient -nw"
+alias vim="emacsclient -c"
+alias emacs="emacsclient -c"
 alias sudo="sudo"
 alias cat="bat --paging=never --theme='Solarized (light)'"
 alias ls="exa --group-directories-first -x"
@@ -24,8 +24,8 @@ export HISTCONTROL=ignorespace:ignoredups:erasedups
 export PATH="$PATH:/home/odd/.cargo/bin/:/opt/devkitpro/devkitPPC/bin:/home/odd/.local/bin:/home/odd/.scripts/menu"
 export TERM="screen-256color"
 export BROWSER="chromium"
-export EDITOR="emacsclient -nw"
-export VISUAL="emacsclient -nw"
+export EDITOR="emacsclient -c"
+export VISUAL="emacsclient -c"
 
 # devkitpro
 DEVKITPRO="/opt/devkitpro"
