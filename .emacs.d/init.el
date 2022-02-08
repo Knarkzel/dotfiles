@@ -123,6 +123,10 @@
     (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
     (ad-activate 'isearch-search)))
 
+;; toggle terminals
+(use-package term-toggle
+  :straight (:host github :repo "knarkzel/emacs-term-toggle"))
+
 ;; theme
 (use-package doom-themes
   :straight t
@@ -141,7 +145,10 @@
 ;; keybindings
 (define-key xah-fly-command-map (kbd "k") 'loccur-isearch)
 (define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
+(define-key xah-fly-command-map (kbd "T") 'term-toggle-term)
 (define-key xah-fly-command-map (kbd "F") 'grep)
+(define-key xah-fly-command-map (kbd "U") 'winner-undo)
+(define-key xah-fly-command-map (kbd "G") 'magit)
 
 ;; dired
 (use-package dired
@@ -165,10 +172,10 @@
     (lsp-ui-doc-max-height 20)
     (lsp-ui-doc-show-with-cursor t)
     (lsp-ui-doc-show-with-mouse nil)
-    (lsp-ui-doc-delay 0.25))
+    (lsp-ui-doc-delay 0.5))
   :custom
-  (lsp-keymap-prefix "C-c l")
-  (lsp-idle-delay 1.0)
+  (lsp-keymap-prefix "C-l")
+  (lsp-idle-delay 0.5)
   (lsp-log-io nil)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-lens-enable nil)
@@ -214,14 +221,26 @@
 
 (use-package which-key
   :straight t
-  :custom (which-key-idle-delay 1.0)
+  :custom (which-key-idle-delay 0.5)
   :config (which-key-mode t))
 
 (use-package company
   :straight t
   :hook (prog-mode . global-company-mode)
+  :config
+  ;;; Prevent suggestions from being triggered automatically.
+  (dolist (key '("<return>" "RET"))
+    (define-key company-active-map (kbd key)
+      `(menu-item nil company-complete
+                  :filter ,(lambda (cmd)
+                             (when (company-explicit-action-p)
+                               cmd)))))
+  (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "<backtab>") (lambda () (interactive) (company-complete-common-or-cycle -1)))
+  (define-key company-active-map (kbd "SPC") nil)
   :custom
-  (company-idle-delay 1.0)
+  (company-idle-delay 0.25)
+  (company-auto-complete-chars nil)
   (company-minimum-prefix-length 1)
   (company-icon-size 0)
   (company-icon-margin 1))
@@ -239,10 +258,10 @@
 (use-package yasnippet
   :straight t
   :init
+  (yas-global-mode t)
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
   (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
-  (yas-global-mode t))
+  (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
 ;; eshell
 (use-package eshell

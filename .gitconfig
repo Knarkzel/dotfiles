@@ -14,4 +14,3 @@
 	defaultBranch = master
 [delta]
     line-numbers = true
-    side-by-side = true

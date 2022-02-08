@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -Eeuxo pipefail
+FOLDER="$HOME/.cache/jpg-pdf"
+if [ -z "$1" ]; then
+    printf "jpg-pdf <zip>\n"
+else
+    mkdir -p "$FOLDER" && cp "$1" "$FOLDER/images.zip" && cd "$FOLDER"
+    unzip images.zip
+    convert "*.{jpg}" -quality 80 "$HOME/bilder.pdf"
+    ls -alh "$HOME/bilder.pdf"
+    rm -r "$FOLDER"
+fi
