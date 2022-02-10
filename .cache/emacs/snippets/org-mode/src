@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: src
+# key: :s
+# --
+#+begin_src
+$1
+#+end_src

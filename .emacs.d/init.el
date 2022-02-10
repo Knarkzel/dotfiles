@@ -113,6 +113,7 @@
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 
+;; isearch
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
 (defadvice isearch-search (after isearch-no-fail activate)
@@ -122,6 +123,10 @@
     (isearch-repeat (if isearch-forward 'forward))
     (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
     (ad-activate 'isearch-search)))
+
+(use-package isearch
+  :custom
+  (search-whitespace-regexp ".*?"))
 
 ;; toggle terminals
 (use-package term-toggle
@@ -144,6 +149,7 @@
 
 ;; keybindings
 (define-key xah-fly-command-map (kbd "k") 'loccur-isearch)
+(define-key xah-fly-command-map (kbd "C-k") 'loccur-current)
 (define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
 (define-key xah-fly-command-map (kbd "T") 'term-toggle-term)
 (define-key xah-fly-command-map (kbd "F") 'grep)
@@ -373,10 +379,26 @@
   (setq lsp-haskell-server-path "haskell-language-server"))
 
 (use-package loccur
-  :straight t)
+  :straight t
+  :init
+  )
 
 (use-package sudo-edit
   :straight t)
+
+;; auto inserts
+(defun odd/org-mode-template ()
+  (interactive)
+  (yas-expand-snippet (yas-lookup-snippet "template" 'org-mode)))
+
+(use-package autoinsert
+  :custom
+  (auto-insert-query nil)
+  (auto-insert-alist nil)
+  :init
+  (auto-insert-mode t)
+  (add-hook 'find-file-hook 'auto-insert)
+  (add-to-list 'auto-insert-alist '("\\.org$" . [odd/org-mode-template])))
 
 ;; bash
 (add-hook 'sh-mode-hook 'flycheck-mode)

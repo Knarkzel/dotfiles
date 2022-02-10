@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-set -Eeuxo pipefail
+set -Eeuo pipefail
 FOLDER="$HOME/.cache/jpg-pdf"
 if [ -z "$1" ]; then
-    printf "jpg-pdf <zip>\n"
+    printf "$FILE <zip>\n"
 else
     mkdir -p "$FOLDER" && cp "$1" "$FOLDER/images.zip" && cd "$FOLDER"
     unzip images.zip

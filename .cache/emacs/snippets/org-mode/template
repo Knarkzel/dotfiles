@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: template
+# key: :template
+# --
+#+title: $1
+#+author: Odd-Harald Lillestø Myhren
+#+options: toc:nil num:nil
+#+LATEX_HEADER: \usepackage[margin=1in]{geometry}
+
+$2

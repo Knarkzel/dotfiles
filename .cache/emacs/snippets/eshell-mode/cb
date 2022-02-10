@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cb
+# key: cb
+# --
+cargo build $1
