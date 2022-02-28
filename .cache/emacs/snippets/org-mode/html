@@ -2,6 +2,6 @@
 # name: html
 # key: :h
 # --
-#+begin_export html
+#+BEGIN_EXPORT html
 $1
-#+end_export
+#+END_EXPORT

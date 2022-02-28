@@ -3,6 +3,4 @@
 # key: :u
 # --
 (use-package $1
-  :straight t
-  :init
-  $2)
+  :straight t)

@@ -2,9 +2,11 @@
 # name: template
 # key: :template
 # --
-#+title: $1
-#+author: Odd-Harald Lillestø Myhren
-#+options: toc:nil num:nil
+#+TITLE: $1
+#+AUTHOR: Odd-Harald Lillestø Myhren
+#+OPTIONS: toc:nil num:nil
+#+LANGUAGE: norwegian
+#+LATEX_HEADER: \usepackage[norsk]{babel}
 #+LATEX_HEADER: \usepackage[margin=1in]{geometry}
 
 $2

@@ -2,4 +2,4 @@
 # name: title
 # key: :t
 # --
-#+title: $1
+#+TITLE: $1

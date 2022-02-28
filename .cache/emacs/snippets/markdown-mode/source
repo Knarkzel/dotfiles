@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# name: src
+# name: source
 # key: :s
 # --
-#+BEGIN_SRC
-$1
-#+END_SRC
+```lisp
+$2
+```

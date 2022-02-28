@@ -34,8 +34,6 @@
                        '(tool-bar-lines . 0)
                        '(menu-bar-lines . 0)
                        '(vertical-scroll-bars . nil))))
-(setq-default window-resize-pixelwise t)
-(setq-default frame-resize-pixelwise t)
 (setq mode-line-format nil)
 (setq-default mode-line-format nil)
 
@@ -52,9 +50,9 @@
               dired-recursive-deletes 'always
               dired-clean-confirm-killing-deleted-buffers nil
               fill-column 100
+              undo-limit 500
               native-comp-async-report-warnings-errors nil
               gc-cons-threshold 100000000
-              display-line-numbers-type 'relative
               inhibit-compacting-font-caches t
               inhibit-startup-echo-area-message t
               make-backup-files nil
@@ -65,8 +63,11 @@
               scroll-conservatively 101
               scroll-preserve-screen-position t
               tab-width 4
+              org-enforce-todo-dependencies t
               truncate-lines t
               split-width-threshold nil
+              inhibit-startup-screen t
+              initial-scratch-message nil
               vc-follow-symlinks t)
 
 (setq kill-buffer-query-functions
@@ -81,7 +82,6 @@
 
 (global-auto-revert-mode 1)
 (display-time-mode 1)
-(global-display-line-numbers-mode 1)
 (global-hl-line-mode 1)
 (global-font-lock-mode 1)
 (column-number-mode 1)
@@ -113,20 +113,30 @@
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 
-;; isearch
-(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+;; bash
+(add-hook 'sh-mode-hook 'flycheck-mode)
 
-(defadvice isearch-search (after isearch-no-fail activate)
-  (unless isearch-success
-    (ad-disable-advice 'isearch-search 'after 'isearch-no-fail)
-    (ad-activate 'isearch-search)
-    (isearch-repeat (if isearch-forward 'forward))
-    (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
-    (ad-activate 'isearch-search)))
+;; utf-8 
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-locale-environment "en_NZ.UTF-8")
+(setq-default buffer-file-coding-system 'utf-8)
+(when (boundp 'default-buffer-file-coding-system)
+  (setq default-buffer-file-coding-system 'utf-8))
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-(use-package isearch
-  :custom
-  (search-whitespace-regexp ".*?"))
+;; xclip for terminal
+(custom-set-variables '(x-select-enable-clipboard t))
+
+;; emacsclient
+(load "server")
+(unless (server-running-p) (server-start))
+
+;; window divider
+(setq window-divider-default-bottom-width 1)
+(window-divider-mode t)
 
 ;; toggle terminals
 (use-package term-toggle
@@ -136,7 +146,7 @@
 (use-package doom-themes
   :straight t
   :config
-  (load-theme 'doom-solarized-light t))
+  (load-theme 'doom-flatwhite t))
 
 ;; superior keybindings
 (use-package xah-fly-keys
@@ -147,14 +157,26 @@
   (global-set-key (kbd "<escape>") 'xah-fly-command-mode-activate)
   (xah-fly-keys))
 
-;; keybindings
-(define-key xah-fly-command-map (kbd "k") 'loccur-isearch)
-(define-key xah-fly-command-map (kbd "C-k") 'loccur-current)
+;; keybindings command
+(define-key xah-fly-command-map (kbd "k") 'consult-line)
+(define-key xah-fly-command-map (kbd "4") 'split-window-right)
+(define-key xah-fly-command-map (kbd "P") 'projectile-find-file)
 (define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
 (define-key xah-fly-command-map (kbd "T") 'term-toggle-term)
 (define-key xah-fly-command-map (kbd "F") 'grep)
 (define-key xah-fly-command-map (kbd "U") 'winner-undo)
 (define-key xah-fly-command-map (kbd "G") 'magit)
+(define-key xah-fly-command-map (kbd "V") 'rectangle-mark-mode)
+
+;; keybindings leader
+(define-key xah-fly-leader-key-map (kbd ":") 'recenter-top-bottom)
+(define-key xah-fly-leader-key-map (kbd ";") 'eval-expression)
+(define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer)
+
+;; lol
+(rectangle-mark-mode)
+(rectangle-mark-mode)
+(define-key rectangle-mark-mode-map (kbd "I") 'string-insert-rectangle)
 
 ;; dired
 (use-package dired
@@ -164,92 +186,88 @@
   :custom
   (dired-omit-files "^\\.")
   (dired-listing-switches "--group-directories-first --dereference -Al"))
+
+(use-package all-the-icons-dired
+  :straight t
+  :after (all-the-icons)
+  :hook (dired-mode . all-the-icons-dired-mode))
   
-;; lsp
-(use-package lsp-mode
+;; eglot
+(use-package eglot
   :straight t
   :init
-  (use-package flycheck
-    :straight t)
-  (use-package lsp-ui
-    :straight t
-    :custom
-    (lsp-ui-doc-max-width 45)
-    (lsp-ui-doc-max-height 20)
-    (lsp-ui-doc-show-with-cursor t)
-    (lsp-ui-doc-show-with-mouse nil)
-    (lsp-ui-doc-delay 0.5))
-  :custom
-  (lsp-keymap-prefix "C-l")
-  (lsp-idle-delay 0.5)
-  (lsp-log-io nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-lens-enable nil)
-  (lsp-signature-auto-activate nil))
+  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1))))
 
 ;; rust
-(use-package rustic
+(use-package rust-mode
   :straight t
-  :hook (rustic-mode . lsp-deferred))
+  :hook (rust-mode . eglot-ensure)
+  :custom
+  (rust-format-on-save t)
+  :init
+  (require 'rust-mode)
+  (define-key rust-mode-map (kbd "C-c C-c") 'rust-run))
 
 ;; electric pair
 (use-package electric-pair
   :hook (prog-mode . electric-pair-mode))
 
-;; elfeed
-(use-package elfeed
+(use-package consult
   :straight t
   :custom
-  (elfeed-feeds '(("https://feeds.fireside.fm/coder/rss")
-	                 ("https://lobste.rs/rss")
-	                 ("https://videos.lukesmith.xyz/feeds/videos.xml")
-                     ("https://unixsheikh.com/feed.rss")
-	                 ("https://buttondown.email/j2kun/rss")
-	                 ("https://www.tedinski.com/feed.xml")
-	                 ("https://this-week-in-rust.org/rss.xml")))
-  (elfeed-search-title-max-width 100)
-  (elfeed-search-title-min-width 100))
+  (consult-buffer-sources '(consult--source-buffer)))
 
-(use-package selectrum
+(use-package vertico
   :straight t
-  :init (selectrum-mode t))
+  :custom
+  (vertico-count-format '("" . ""))
+  :init
+  (vertico-mode t))
+
+(use-package vertico-posframe
+  :straight t
+  :init
+  (vertico-posframe-mode t))
 
 (use-package orderless
   :straight t
   :custom
   (completion-styles '(orderless))
-  (orderless-skip-highlighting (lambda () selectrum-is-active))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion))))
   (selectrum-highlight-candidates-function #'orderless-highlight-matches))
 
 (use-package marginalia
   :straight t
   :init (marginalia-mode t))
 
+(use-package all-the-icons
+  :straight t
+  :init
+  (when (display-graphic-p)
+    (require 'all-the-icons)))
+
+(use-package all-the-icons-completion
+  :straight t
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init
+  (all-the-icons-completion-mode t))
+
 (use-package which-key
   :straight t
   :custom (which-key-idle-delay 0.5)
   :config (which-key-mode t))
 
-(use-package company
+(use-package corfu
   :straight t
-  :hook (prog-mode . global-company-mode)
-  :config
-  ;;; Prevent suggestions from being triggered automatically.
-  (dolist (key '("<return>" "RET"))
-    (define-key company-active-map (kbd key)
-      `(menu-item nil company-complete
-                  :filter ,(lambda (cmd)
-                             (when (company-explicit-action-p)
-                               cmd)))))
-  (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "<backtab>") (lambda () (interactive) (company-complete-common-or-cycle -1)))
-  (define-key company-active-map (kbd "SPC") nil)
   :custom
-  (company-idle-delay 0.25)
-  (company-auto-complete-chars nil)
-  (company-minimum-prefix-length 1)
-  (company-icon-size 0)
-  (company-icon-margin 1))
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 1)
+  (corfu-auto-delay 0.20)
+  (corfu-count 5)
+  :init (corfu-global-mode))
 
 (use-package magit
   :straight t
@@ -290,6 +308,23 @@
   (eshell-hist-ignoredups t)
   (eshell-destroy-buffer-when-process-dies t))
 
+;; org
+(use-package org
+  :hook (org-mode . org-indent-mode)
+  :straight t
+  :custom
+  (org-hidden-keywords nil)
+  (org-hide-emphasis-markers t)
+  (org-image-actual-width (list 300))
+  (org-return-follows-link t)
+  :config
+  (set-face-attribute 'org-document-info-keyword nil
+                      :foreground "#9d8f7c")
+  (set-face-attribute 'org-document-info nil
+                      :foreground "#9d8f7c")
+  (set-face-attribute 'org-document-title nil
+                      :foreground "#9d8f7c" :bold nil))
+
 ;; org-roam
 (use-package org-roam
   :straight t
@@ -299,6 +334,10 @@
         org-agenda-files (directory-files-recursively "~/org-roam" "\\.org$")
         org-roam-completion-everywhere t)
   :config (org-roam-setup))
+
+(use-package org-bullets
+  :hook (org-mode . org-bullets-mode)
+  :straight t)
 
 ;; vlang
 (use-package v-mode
@@ -341,10 +380,6 @@
 (use-package simple-httpd
   :straight t)
 
-;; css-mode
-(use-package css-mode
-  :hook (css-mode . rainbow-mode))
-
 ;; org-agenda
 (use-package org-agenda
   :custom
@@ -354,7 +389,6 @@
 (use-package org-download
   :straight t
   :init
-  (setq-default org-download-image-dir "~/downloads/images")
   (add-hook 'dired-mode-hook 'org-download-enable)
   (add-hook 'org-mode-hook 'org-download-enable))
 
@@ -369,19 +403,9 @@
 
 ;; haskell
 (use-package haskell-mode
-  :hook ((haskell-mode . lsp-deferred)
-         (haskell-iterate-mode . lsp-deferred))
+  :hook ((haskell-mode . eglot-ensure)
+         (haskell-iterate-mode . eglot-ensure))
   :straight t)
-
-(use-package lsp-haskell
-  :straight t
-  :config
-  (setq lsp-haskell-server-path "haskell-language-server"))
-
-(use-package loccur
-  :straight t
-  :init
-  )
 
 (use-package sudo-edit
   :straight t)
@@ -400,24 +424,14 @@
   (add-hook 'find-file-hook 'auto-insert)
   (add-to-list 'auto-insert-alist '("\\.org$" . [odd/org-mode-template])))
 
-;; bash
-(add-hook 'sh-mode-hook 'flycheck-mode)
+(use-package visual-fill-column
+  :straight t
+  :custom
+  (visual-fill-column-center-text t)
+  :init
+  (global-visual-fill-column-mode t))
 
-;; utf-8 in terminal
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8) ;; also see `my-frame-config'
-(set-keyboard-coding-system 'utf-8)
-(set-locale-environment "en_NZ.UTF-8")
-(setq-default buffer-file-coding-system 'utf-8)
-(when (boundp 'default-buffer-file-coding-system) ;; obsolete since 23.2
-  (setq default-buffer-file-coding-system 'utf-8))
-;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
-;; xclip for terminal
-(custom-set-variables '(x-select-enable-clipboard t))
-
-;; emacsclient
-(load "server")
-(unless (server-running-p) (server-start))
+(use-package rainbow-delimiters
+  :straight t
+  :init
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
