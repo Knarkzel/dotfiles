@@ -167,6 +167,7 @@
 (define-key xah-fly-command-map (kbd "U") 'winner-undo)
 (define-key xah-fly-command-map (kbd "G") 'magit)
 (define-key xah-fly-command-map (kbd "V") 'rectangle-mark-mode)
+(define-key global-map (kbd "C-l") 'web-search)
 
 ;; keybindings leader
 (define-key xah-fly-leader-key-map (kbd ":") 'recenter-top-bottom)
@@ -227,7 +228,10 @@
 (use-package vertico-posframe
   :straight t
   :init
-  (vertico-posframe-mode t))
+  (vertico-posframe-mode t)
+  :custom
+  (vertico-posframe-border-width 1)
+  (vertico-posframe-width 100))
 
 (use-package orderless
   :straight t
@@ -435,3 +439,6 @@
   :straight t
   :init
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+(use-package web-search
+  :straight t)
