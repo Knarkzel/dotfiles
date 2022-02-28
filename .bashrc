@@ -24,8 +24,8 @@ export HISTCONTROL=ignorespace:ignoredups:erasedups
 export PATH="$PATH:/home/odd/.cargo/bin/:/opt/devkitpro/devkitPPC/bin:/home/odd/.local/bin:/home/odd/.scripts/menu"
 export TERM="screen-256color"
 export BROWSER="chromium"
-export EDITOR="emacsclient -c"
-export VISUAL="emacsclient -c"
+export EDITOR="emacs"
+export VISUAL="emacs"
 
 # devkitpro
 DEVKITPRO="/opt/devkitpro"

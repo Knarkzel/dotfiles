@@ -195,9 +195,7 @@
   
 ;; eglot
 (use-package eglot
-  :straight t
-  :init
-  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1))))
+  :straight t)
 
 ;; rust
 (use-package rust-mode
