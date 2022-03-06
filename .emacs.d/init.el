@@ -182,6 +182,7 @@
 ;; dired
 (use-package dired
   :init
+  (define-key dired-mode-map (kbd "i") 'wdired-change-to-wdired-mode)
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . dired-omit-mode))
   :custom
@@ -302,7 +303,6 @@
     (find-file file))
   (add-to-list 'load-path "~/.emacs.d/packages")
   (require 'eshell-toggle)
-  (add-hook 'eshell-mode-hook (lambda () (interactive) (company-mode -1)))
   :custom
   (eshell-ls-use-colors t)
   (eshell-cmpl-cycle-completions nil)

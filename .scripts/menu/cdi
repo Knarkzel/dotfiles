@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+ROMS="$HOME/source/backup/roms"
+GAME=$(ls $ROMS | dmenu)
+mame cdimono1 -cdrom "$ROMS/$GAME"
