@@ -111,6 +111,9 @@
 (add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
 
+;; sailfish
+(add-to-list 'auto-mode-alist '("\\.stpl\\'" . mhtml-mode))
+
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 
 ;; bash
@@ -135,8 +138,8 @@
 (unless (server-running-p) (server-start))
 
 ;; window divider
-(setq window-divider-default-bottom-width 1)
-(window-divider-mode t)
+;; (setq window-divider-default-bottom-width 1)
+;; (window-divider-mode t)
 
 ;; toggle terminals
 (use-package term-toggle
@@ -159,19 +162,19 @@
 
 ;; keybindings command
 (define-key xah-fly-command-map (kbd "k") 'consult-line)
-(define-key xah-fly-command-map (kbd "4") 'split-window-right)
+(define-key xah-fly-command-map (kbd "K") 'eldoc-doc-buffer)
+(define-key xah-fly-command-map (kbd "A") 'eglot-code-actions)
+(define-key xah-fly-command-map (kbd "R") 'eglot-rename)
+(define-key xah-fly-command-map (kbd "F") 'flymake-show-buffer-diagnostics)
 (define-key xah-fly-command-map (kbd "P") 'projectile-find-file)
 (define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
 (define-key xah-fly-command-map (kbd "T") 'term-toggle-term)
-(define-key xah-fly-command-map (kbd "F") 'grep)
 (define-key xah-fly-command-map (kbd "U") 'winner-undo)
 (define-key xah-fly-command-map (kbd "G") 'magit)
 (define-key xah-fly-command-map (kbd "V") 'rectangle-mark-mode)
-(define-key global-map (kbd "C-l") 'web-search)
 
 ;; keybindings leader
-(define-key xah-fly-leader-key-map (kbd ":") 'recenter-top-bottom)
-(define-key xah-fly-leader-key-map (kbd ";") 'eval-expression)
+(define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
 (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer)
 
 ;; lol
@@ -197,7 +200,7 @@
 ;; eglot
 (use-package eglot
   :straight t)
-
+  
 ;; rust
 (use-package rust-mode
   :straight t
@@ -319,6 +322,12 @@
   (org-hide-emphasis-markers t)
   (org-image-actual-width (list 300))
   (org-return-follows-link t)
+  (org-file-apps
+    (quote
+        ((auto-mode . emacs)
+        ("\\.mm\\'" . default)
+        ("\\.x?html?\\'" . "/usr/bin/chromium %s")
+        ("\\.pdf\\'" . "/usr/bin/chromium %s"))))
   :config
   (set-face-attribute 'org-document-info-keyword nil
                       :foreground "#9d8f7c")
@@ -426,17 +435,10 @@
   (add-hook 'find-file-hook 'auto-insert)
   (add-to-list 'auto-insert-alist '("\\.org$" . [odd/org-mode-template])))
 
-(use-package visual-fill-column
-  :straight t
-  :custom
-  (visual-fill-column-center-text t)
-  :init
-  (global-visual-fill-column-mode t))
-
 (use-package rainbow-delimiters
   :straight t
   :init
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-(use-package web-search
-  :straight t)
+;; python
+  (add-hook 'python-mode-hook 'eglot-ensure)

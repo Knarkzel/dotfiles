@@ -2,4 +2,5 @@
 set -Eeuo pipefail
 ROMS="$HOME/source/backup/roms"
 GAME=$(ls $ROMS | dmenu)
+cd "$HOME/downloads"
 mame cdimono1 -cdrom "$ROMS/$GAME"
