@@ -130,17 +130,6 @@
   (setq default-buffer-file-coding-system 'utf-8))
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;; xclip for terminal
-(custom-set-variables '(x-select-enable-clipboard t))
-
-;; emacsclient
-(load "server")
-(unless (server-running-p) (server-start))
-
-;; window divider
-;; (setq window-divider-default-bottom-width 1)
-;; (window-divider-mode t)
-
 ;; toggle terminals
 (use-package term-toggle
   :straight (:host github :repo "knarkzel/emacs-term-toggle"))
@@ -168,7 +157,6 @@
 (define-key xah-fly-command-map (kbd "F") 'flymake-show-buffer-diagnostics)
 (define-key xah-fly-command-map (kbd "P") 'projectile-find-file)
 (define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
-(define-key xah-fly-command-map (kbd "T") 'term-toggle-term)
 (define-key xah-fly-command-map (kbd "U") 'winner-undo)
 (define-key xah-fly-command-map (kbd "G") 'magit)
 (define-key xah-fly-command-map (kbd "V") 'rectangle-mark-mode)
@@ -270,10 +258,16 @@
   :custom
   (corfu-cycle t)
   (corfu-auto t)
+  (corfu-quit-no-match 'separator)
   (corfu-auto-prefix 1)
   (corfu-auto-delay 0.20)
   (corfu-count 5)
   :init (corfu-global-mode))
+
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (setq-local corfu-auto nil)
+            (corfu-mode)))
 
 (use-package magit
   :straight t
