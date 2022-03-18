@@ -1,17 +1,9 @@
 [Default Applications]
-text/x-shellscript=vim.desktop;
-x-scheme-handler/magnet=transmission.desktop;
-application/x-bittorrent=transmission.desktop;
+text/plain=emacs.desktop;
+text/x-shellscript=emacs.desktop;
 x-scheme-handler/mailto=chromium.desktop;
-text/plain=vim.desktop;
 application/pdf=mupdf.desktop;
-image/png=eog.desktop;
+image/png=chromium.desktop;
 image/jpeg=chromium.desktop
-image/gif=eog.desktop;
-application/rss+xml=snownews.desktop
-video/x-matroska=totem.desktop
-inode/directory=chromium.desktop
-x-scheme-handler/discord-455712169795780630=discord-455712169795780630.desktop
-
-[Added Associations]
-image/jpeg=chromium.desktop;
+image/gif=chromium.desktop;
+inode/directory=emacs.desktop

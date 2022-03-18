@@ -4,13 +4,6 @@
 [credential]
 	helper = store
 [core]
-    editor = emacsclient -nw
-[pager]
-	diff = delta --light
-	log = delta --light
-	reflog = delta --light
-	show = delta --light
+	editor = nano -0
 [init]
 	defaultBranch = master
-[delta]
-    line-numbers = true

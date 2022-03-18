@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: span
+# key: :s
+# --
+<span>
+  $1
+</span>

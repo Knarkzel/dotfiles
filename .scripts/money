@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+if [ -z "$1" ]; then
+    printf "$FILE <file>\n"
+else
+    FOLDER=$(mktemp -d)
+    cp "$1" "$FOLDER"
+    cd "$FOLDER"
+    pdftotext "$1"
+    cat "${1%.*}.txt" | grep "^-" > numbers
+    awk '{s+=$1} END {printf "%.0f\n", s}' numbers
+fi
