@@ -1,4 +1,5 @@
 # aliases
+alias man="info"
 alias nano="nano -0"
 alias si="sudo pacman -S"
 alias sr="sudo pacman -R"
