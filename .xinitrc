@@ -16,6 +16,10 @@ xbanish &
 hsetroot -solid "#ffffff" &
 redshift -l 58:9 -t 6500K:2000K -b 0.60 &
 
+# fix java
+wmname "LG3D"
+export _JAVA_AWT_WM_NONREPARENTING=1
+
 # dwm
 nohup ~/.scripts/statusbar > /dev/null &
 exec ~/.scripts/dwm

@@ -222,7 +222,7 @@
     :init
     (vertico-posframe-mode t)
     :custom
-    (vertico-posframe-border-width 1)
+    (vertico-posframe-border-width 0)
     (vertico-posframe-width 100))
 
   (use-package orderless
@@ -322,8 +322,8 @@
      (quote
       ((auto-mode . emacs)
        ("\\.mm\\'" . default)
-       ("\\.x?html?\\'" . "/usr/bin/chromium %s")
-       ("\\.pdf\\'" . "/usr/bin/chromium %s"))))
+       ("\\.x?html?\\'" . "/usr/bin/firefox %s")
+       ("\\.pdf\\'" . "/usr/bin/firefox %s"))))
     :config
     (set-face-attribute 'org-document-info-keyword nil
                         :foreground "#9d8f7c")
@@ -437,4 +437,7 @@
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
   ;; python
-  (add-hook 'python-mode-hook 'eglot-ensure))
+  (add-hook 'python-mode-hook 'eglot-ensure)
+
+  (use-package php-mode
+    :straight t))
