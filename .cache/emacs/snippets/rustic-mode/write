@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: write
-# key: :w
-# --
-write!(f, "$1"),

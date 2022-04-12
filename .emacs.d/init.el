@@ -82,7 +82,6 @@
   (customize-set-variable 'scroll-bar-mode nil)
   (customize-set-variable 'horizontal-scroll-bar-mode nil)
 
-  (global-auto-revert-mode 1)
   (display-time-mode 1)
   (global-hl-line-mode 1)
   (global-font-lock-mode 1)
@@ -115,8 +114,7 @@
 
   ;; sailfish
   (add-to-list 'auto-mode-alist '("\\.stpl\\'" . mhtml-mode))
-
-  (global-set-key (kbd "C-x k") 'kill-this-buffer)
+  (global-set-key (kbd "C-x k") 'kill-buffer-and-window)
 
   ;; bash
   (add-hook 'sh-mode-hook 'flycheck-mode)
@@ -151,17 +149,15 @@
     (global-set-key (kbd "<escape>") 'xah-fly-command-mode-activate)
     (xah-fly-keys))
 
-  ;; keybindings command
+  ;; line
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
-  (define-key xah-fly-command-map (kbd "K") 'eldoc-doc-buffer)
-  (define-key xah-fly-command-map (kbd "A") 'eglot-code-actions)
-  (define-key xah-fly-command-map (kbd "R") 'eglot-rename)
-  (define-key xah-fly-command-map (kbd "F") 'flymake-show-buffer-diagnostics)
-  (define-key xah-fly-command-map (kbd "P") 'projectile-find-file)
+
+  ;; coding
   (define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
-  (define-key xah-fly-command-map (kbd "V") 'rectangle-mark-mode)
+  (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
+  (define-key xah-fly-command-map (kbd "F") 'consult-find)
 
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
@@ -176,30 +172,33 @@
   (use-package dired
     :init
     (define-key dired-mode-map (kbd "i") 'wdired-change-to-wdired-mode)
+    (define-key dired-mode-map (kbd ".") 'dired-omit-mode)
     :hook ((dired-mode . dired-hide-details-mode)
            (dired-mode . dired-omit-mode))
     :custom
     (dired-omit-files "^\\.")
+    (dired-dwim-target t)
     (dired-listing-switches "--group-directories-first --dereference -Al"))
 
-  (use-package all-the-icons-dired
-    :straight t
-    :after (all-the-icons)
-    :hook (dired-mode . all-the-icons-dired-mode))
-  
   ;; eglot
   (use-package eglot
-    :straight t)
+    :straight t
+    :config
+    (define-key eglot-mode-map (kbd "C-c e") 'flymake-goto-next-error)
+    (define-key eglot-mode-map (kbd "C-c f") 'xref-find-definitions)
+    (define-key eglot-mode-map (kbd "C-c h") 'eldoc)
+    (define-key eglot-mode-map (kbd "C-c n") 'eglot-rename)
+    (define-key eglot-mode-map (kbd "C-c a") 'eglot-code-actions)
+    (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references))
   
   ;; rust
   (use-package rust-mode
     :straight t
     :hook (rust-mode . eglot-ensure)
     :custom
-    (rust-format-on-save t)
+    (rust-format-on-save nil)
     :init
-    (require 'rust-mode)
-    (define-key rust-mode-map (kbd "C-c C-c") 'rust-run))
+    (require 'rust-mode))
 
   ;; electric pair
   (use-package electric-pair
@@ -208,6 +207,7 @@
   (use-package consult
     :straight t
     :custom
+    (consult-preview-key nil)
     (consult-buffer-sources '(consult--source-buffer)))
 
   (use-package vertico
@@ -221,6 +221,7 @@
     :straight t
     :init
     (vertico-posframe-mode t)
+    (set-face-background 'vertico-posframe-border "#d7d7d7")
     :custom
     (vertico-posframe-border-width 0)
     (vertico-posframe-width 100))
@@ -237,19 +238,6 @@
     :straight t
     :init (marginalia-mode t))
 
-  (use-package all-the-icons
-    :straight t
-    :init
-    (when (display-graphic-p)
-      (require 'all-the-icons)))
-
-  (use-package all-the-icons-completion
-    :straight t
-    :after (marginalia all-the-icons)
-    :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-    :init
-    (all-the-icons-completion-mode t))
-
   (use-package which-key
     :straight t
     :custom (which-key-idle-delay 0.5)
@@ -262,7 +250,7 @@
     (corfu-auto t)
     (corfu-quit-no-match 'separator)
     (corfu-auto-prefix 1)
-    (corfu-auto-delay 0.20)
+    (corfu-auto-delay 0.5)
     (corfu-count 5)
     :init (corfu-global-mode))
 
@@ -274,11 +262,6 @@
   (use-package magit
     :straight t
     :custom (magit-refresh-status-buffer nil))
-
-  (use-package projectile
-    :straight t
-    :custom (projectile-indexing-method 'hybrid)
-    :config (projectile-mode t))
 
   ;; snippets
   (use-package yasnippet
@@ -298,15 +281,17 @@
         (eshell/clear 1)
         (eshell-emit-prompt)
         (insert input)))
-    (defun eshell/vim (file)
+    (defun eshell/nano (file)
       (find-file file))
     (add-to-list 'load-path "~/.emacs.d/packages")
     (require 'eshell-toggle)
+    (define-key eshell-mode-map (kbd "C-l") 'odd/clear)
     :custom
     (eshell-ls-use-colors t)
     (eshell-cmpl-cycle-completions nil)
     (eshell-history-size (* 1024 8))
     (eshell-hist-ignoredups t)
+    (eshell-banner-message "")
     (eshell-destroy-buffer-when-process-dies t))
 
   ;; org
@@ -380,8 +365,7 @@
   (use-package eldoc
     :custom
     (eldoc-echo-area-use-multiline-p nil)
-    (eldoc-echo-area-display-truncation-message nil)
-    (add-function :before-until (local 'eldoc-documentation-function) #'prog-mode-eldoc-function))
+    (eldoc-echo-area-display-truncation-message nil))
 
   ;; serve directory
   (use-package simple-httpd
@@ -440,4 +424,34 @@
   (add-hook 'python-mode-hook 'eglot-ensure)
 
   (use-package php-mode
-    :straight t))
+    :straight t)
+
+  (use-package flymake-diagnostic-at-point 
+    :straight (:host github :repo "knarkzel/flymake-diagnostic-at-point")
+    :after flymake
+    :custom
+    (flymake-diagnostic-at-point-error-prefix "")
+    (flymake-diagnostic-at-point-display-diagnostic-function 'flymake-diagnostic-at-point-display-minibuffer)
+    :config
+    (add-hook 'flymake-mode-hook #'flymake-diagnostic-at-point-mode))
+
+  (defun odd/download-clipboard ()
+    (interactive)
+    (let ((clipboard (current-kill 0 t)))
+      (if (cl-search "http" clipboard)
+          (shell-command (concat "curl -LO " clipboard " >/dev/null"))
+        (message clipboard))))
+  ;; tramp
+  (setq remote-file-name-inhibit-cache nil)
+  (setq vc-ignore-dir-regexp
+        (format "%s\\|%s"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp))
+  (setq tramp-verbose 1)
+  (use-package markdown-mode
+    :straight t)
+
+  (use-package zig-mode
+    :straight t
+    :hook (zig-mode . eglot-ensure))
+  )
