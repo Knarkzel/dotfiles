@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: deinit
+# key: :d
+# --
+defer ${1:variable}.deinit();

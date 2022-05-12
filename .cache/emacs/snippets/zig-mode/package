@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: package
+# key: :p
+# --
+${1:exe}.addPackagePath("${2:executable}", "${3:path}");

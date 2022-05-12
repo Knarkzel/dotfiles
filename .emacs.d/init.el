@@ -1,6 +1,6 @@
 (let ((file-name-handler-alist nil))
   (setq gc-cons-threshold 100000000)
-  
+
   ;; straight
   (setq package-enable-at-startup nil)
   (defvar bootstrap-version)
@@ -88,7 +88,7 @@
   (column-number-mode 1)
   (winner-mode 1)
   (recentf-mode 1)
-  (menu-bar-mode -1) 
+  (menu-bar-mode -1)
   (toggle-scroll-bar -1)
   (tool-bar-mode -1)
   (global-eldoc-mode -1)
@@ -119,7 +119,7 @@
   ;; bash
   (add-hook 'sh-mode-hook 'flycheck-mode)
 
-  ;; utf-8 
+  ;; utf-8
   (prefer-coding-system 'utf-8)
   (set-default-coding-systems 'utf-8)
   (set-terminal-coding-system 'utf-8)
@@ -134,11 +134,17 @@
   (use-package term-toggle
     :straight (:host github :repo "knarkzel/emacs-term-toggle"))
 
+  (use-package markdown-mode
+    :straight t)
+  
   ;; theme
   (use-package doom-themes
     :straight t
     :config
-    (load-theme 'doom-flatwhite t))
+    (load-theme 'doom-flatwhite t)
+    ;; fix color for lsp-ui-doc
+    (require 'markdown-mode)
+    (set-face-background 'markdown-code-face "#f1ece4"))
 
   ;; superior keybindings
   (use-package xah-fly-keys
@@ -147,7 +153,8 @@
     (require 'xah-fly-keys)
     (xah-fly-keys-set-layout "colemak")
     (global-set-key (kbd "<escape>") 'xah-fly-command-mode-activate)
-    (xah-fly-keys))
+    (xah-fly-keys)
+    (add-hook 'xah-fly-command-mode-activate-hook (lambda () (interactive) (abort-recursive-edit))))
 
   ;; line
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
@@ -163,46 +170,55 @@
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer)
 
-  ;; lol
-  (rectangle-mark-mode)
-  (rectangle-mark-mode)
-  (define-key rectangle-mark-mode-map (kbd "I") 'string-insert-rectangle)
-
   ;; dired
   (use-package dired
     :init
     (define-key dired-mode-map (kbd "i") 'wdired-change-to-wdired-mode)
     (define-key dired-mode-map (kbd ".") 'dired-omit-mode)
-    :hook ((dired-mode . dired-hide-details-mode)
-           (dired-mode . dired-omit-mode))
+    (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+    (add-hook 'dired-mode-hook 'dired-omit-mode)
     :custom
     (dired-omit-files "^\\.")
     (dired-dwim-target t)
     (dired-listing-switches "--group-directories-first --dereference -Al"))
 
-  ;; eglot
-  (use-package eglot
+  ;; lsp
+  (use-package lsp-mode
     :straight t
-    :config
-    (define-key eglot-mode-map (kbd "C-c e") 'flymake-goto-next-error)
-    (define-key eglot-mode-map (kbd "C-c f") 'xref-find-definitions)
-    (define-key eglot-mode-map (kbd "C-c h") 'eldoc)
-    (define-key eglot-mode-map (kbd "C-c n") 'eglot-rename)
-    (define-key eglot-mode-map (kbd "C-c a") 'eglot-code-actions)
-    (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references))
-  
+    :init
+    (use-package flycheck
+      :straight t)
+    (use-package lsp-ui
+      :straight t
+      :custom
+      (lsp-ui-doc-max-width 45)
+      (lsp-ui-doc-max-height 20)
+      (lsp-ui-doc-show-with-cursor t)
+      (lsp-ui-doc-show-with-mouse nil)
+      (lsp-ui-doc-delay 0.25))
+    (define-key lsp-mode-map (kbd "C-c e") 'flycheck-next-error)
+    (define-key lsp-mode-map (kbd "C-c f") 'lsp-find-definition)
+    (define-key lsp-mode-map (kbd "C-c n") 'lsp-rename)
+    (define-key lsp-mode-map (kbd "C-c a") 'lsp-execute-code-action)
+    (define-key lsp-mode-map (kbd "C-c r") 'lsp-find-references)
+    :custom
+    (lsp-keymap-prefix "C-c l")
+    (lsp-idle-delay 0.500)
+    (lsp-log-io nil)
+    (lsp-headerline-breadcrumb-enable nil)
+    (lsp-lens-enable nil)
+    (lsp-signature-auto-activate nil))
+
   ;; rust
   (use-package rust-mode
     :straight t
-    :hook (rust-mode . eglot-ensure)
     :custom
     (rust-format-on-save nil)
     :init
-    (require 'rust-mode))
+    (add-hook 'rust-mode-hook 'lsp-deferred))
 
   ;; electric pair
-  (use-package electric-pair
-    :hook (prog-mode . electric-pair-mode))
+  (add-hook 'prog-mode-hook 'electric-pair-mode)
 
   (use-package consult
     :straight t
@@ -221,9 +237,9 @@
     :straight t
     :init
     (vertico-posframe-mode t)
-    (set-face-background 'vertico-posframe-border "#d7d7d7")
+    (set-face-background 'vertico-posframe-border "white")
     :custom
-    (vertico-posframe-border-width 0)
+    (vertico-posframe-border-width 1)
     (vertico-posframe-width 100))
 
   (use-package orderless
@@ -296,7 +312,6 @@
 
   ;; org
   (use-package org
-    :hook (org-mode . org-indent-mode)
     :straight t
     :custom
     (org-hidden-keywords nil)
@@ -310,6 +325,7 @@
        ("\\.x?html?\\'" . "/usr/bin/firefox %s")
        ("\\.pdf\\'" . "/usr/bin/firefox %s"))))
     :config
+    (add-hook 'org-mode-hook 'org-indent-mode)
     (set-face-attribute 'org-document-info-keyword nil
                         :foreground "#9d8f7c")
     (set-face-attribute 'org-document-info nil
@@ -328,29 +344,9 @@
     :config (org-roam-setup))
 
   (use-package org-bullets
-    :hook (org-mode . org-bullets-mode)
-    :straight t)
-
-  ;; vlang
-  (use-package v-mode
     :straight t
-    :init
-    (defun replace-alist-mode (alist oldmode newmode)
-      (dolist (aitem alist)
-        (if (eq (cdr aitem) oldmode)
-            (setcdr aitem newmode))))
-    (defun odd/v-format-buffer ()
-      "Format the current buffer using the 'v fmt -w'."
-      (interactive)
-      (when (eq major-mode 'v-mode)
-        (save-window-excursion
-          (shell-command (concat  "v fmt -w " (buffer-file-name))))
-        (revert-buffer
-         :ignore-auto
-         :noconfirm)))
-    (replace-alist-mode auto-mode-alist 'verilog-mode 'v-mode)
-    (add-hook 'v-mode-hook
-              (lambda () (setq after-save-hook '(odd/v-format-buffer)))))
+    :custom
+    (add-hook 'org-mode-hook 'org-bullets-mode))
 
   ;; tree sitter
   (use-package tree-sitter
@@ -361,7 +357,7 @@
     (global-tree-sitter-mode)
     (add-hook 'tree-sitter-mode-hook 'tree-sitter-hl-mode))
 
-  ;; eldoc 
+  ;; eldoc
   (use-package eldoc
     :custom
     (eldoc-echo-area-use-multiline-p nil)
@@ -392,12 +388,7 @@
     :init
     (add-hook 'emacs-lisp-mode-hook 'adjust-parens-mode))
 
-  ;; haskell
-  (use-package haskell-mode
-    :hook ((haskell-mode . eglot-ensure)
-           (haskell-iterate-mode . eglot-ensure))
-    :straight t)
-
+  ;; sudo
   (use-package sudo-edit
     :straight t)
 
@@ -421,12 +412,12 @@
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
   ;; python
-  (add-hook 'python-mode-hook 'eglot-ensure)
+  (add-hook 'python-mode-hook 'lsp-deferred)
 
   (use-package php-mode
     :straight t)
 
-  (use-package flymake-diagnostic-at-point 
+  (use-package flymake-diagnostic-at-point
     :straight (:host github :repo "knarkzel/flymake-diagnostic-at-point")
     :after flymake
     :custom
@@ -435,12 +426,6 @@
     :config
     (add-hook 'flymake-mode-hook #'flymake-diagnostic-at-point-mode))
 
-  (defun odd/download-clipboard ()
-    (interactive)
-    (let ((clipboard (current-kill 0 t)))
-      (if (cl-search "http" clipboard)
-          (shell-command (concat "curl -LO " clipboard " >/dev/null"))
-        (message clipboard))))
   ;; tramp
   (setq remote-file-name-inhibit-cache nil)
   (setq vc-ignore-dir-regexp
@@ -448,10 +433,22 @@
                 vc-ignore-dir-regexp
                 tramp-file-name-regexp))
   (setq tramp-verbose 1)
+
   (use-package markdown-mode
     :straight t)
 
   (use-package zig-mode
     :straight t
-    :hook (zig-mode . eglot-ensure))
-  )
+    :init
+    (add-hook 'zig-mode-hook 'lsp-deferred))
+
+  (use-package format-all
+    :straight t
+    :init
+    (add-hook 'prog-mode-hook 'format-all-mode))
+
+  ;; rustdesk
+  (add-to-list 'auto-mode-alist '("\\.tis\\'" . javascript-mode))
+
+  (use-package rainbow-mode
+    :straight t)) 

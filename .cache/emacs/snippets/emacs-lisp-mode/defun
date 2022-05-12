@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: defun
+# key: :d
+# --
+(defun odd/$1 ()
+  (interactive)
+  ($2))

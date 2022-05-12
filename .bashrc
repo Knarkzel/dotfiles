@@ -6,6 +6,8 @@ alias gs="git status"
 alias gp="git push"
 alias gc="git commit"
 alias ga="git add"
+alias cb="cargo build"
+alias cr="cargo run"
 
 # other
 alias nano="nano"
@@ -34,3 +36,4 @@ bind 'set page-completions off'
 
 # starship
 eval "$(starship init bash)"
+. "$HOME/.cargo/env"

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: string
+# key: :s
+# --
+print("{s}", .{${1:string}});
