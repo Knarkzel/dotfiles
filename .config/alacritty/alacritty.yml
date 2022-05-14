@@ -9,7 +9,7 @@ key_bindings:
 colors:
   # Default colors
   primary:
-    background: '0xfdf6e3'
+    background: '0xf7f3ee'
     foreground: '0x586e75'
 
   # Normal colors

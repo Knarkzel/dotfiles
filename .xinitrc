@@ -13,7 +13,7 @@ setxkbmap us -variant colemak
 # other
 dunst &
 xbanish &
-hsetroot -solid "#ffffff" &
+hsetroot -solid "#f7f3ee" &
 redshift -l 58:9 -t 6500K:2000K -b 0.60 &
 
 # fix java
