@@ -136,7 +136,7 @@
 
   (use-package markdown-mode
     :straight t)
-  
+
   ;; theme
   (use-package doom-themes
     :straight t
@@ -160,11 +160,13 @@
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
 
   ;; coding
+  (define-key xah-fly-command-map (kbd "A") 'org-roam-node-find)
   (define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
+  (define-key xah-fly-command-map (kbd "P") 'projectile-command-map)
 
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
@@ -207,7 +209,9 @@
     (lsp-log-io nil)
     (lsp-headerline-breadcrumb-enable nil)
     (lsp-lens-enable nil)
-    (lsp-signature-auto-activate nil))
+    (lsp-signature-auto-activate nil)
+    ;; fixes Rust becoming slow: https://users.rust-lang.org/t/how-to-disable-rust-analyzer-proc-macro-warnings-in-neovim/53150/9
+    (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"]))
 
   ;; rust
   (use-package rust-mode
@@ -264,9 +268,9 @@
     :custom
     (corfu-cycle t)
     (corfu-auto t)
-    (corfu-quit-no-match 'separator)
+    (corfu-quit-no-match t)
     (corfu-auto-prefix 1)
-    (corfu-auto-delay 0.5)
+    (corfu-auto-delay 0.0)
     (corfu-count 5)
     :init (corfu-global-mode))
 
@@ -275,9 +279,30 @@
               (setq-local corfu-auto nil)
               (corfu-mode)))
 
+  (use-package embark
+    :straight t
+    :init
+    (define-key global-map (kbd "C-.") 'embark-dwim)
+    (define-key global-map (kbd "M-.") 'embark-act))
+
+  (use-package embark-consult
+    :straight t
+    :after (embark consult)
+    :demand t
+    :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
+
+  ;; git magic
   (use-package magit
     :straight t
     :custom (magit-refresh-status-buffer nil))
+
+  (use-package forge
+    :straight t
+    :after magit
+    :custom
+    (auth-sources '("~/.authinfo"))
+    (markdown-max-image-size '(800 . 800)))
 
   ;; snippets
   (use-package yasnippet
@@ -432,6 +457,12 @@
         (format "%s\\|%s"
                 vc-ignore-dir-regexp
                 tramp-file-name-regexp))
+  (setq tramp-inline-compress-start-size 1000)
+  (setq tramp-copy-size-limit 10000)
+  (setq vc-handled-backends '(Git))
+  (setq tramp-default-method "scp")
+  (setq tramp-use-ssh-controlmaster-options nil)
+  (setq projectile--mode-line "Projectile")
   (setq tramp-verbose 1)
 
   (use-package markdown-mode
@@ -451,4 +482,22 @@
   (add-to-list 'auto-mode-alist '("\\.tis\\'" . javascript-mode))
 
   (use-package rainbow-mode
-    :straight t)) 
+    :straight t)
+
+  ;; project managing
+  (use-package projectile
+    :straight t)
+
+  ;; undo
+  (use-package undo-fu
+    :straight t
+    :init
+    (global-unset-key (kbd "C-z"))
+    (global-set-key (kbd "C-z") 'undo-fu-only-undo)
+    (define-key xah-fly-command-map (kbd "j") 'undo-fu-only-undo)
+    (define-key xah-fly-command-map (kbd "J") 'undo-fu-only-redo))
+
+  (use-package undo-fu-session
+    :straight t
+    :init
+    (global-undo-fu-session-mode t)))
