@@ -154,7 +154,7 @@
     (xah-fly-keys-set-layout "colemak")
     (global-set-key (kbd "<escape>") 'xah-fly-command-mode-activate)
     (xah-fly-keys)
-    (add-hook 'xah-fly-command-mode-activate-hook (lambda () (interactive) (abort-recursive-edit))))
+    (add-hook 'xah-fly-command-mode-activate-hook (lambda () (interactive) (corfu-quit) (abort-recursive-edit))))
 
   ;; line
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
@@ -166,7 +166,7 @@
   (define-key xah-fly-command-map (kbd "G") 'magit)
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
-  (define-key xah-fly-command-map (kbd "P") 'projectile-command-map)
+  (define-key xah-fly-command-map (kbd "P") 'projectile-find-file)
 
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
@@ -184,6 +184,10 @@
     (dired-dwim-target t)
     (dired-listing-switches "--group-directories-first --dereference -Al"))
 
+  ;; tabnine
+  (use-package company-tabnine
+    :straight t)
+  
   ;; lsp
   (use-package lsp-mode
     :straight t
@@ -203,6 +207,12 @@
     (define-key lsp-mode-map (kbd "C-c n") 'lsp-rename)
     (define-key lsp-mode-map (kbd "C-c a") 'lsp-execute-code-action)
     (define-key lsp-mode-map (kbd "C-c r") 'lsp-find-references)
+
+    ;; sick tabnine
+    (add-hook 'lsp-completion-mode-hook (lambda () (interactive)
+                                          (company-mode -1)
+                                          ;; (add-to-list 'completion-at-point-functions #'cape-file)
+                                          (add-to-list 'completion-at-point-functions (cape-company-to-capf 'company-tabnine))))
     :custom
     (lsp-keymap-prefix "C-c l")
     (lsp-idle-delay 0.500)
@@ -263,6 +273,7 @@
     :custom (which-key-idle-delay 0.5)
     :config (which-key-mode t))
 
+  ;; auto-complete
   (use-package corfu
     :straight t
     :custom
@@ -274,10 +285,11 @@
     (corfu-count 5)
     :init (corfu-global-mode))
 
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (setq-local corfu-auto nil)
-              (corfu-mode)))
+  ;; more completion backends
+  (use-package cape
+    :straight t
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-file))
 
   (use-package embark
     :straight t
@@ -323,7 +335,7 @@
         (eshell-emit-prompt)
         (insert input)))
     (defun eshell/nano (file)
-      (find-file file))
+      (find-filefile))
     (add-to-list 'load-path "~/.emacs.d/packages")
     (require 'eshell-toggle)
     (define-key eshell-mode-map (kbd "C-l") 'odd/clear)
@@ -334,6 +346,24 @@
     (eshell-hist-ignoredups t)
     (eshell-banner-message "")
     (eshell-destroy-buffer-when-process-dies t))
+
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq-local corfu-auto nil)
+              (corfu-mode)))
+
+  (use-package esh-autosuggest
+    :straight t
+    :init
+    (add-hook 'eshell-mode-hook 'esh-autosuggest-mode))
+
+  (use-package alert
+    :straight t
+    :init
+    (alert-add-rule :status '(buried)
+		            :mode 'eshell-mode
+		            :style 'notifications)
+    (add-hook 'eshell-kill-hook (lambda (process status) (interactive) (alert "Command finished" :title "Eshell"))))
 
   ;; org
   (use-package org
@@ -462,7 +492,6 @@
   (setq vc-handled-backends '(Git))
   (setq tramp-default-method "scp")
   (setq tramp-use-ssh-controlmaster-options nil)
-  (setq projectile--mode-line "Projectile")
   (setq tramp-verbose 1)
 
   (use-package markdown-mode
@@ -482,10 +511,6 @@
   (add-to-list 'auto-mode-alist '("\\.tis\\'" . javascript-mode))
 
   (use-package rainbow-mode
-    :straight t)
-
-  ;; project managing
-  (use-package projectile
     :straight t)
 
   ;; undo
