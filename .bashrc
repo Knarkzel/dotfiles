@@ -36,4 +36,3 @@ bind 'set page-completions off'
 
 # starship
 eval "$(starship init bash)"
-. "$HOME/.cargo/env"
