@@ -118,8 +118,6 @@
                        '(tool-bar-lines . 0)
                        '(menu-bar-lines . 0)
                        '(vertical-scroll-bars . nil))))
-(setq mode-line-format nil)
-(setq-default mode-line-format nil)
 
 (setq visible-bell nil
       ring-bell-function #'ignore)
@@ -149,7 +147,8 @@
               truncate-lines t
               split-width-threshold nil
               inhibit-startup-screen t
-              initial-scratch-message nil)
+              initial-scratch-message nil
+              create-lockfiles nil)
 
 (setq kill-buffer-query-functions
       (remq 'process-kill-buffer-query-function
@@ -162,7 +161,6 @@
 (customize-set-variable 'horizontal-scroll-bar-mode nil)
 
 (display-time-mode 1)
-(global-hl-line-mode 1)
 (global-font-lock-mode 1)
 (column-number-mode 1)
 (winner-mode 1)
@@ -231,5 +229,26 @@
 (setq tramp-default-method "scp")
 (setq tramp-use-ssh-controlmaster-options nil)
 (setq tramp-verbose 1)
+
+;; handle long lines
+(global-so-long-mode t)
+
+;; faster paren
+(setq show-paren-delay 0.0)
+
+;; modeline
+(setq-default mode-line-format
+              (list
+               '(:eval (propertize " %b" 'face (buffer-file-name)))
+               '(:eval (propertize " (%l:%c)" 'face (buffer-file-name)))))
+
+(setq echo-keystrokes 0.001)
+
+;; auto update
+(global-auto-revert-mode 1)
+
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
 
 (provide 'early-init)

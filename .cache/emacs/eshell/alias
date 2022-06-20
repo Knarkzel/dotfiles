@@ -1,7 +1,0 @@
-alias cr cargo run $*
-alias cb cargo build $*
-alias cdo cargo doc --open $*
-alias su sudo pacman -Syu
-alias si sudo pacman -R $*
-alias si sudo pacman -Sy $*
-alias config git --git-dir=$HOME/.cfg/ --work-tree=$HOME $*

@@ -11,14 +11,12 @@
 
   ;; keybindings
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
-  (define-key xah-fly-command-map (kbd "A") 'org-roam-node-find)
-  (define-key xah-fly-command-map (kbd "E") 'eshell-toggle)
+  (define-key xah-fly-command-map (kbd "E") 'vterm-toggle)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
-  (define-key xah-fly-command-map (kbd "P") 'projectile-find-file)
-
+  
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
@@ -31,9 +29,6 @@
 
 (use-package rainbow-mode
   :straight t)
-
-(use-package term-toggle
-  :straight (:host github :repo "knarkzel/emacs-term-toggle"))
 
 (use-package markdown-mode
   :straight t)
@@ -61,10 +56,12 @@
   (define-key dired-mode-map (kbd ".") 'dired-omit-mode)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (add-hook 'dired-mode-hook 'dired-omit-mode)
+  (define-key dired-mode-map [mouse-2] 'dired-mouse-find-file)
+  (define-key global-map [mouse-3] 'dired-jump)
   :custom
   (dired-omit-files "^\\.")
   (dired-dwim-target t)
-  (dired-listing-switches "--group-directories-first --dereference -Al"))
+  (dired-listing-switches "--group-directories-first --dereference -Alh"))
 
 (use-package lsp-ui
   :straight t
@@ -86,6 +83,7 @@
   (add-hook 'python-mode-hook 'lsp-deferred)
   (add-hook 'rust-mode-hook 'lsp-deferred)
   (add-hook 'zig-mode-hook 'lsp-deferred)
+  (add-hook 'typescript-mode-hook 'lsp-deferred)
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-idle-delay 0.500)
@@ -152,8 +150,8 @@
   (corfu-auto-prefix 1)
   (corfu-auto-delay 0.0)
   (corfu-count 5)
-  :init
-  (corfu-global-mode))
+  :config
+  (global-corfu-mode))
 
 ;; more completion backends
 (use-package cape
@@ -164,8 +162,14 @@
 (use-package embark
   :straight t
   :init
-  (define-key global-map (kbd "C-.") 'embark-dwim)
-  (define-key global-map (kbd "M-.") 'embark-act))
+  (global-set-key (kbd "C-.") 'embark-dwim)
+  (global-set-key (kbd "M-.") 'embark-act))
+
+(use-package avy
+  :straight t
+  :init
+  (global-set-key (kbd "C-,") 'avy-goto-word-1)
+  (global-set-key (kbd "M-,") 'avy-goto-char))
 
 (use-package embark-consult
   :straight t
@@ -186,6 +190,11 @@
   (auth-sources '("~/.authinfo"))
   (markdown-max-image-size '(800 . 800)))
 
+(use-package magit-todos
+  :straight t
+  :init
+  (magit-todos-mode t))
+
 ;; snippets
 (use-package yasnippet
   :straight t
@@ -194,46 +203,6 @@
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
-
-;; eshell
-(use-package eshell
-  :init
-  (defun odd/clear ()
-    (interactive)
-    (let ((input (eshell-get-old-input)))
-      (eshell/clear 1)
-      (eshell-emit-prompt)
-      (insert input)))
-  (defun eshell/nano (file)
-    (find-filefile))
-  (add-to-list 'load-path "~/.emacs.d/packages")
-  (require 'eshell-toggle)
-  (define-key eshell-mode-map (kbd "C-l") 'odd/clear)
-  :custom
-  (eshell-ls-use-colors t)
-  (eshell-cmpl-cycle-completions nil)
-  (eshell-history-size (* 1024 8))
-  (eshell-hist-ignoredups t)
-  (eshell-banner-message "")
-  (eshell-destroy-buffer-when-process-dies t)
-
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (setq-local corfu-auto nil)
-              (corfu-mode))))
-
-(use-package esh-autosuggest
-  :straight t
-  :init
-  (add-hook 'eshell-mode-hook 'esh-autosuggest-mode))
-
-(use-package alert
-  :straight t
-  :init
-  (alert-add-rule :status '(buried)
-		          :mode 'eshell-mode
-		          :style 'notifications)
-  (add-hook 'eshell-kill-hook (lambda (process status) (interactive) (alert "Command finished" :title "Eshell"))))
 
 ;; org
 (use-package org
@@ -257,21 +226,6 @@
                       :foreground "#9d8f7c")
   (set-face-attribute 'org-document-title nil
                       :foreground "#9d8f7c" :bold nil))
-
-;; org-roam
-(use-package org-roam
-  :straight t
-  :init
-  (setq org-roam-v2-ack t
-        org-roam-directory "~/org-roam"
-        org-agenda-files (directory-files-recursively "~/org-roam" "\\.org$")
-        org-roam-completion-everywhere t)
-  :config (org-roam-setup))
-
-(use-package org-bullets
-  :straight t
-  :custom
-  (add-hook 'org-mode-hook 'org-bullets-mode))
 
 ;; tree sitter
 (use-package tree-sitter
@@ -298,18 +252,6 @@
 (use-package org-agenda
   :custom
   (org-agenda-start-on-weekday nil))
-
-;; org-download
-(use-package org-download
-  :straight t
-  :init
-  (add-hook 'dired-mode-hook 'org-download-enable)
-  (add-hook 'org-mode-hook 'org-download-enable))
-
-(use-package adjust-parens
-  :straight t
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'adjust-parens-mode))
 
 ;; auto inserts
 (defun odd/org-mode-template ()
@@ -344,20 +286,47 @@
   :init
   (add-hook 'prog-mode-hook 'format-all-mode))
 
-(use-package undo-fu
-  :straight t
-  :init
-  (global-unset-key (kbd "C-z"))
-  (global-set-key (kbd "C-z") 'undo-fu-only-undo)
-  (define-key xah-fly-command-map (kbd "j") 'undo-fu-only-undo)
-  (define-key xah-fly-command-map (kbd "J") 'undo-fu-only-redo))
-
-(use-package undo-fu-session
-  :straight t
-  :init
-  (global-undo-fu-session-mode t))
-
 (use-package csharp-mode
   :straight t
   :init
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
+
+(use-package minions
+  :straight t
+  :init
+  (minions-mode t))
+
+;; https://github.com/akermu/emacs-libvterm#vterm-enable-manipulate-selection-data-by-osc52
+(use-package vterm
+  :straight t
+  :custom
+  (vterm-always-compile-module t)
+  :config
+  (defun vterm-directory-sync ()
+  "Synchronize current working directory."
+  (interactive)
+  (when vterm--process
+    (let* ((pid (process-id vterm--process))
+           (dir (file-truename (format "/proc/%d/cwd/" pid))))
+      (setq default-directory dir))))
+  (advice-add #'dired-jump :before #'vterm-directory-sync)
+  (define-key vterm-mode-map (kbd "C-v") 'vterm-yank)
+  (define-key vterm-mode-map (kbd "C-u") 'vterm-send-C-u))
+
+(use-package vterm-toggle
+  :straight t
+  :custom
+  (vterm-toggle-scope 'project)
+  (vterm-toggle-hide-method 'reset-window-configration)
+  :hook
+  (vterm-toggle-show . xah-fly-insert-mode-activate)
+  :config
+  (define-key vterm-mode-map (kbd "<escape>") 'xah-fly-command-mode-activate))
+
+(use-package dart-mode
+  :straight t)
+
+(use-package typescript-mode
+  :straight t)
+
+(provide 'init)

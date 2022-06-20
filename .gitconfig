@@ -4,8 +4,10 @@
 [credential]
 	helper = store
 [core]
-	editor = nano -0
+	editor = nano
 [init]
 	defaultBranch = master
 [github]
 	user = Knarkzel
+[pull]
+	rebase = false
