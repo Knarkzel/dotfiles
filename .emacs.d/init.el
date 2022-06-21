@@ -334,7 +334,7 @@
     (let* ((dir (expand-file-name default-directory))
            (vterm (format "vterm %s" dir))
            (buffers (--filter (string-match-p "vterm" (buffer-name it)) (buffer-list))))
-      (while (and buffers (not (string-match vterm (format "%s/" (buffer-name (car buffers))))))
+      (while (and buffers (not (string= vterm (format "%s/" (buffer-name (car buffers))))))
         (setq buffers (cdr buffers)))
       (if (> (length buffers) 0)
           (switch-to-buffer-other-window (car buffers))
