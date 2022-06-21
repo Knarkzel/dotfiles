@@ -325,20 +325,20 @@
 
 (defun odd/open-vterm ()
   (interactive)
-  (require 'dash)
   ;; if current buffer is vterm, delete its window, otherwise
   ;; find vterm buffer that matches current directory, otherwise
   ;; open new vterm buffer
+  (require 'vterm-toggle)
   (if (string-match-p "vterm" (buffer-name))
       (delete-window)
     (let* ((dir (expand-file-name default-directory))
            (vterm (format "vterm %s" dir))
-           (buffers (--filter (string-match-p "vterm" (buffer-name it)) (buffer-list))))
+           (buffers (seq-filter (lambda (it) (string-match-p "vterm" (buffer-name it))) (buffer-list))))
       (while (and buffers (not (string= vterm (format "%s/" (buffer-name (car buffers))))))
         (setq buffers (cdr buffers)))
       (if (> (length buffers) 0)
           (switch-to-buffer-other-window (car buffers))
-        (vterm-toggle)))))
+        (vterm-toggle-show)))))
 
 (use-package dart-mode
   :straight t)
