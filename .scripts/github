@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -Eeuxo pipefail
+set -Eeuo pipefail
 read -p "github username: " USER
 PAGES=$(curl -s -I https://api.github.com/users/$USER/repos | grep link | sed 's/^.*page=//;s/>.*//')
 for PAGE in $(seq 1 $PAGES); do

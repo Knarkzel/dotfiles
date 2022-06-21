@@ -15,11 +15,13 @@ alias zt="zig build test"
 alias zt="zig init-exe"
 
 # other
-alias nano="nano"
 alias ls="ls --color=always --group-directories-first"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias tmp="cd $(mktemp -d); clear"
-alias launch="sudo screen -d -m"
+alias nix-search="nix-env -qP --available"
+
+# emacs vterm
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }"'echo -ne "\033]0;${PWD}\007"'
 
 # exports
 export EDITOR="nano"

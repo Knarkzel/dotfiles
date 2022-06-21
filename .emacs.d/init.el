@@ -11,12 +11,12 @@
 
   ;; keybindings
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
-  (define-key xah-fly-command-map (kbd "E") 'vterm-toggle)
+  (define-key xah-fly-command-map (kbd "E") 'odd/open-vterm)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
-  
+
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
@@ -301,14 +301,15 @@
   :straight t
   :custom
   (vterm-always-compile-module t)
+  (vterm-buffer-name-string "vterm %s")
   :config
   (defun vterm-directory-sync ()
-  "Synchronize current working directory."
-  (interactive)
-  (when vterm--process
-    (let* ((pid (process-id vterm--process))
-           (dir (file-truename (format "/proc/%d/cwd/" pid))))
-      (setq default-directory dir))))
+    "Synchronize current working directory."
+    (interactive)
+    (when vterm--process
+      (let* ((pid (process-id vterm--process))
+             (dir (file-truename (format "/proc/%d/cwd/" pid))))
+        (setq default-directory dir))))
   (advice-add #'dired-jump :before #'vterm-directory-sync)
   (define-key vterm-mode-map (kbd "C-v") 'vterm-yank)
   (define-key vterm-mode-map (kbd "C-u") 'vterm-send-C-u))
@@ -316,12 +317,28 @@
 (use-package vterm-toggle
   :straight t
   :custom
-  (vterm-toggle-scope 'project)
-  (vterm-toggle-hide-method 'reset-window-configration)
-  :hook
-  (vterm-toggle-show . xah-fly-insert-mode-activate)
+  (vterm-toggle-scope 'all)
   :config
-  (define-key vterm-mode-map (kbd "<escape>") 'xah-fly-command-mode-activate))
+  (define-key vterm-mode-map (kbd "<escape>") 'xah-fly-command-mode-activate)
+  :hook
+  (vterm-toggle-show . xah-fly-insert-mode-activate))
+
+(defun odd/open-vterm ()
+  (interactive)
+  (require 'dash)
+  ;; if current buffer is vterm, delete its window, otherwise
+  ;; find vterm buffer that matches current directory, otherwise
+  ;; open new vterm buffer
+  (if (string-match-p "vterm" (buffer-name))
+      (delete-window)
+    (let* ((dir (expand-file-name default-directory))
+           (vterm (format "vterm %s" dir))
+           (buffers (--filter (string-match-p "vterm" (buffer-name it)) (buffer-list))))
+      (while (and buffers (not (string-match vterm (format "%s/" (buffer-name (car buffers))))))
+        (setq buffers (cdr buffers)))
+      (if (> (length buffers) 0)
+          (switch-to-buffer-other-window (car buffers))
+        (vterm-toggle)))))
 
 (use-package dart-mode
   :straight t)
