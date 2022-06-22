@@ -302,11 +302,12 @@
   :custom
   (vterm-always-compile-module t)
   (vterm-buffer-name-string "vterm %s")
+  (vterm-timer-delay 0.01)
   :config
-  (defun vterm-directory-sync ()
+  (defun vterm-directory-sync (&rest _)
     "Synchronize current working directory."
     (interactive)
-    (when vterm--process
+    (when (and vterm--process (equal major-mode 'vterm-mode))
       (let* ((pid (process-id vterm--process))
              (dir (file-truename (format "/proc/%d/cwd/" pid))))
         (setq default-directory dir))))
