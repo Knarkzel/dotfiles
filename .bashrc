@@ -1,7 +1,7 @@
 # aliases
-alias si="sudo pacman -Sy"
+alias si="nix-env -iA"
 alias sr="sudo pacman -R"
-alias su="sudo pacman -Syyu"
+alias su="sudo nixos-rebuild switch"
 alias gs="git status"
 alias gp="git push"
 alias gc="git commit"
