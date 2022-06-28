@@ -11,3 +11,5 @@
 	user = Knarkzel
 [pull]
 	rebase = false
+[push]
+	default = simple
