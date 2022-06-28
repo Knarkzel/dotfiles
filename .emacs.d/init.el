@@ -118,7 +118,7 @@
   (set-face-background 'vertico-posframe-border "white")
   :custom
   (vertico-posframe-border-width 1)
-  (vertico-posframe-width 100))
+  (vertico-posframe-width 75))
 
 (use-package orderless
   :straight t
@@ -345,6 +345,9 @@
   :straight t)
 
 (use-package typescript-mode
+  :straight t)
+
+(use-package nix-mode
   :straight t)
 
 (provide 'init)
