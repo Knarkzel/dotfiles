@@ -183,13 +183,6 @@
   :straight t
   :custom (magit-refresh-status-buffer nil))
 
-(use-package forge
-  :straight t
-  :after magit
-  :custom
-  (auth-sources '("~/.authinfo"))
-  (markdown-max-image-size '(800 . 800)))
-
 (use-package magit-todos
   :straight t
   :init
