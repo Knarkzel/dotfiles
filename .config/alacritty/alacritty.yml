@@ -1,11 +1,10 @@
 font:
-  size: 14
+  size: 22.5
 
 key_bindings:
   - { key: C, mods: Alt, action: Copy  }
   - { key: V, mods: Alt, action: Paste }
 
-# Colors (Solarized Light)
 colors:
   # Default colors
   primary:
