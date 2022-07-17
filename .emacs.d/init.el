@@ -118,7 +118,7 @@
   (set-face-background 'vertico-posframe-border "white")
   :custom
   (vertico-posframe-border-width 1)
-  (vertico-posframe-width 75))
+  (vertico-posframe-width 100))
 
 (use-package orderless
   :straight t
@@ -199,11 +199,10 @@
 
 ;; org
 (use-package org
-  :straight t
   :custom
   (org-hidden-keywords nil)
   (org-hide-emphasis-markers t)
-  (org-image-actual-width (list 300))
+  (org-image-actual-width (list 250))
   (org-return-follows-link t)
   (org-file-apps
    (quote
@@ -246,48 +245,15 @@
   :custom
   (org-agenda-start-on-weekday nil))
 
-;; auto inserts
-(defun odd/org-mode-template ()
-  (interactive)
-  (yas-expand-snippet (yas-lookup-snippet "template" 'org-mode)))
-
-(use-package autoinsert
-  :custom
-  (auto-insert-query nil)
-  (auto-insert-alist nil)
-  :init
-  (auto-insert-mode t)
-  (add-hook 'find-file-hook 'auto-insert)
-  (add-to-list 'auto-insert-alist '("\\.org$" . [odd/org-mode-template])))
-
 (use-package rainbow-delimiters
   :straight t
   :init
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-(use-package flymake-diagnostic-at-point
-  :straight (:host github :repo "knarkzel/flymake-diagnostic-at-point")
-  :after flymake
-  :custom
-  (flymake-diagnostic-at-point-error-prefix "")
-  (flymake-diagnostic-at-point-display-diagnostic-function 'flymake-diagnostic-at-point-display-minibuffer)
-  :config
-  (add-hook 'flymake-mode-hook #'flymake-diagnostic-at-point-mode))
-
-(use-package format-all
-  :straight t
-  :init
-  (add-hook 'prog-mode-hook 'format-all-mode))
-
 (use-package csharp-mode
   :straight t
   :init
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
-
-(use-package minions
-  :straight t
-  :init
-  (minions-mode t))
 
 ;; https://github.com/akermu/emacs-libvterm#vterm-enable-manipulate-selection-data-by-osc52
 (use-package vterm
