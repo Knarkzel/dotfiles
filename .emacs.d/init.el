@@ -309,4 +309,7 @@
 (use-package nix-mode
   :straight t)
 
+(use-package yaml-mode
+  :straight t)
+
 (provide 'init)

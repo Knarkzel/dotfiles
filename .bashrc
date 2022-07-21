@@ -28,7 +28,7 @@ export EDITOR="nano"
 export VISUAL="nano"
 export BROWSER="firefox"
 export HISTCONTROL=ignorespace:ignoredups:erasedups
-export PATH="$PATH:$HOME/.cargo/bin/:$HOME/.local/bin:$HOME/.scripts/menu:$HOME/.nix-profile/bin"
+export PATH="$PATH:$HOME/.cargo/bin/:$HOME/.local/bin:$HOME/.scripts:$HOME/.nix-profile/bin"
 export TERM="xterm-256color"
 
 # starship
