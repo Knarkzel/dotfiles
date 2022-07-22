@@ -83,6 +83,7 @@
   (add-hook 'python-mode-hook 'lsp-deferred)
   (add-hook 'rust-mode-hook 'lsp-deferred)
   (add-hook 'zig-mode-hook 'lsp-deferred)
+  (add-hook 'nix-mode-hook 'lsp-deferred)
   (add-hook 'typescript-mode-hook 'lsp-deferred)
   :custom
   (lsp-keymap-prefix "C-c l")
@@ -307,7 +308,14 @@
   :straight t)
 
 (use-package nix-mode
-  :straight t)
+  :straight t
+  :after lsp
+  :init
+  (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
+                    :major-modes '(nix-mode)
+                    :server-id 'nix)))
 
 (use-package yaml-mode
   :straight t)
