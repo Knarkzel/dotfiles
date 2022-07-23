@@ -21,6 +21,7 @@
  ("flycheck" . "c955fd6fb970eed5fdecf675369d3d61a41f6c68")
  ("gcmh" . "0089f9c3a6d4e9a310d0791cf6fa8f35642ecfd9")
  ("gnu-elpa-mirror" . "aa9f0535e6e034acd89312ca0de3dd5a20f0f883")
+ ("haskell-mode" . "5a9f8072c7b9168f0a8409adf9d62a3e4ad4ea3d")
  ("hl-todo" . "2337eac8cab0d4b73a96fb3936d2ac87600e3c91")
  ("ht.el" . "c4c1be487d6ecb353d07881526db05d7fc90ea87")
  ("hydra" . "9e9e00cb240ea1903ffd36a54956b3902c379d29")

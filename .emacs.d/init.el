@@ -85,6 +85,7 @@
   (add-hook 'zig-mode-hook 'lsp-deferred)
   (add-hook 'nix-mode-hook 'lsp-deferred)
   (add-hook 'typescript-mode-hook 'lsp-deferred)
+  (add-hook 'haskell-mode-hook 'lsp-deferred)
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-idle-delay 0.500)
@@ -318,6 +319,9 @@
                     :server-id 'nix)))
 
 (use-package yaml-mode
+  :straight t)
+
+(use-package haskell-mode
   :straight t)
 
 (provide 'init)
