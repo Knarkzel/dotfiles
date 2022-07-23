@@ -26,6 +26,7 @@
  ("ht.el" . "c4c1be487d6ecb353d07881526db05d7fc90ea87")
  ("hydra" . "9e9e00cb240ea1903ffd36a54956b3902c379d29")
  ("let-alist" . "592553db5929b54db40af0df90c5add0aaca045b")
+ ("lsp-haskell" . "daa51072e1718ca075987901fccbbc2357bca1fc")
  ("lsp-mode" . "e1d564961ec2b3eb2dfb7ecb9154586503ffefba")
  ("lsp-ui" . "9a8983d95d823ae62e5f842a4bd433c860131398")
  ("magit" . "acd26dd9f3708602d4c721395d790a4af7937eed")
