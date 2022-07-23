@@ -1,24 +1,10 @@
 [global]
+    frame_width = 1
     follow = keyboard
     offset = 10x10
     padding = 10
     horizontal_padding = 10
     font = Monospace 16
-
-[urgency_low]
-    background = "#282828"
-    foreground = "#ffffff"
-    frame_color = "#282828"
-    timeout = 3
-
-[urgency_normal]
-    background = "#282828"
-    foreground = "#ffffff"
-    frame_color = "#282828"
-    timeout = 5
-
-[urgency_critical]
-    background = "#282828"
-    foreground = "#ffffff"
-    frame_color = "#282828"
-    timeout = 10
+    background = "#f7f3ee"
+    foreground = "#002b36"
+    frame_color = "#ffffff"
