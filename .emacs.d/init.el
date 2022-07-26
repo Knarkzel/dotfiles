@@ -87,6 +87,7 @@
   (add-hook 'typescript-mode-hook 'lsp-deferred)
   (add-hook 'haskell-mode-hook 'lsp-deferred)
   (add-hook 'haskell-literate-mode-hook 'lsp-deferred)
+  (add-hook 'latex-mode-hook 'lsp-deferred)
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-idle-delay 0.500)
@@ -326,6 +327,9 @@
   :straight t)
 
 (use-package lsp-haskell
+  :straight t)
+
+(use-package lsp-latex
   :straight t)
 
 (provide 'init)

@@ -1,5 +1,8 @@
 # aliases
-alias si="nix-env -iA"
+function si() {
+    echo "Looking up nixos.$1..."
+    nix-env -iA nixos.$1
+}
 alias sr="nix-env --uninstall"
 alias su="sudo nixos-rebuild switch"
 alias cb="cargo build"
