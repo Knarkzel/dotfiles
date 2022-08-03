@@ -332,4 +332,10 @@
 (use-package lsp-latex
   :straight t)
 
+(use-package lsp-python-ms
+  :straight t
+  :hook (python-mode . (lambda () (require 'lsp-python-ms)))
+  :init
+  (setq lsp-python-ms-executable (executable-find "python-language-server")))
+
 (provide 'init)

@@ -27,6 +27,7 @@ export HISTCONTROL=ignorespace:ignoredups:erasedups
 export PATH="$PATH:$HOME/.cargo/bin/:$HOME/.local/bin:$HOME/.scripts:$HOME/.nix-profile/bin"
 export TERM="xterm-256color"
 export NIXPKGS_ALLOW_UNFREE=1
+export _JAVA_AWT_WM_NONREPARENTING=1
 
 # starship
 eval "$(starship init bash)"
