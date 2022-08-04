@@ -338,4 +338,14 @@
   :init
   (setq lsp-python-ms-executable (executable-find "python-language-server")))
 
+(use-package slime
+  :straight t
+  :custom
+  (inferior-lisp-program "sbcl"))
+
+(use-package envrc
+  :straight t
+  :init
+  (envrc-global-mode))
+
 (provide 'init)

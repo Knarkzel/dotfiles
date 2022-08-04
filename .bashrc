@@ -29,5 +29,9 @@ export TERM="xterm-256color"
 export NIXPKGS_ALLOW_UNFREE=1
 export _JAVA_AWT_WM_NONREPARENTING=1
 
+# direnv
+export DIRENV_LOG_FORMAT=
+eval "$(direnv hook bash)"
+
 # starship
 eval "$(starship init bash)"
