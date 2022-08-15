@@ -72,6 +72,7 @@
  ("vertico" . "05563a692bf785b0fd3e2c034692f67507d99b26")
  ("vertico-posframe" . "8cd6c2cb335246a6c194d052ac93b364e5847d66")
  ("vterm-toggle" . "02519323aa0a2e6af641cd205b230f48a04a5ca3")
+ ("wat-mode" . "46b4df83e92c585295d659d049560dbf190fe501")
  ("with-editor" . "cfcbc2731e402b9169c0dc03e89b5b57aa988502")
  ("xah-fly-keys" . "de43f45e5adc5342937a9bb66f5d00b2c02c16a7")
  ("yaml-mode" . "535273d5a1eb76999d20afbcf4d9f056d8ffd2da")

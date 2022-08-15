@@ -7,7 +7,7 @@
   (xah-fly-keys-set-layout "colemak")
   (global-set-key (kbd "<escape>") 'xah-fly-command-mode-activate)
   (xah-fly-keys)
-  (add-hook 'xah-fly-command-mode-activate-hook (lambda () (interactive) (corfu-quit) (abort-recursive-edit)))
+  (add-hook 'xah-fly-command-mode-activate-hook (lambda () (interactive) (corfu-quit)))
 
   ;; keybindings
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
@@ -353,5 +353,36 @@
   :straight t
   :custom
   (lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off")))
+
+(defun sort-lines-by-length (reverse beg end)
+  "Sort lines by length."
+  (interactive "P\nr")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (goto-char (point-min))
+      (let ;; To make `end-of-line' and etc. to ignore fields.
+          ((inhibit-field-text-motion t))
+        (sort-subr reverse 'forward-line 'end-of-line nil nil
+                   (lambda (l1 l2)
+                     (apply #'< (mapcar (lambda (range) (- (cdr range) (car range)))
+                                        (list l1 l2)))))))))
+
+(use-package wat-mode
+  :straight '(:type git :repo "https://github.com/knarkzel/wat-mode"))
+
+;; wasm2wat
+(add-hook 'find-file-hook 'wasm2wat-hook)
+(defun wasm2wat-hook ()
+  (when (string= (file-name-extension buffer-file-name) "wasm")
+    (let ((file (make-temp-file "wasm2wat")))
+      (write-region (point-min) (point-max) file)
+      (delete-region (point-min) (point-max))
+      (insert (shell-command-to-string (concat "wasm2wat" " " file)))
+      (beginning-of-buffer)
+      (wat-mode)
+      (message "")
+      (set-buffer-modified-p nil)
+      (read-only-mode))))
 
 (provide 'init)

@@ -5,8 +5,10 @@ function si() {
 }
 alias sr="nix-env --uninstall"
 alias su="sudo nixos-rebuild switch"
-alias cb="cargo build"
+alias cb="cargo check"
 alias cr="cargo run"
+alias ct="cargo nextest run"
+alias cdo="cargo doc --open"
 alias zb="zig build"
 alias zr="zig build run"
 alias zt="zig build test"
