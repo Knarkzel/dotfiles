@@ -1,13 +1,17 @@
 [Default Applications]
-text/plain=emacs.desktop;
-text/x-shellscript=emacs.desktop;
-x-scheme-handler/mailto=firefox.desktop;
-application/pdf=mupdf.desktop;
-image/png=firefox.desktop;
-image/jpeg=firefox.desktop
-image/gif=firefox.desktop;
-inode/directory=emacs.desktop
-x-scheme-handler/discord-455712169795780630=discord-455712169795780630.desktop
-x-scheme-handler/discord-712465656758665259=discord-712465656758665259.desktop
-x-scheme-handler/discord-409416265891971072=discord-409416265891971072.desktop
-x-scheme-handler/postman=Postman.desktop
+image/png=img.desktop;
+image/gif=img.desktop;
+image/webp=img.desktop;
+image/jpeg=img.desktop;
+text/plain=text.desktop;
+application/pdf=pdf.desktop;
+inode/directory=file.desktop
+video/x-matroska=video.desktop
+text/x-shellscript=text.desktop;
+application/postscript=pdf.desktop;
+x-scheme-handler/mailto=mail.desktop;
+x-scheme-handler/magnet=userapp-transmission-gtk-9E8WQ1.desktop
+application/x-bittorrent=torrent.desktop;
+
+[Added Associations]
+x-scheme-handler/magnet=userapp-transmission-gtk-9E8WQ1.desktop;

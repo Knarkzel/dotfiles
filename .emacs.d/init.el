@@ -385,4 +385,9 @@
       (set-buffer-modified-p nil)
       (read-only-mode))))
 
+(use-package dired-launch
+  :straight t
+  :config
+  (add-hook 'dired-mode-hook 'dired-launch-enable))
+
 (provide 'init)
