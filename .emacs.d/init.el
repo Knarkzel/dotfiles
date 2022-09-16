@@ -89,6 +89,8 @@
   (add-hook 'haskell-literate-mode-hook 'lsp-deferred)
   (add-hook 'latex-mode-hook 'lsp-deferred)
   (add-hook 'scala-mode-hook 'lsp-deferred)
+  (add-hook 'csharp-mode-hook 'lsp-deferred)
+  (setq lsp-csharp-server-path "/run/current-system/sw/bin/omnisharp")
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-idle-delay 0.500)
@@ -188,10 +190,10 @@
   :straight t
   :custom (magit-refresh-status-buffer nil))
 
-(use-package magit-todos
-  :straight t
-  :init
-  (magit-todos-mode t))
+;; (use-package magit-todos
+;;   :straight t
+;;   :init
+;;   (magit-todos-mode t))
 
 ;; snippets
 (use-package yasnippet
@@ -256,9 +258,11 @@
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (use-package csharp-mode
+  :after lsp
   :straight t
   :init
-  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
+  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
+  (add-to-list 'auto-mode-alist '("\\.cshtml\\'" . mhtml-mode)))
 
 ;; https://github.com/akermu/emacs-libvterm#vterm-enable-manipulate-selection-data-by-osc52
 (use-package vterm
@@ -389,5 +393,8 @@
   :straight t
   :config
   (add-hook 'dired-mode-hook 'dired-launch-enable))
+
+(use-package olivetti
+  :straight t)
 
 (provide 'init)
