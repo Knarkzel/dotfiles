@@ -10,10 +10,10 @@ video/x-matroska=video.desktop
 text/x-shellscript=text.desktop;
 application/postscript=pdf.desktop;
 x-scheme-handler/mailto=mail.desktop;
-x-scheme-handler/magnet=userapp-transmission-gtk-9E8WQ1.desktop
+x-scheme-handler/magnet=userapp-transmission-gtk-J16ZS1.desktop
 application/x-bittorrent=torrent.desktop;
 x-scheme-handler/postman=Postman.desktop
 x-scheme-handler/discord-409416265891971072=discord-409416265891971072.desktop
 
 [Added Associations]
-x-scheme-handler/magnet=userapp-transmission-gtk-9E8WQ1.desktop;
+x-scheme-handler/magnet=userapp-transmission-gtk-9E8WQ1.desktop;userapp-transmission-gtk-J16ZS1.desktop;

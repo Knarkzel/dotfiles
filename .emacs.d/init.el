@@ -90,6 +90,8 @@
   (add-hook 'latex-mode-hook 'lsp-deferred)
   (add-hook 'scala-mode-hook 'lsp-deferred)
   (add-hook 'csharp-mode-hook 'lsp-deferred)
+  (add-hook 'c-mode-hook 'lsp)
+  (add-hook 'c++-mode-hook 'lsp)
   (setq lsp-csharp-server-path "/run/current-system/sw/bin/omnisharp")
   :custom
   (lsp-keymap-prefix "C-c l")
@@ -395,6 +397,9 @@
   (add-hook 'dired-mode-hook 'dired-launch-enable))
 
 (use-package olivetti
+  :straight t)
+
+(use-package ccls
   :straight t)
 
 (provide 'init)
