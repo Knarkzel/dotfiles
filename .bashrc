@@ -36,5 +36,8 @@ export HISTFILESIZE=100000
 export DIRENV_LOG_FORMAT=
 eval "$(direnv hook bash)"
 
+# layout
+export XKB_DEFAULT_LAYOUT="no(colemak)"
+
 # starship
 eval "$(starship init bash)"
