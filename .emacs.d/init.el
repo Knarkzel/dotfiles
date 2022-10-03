@@ -1,5 +1,8 @@
 ;;; config.el -*- lexical-binding: t ; eval: (view-mode -1) -*-
 
+;; Remove that disgusting system bar
+(set-frame-parameter nil 'undecorated t)
+
 (use-package xah-fly-keys
   :straight t
   :init
@@ -127,7 +130,7 @@
   (set-face-background 'vertico-posframe-border "white")
   :custom
   (vertico-posframe-border-width 1)
-  (vertico-posframe-width 100))
+  (vertico-posframe-width 80))
 
 (use-package orderless
   :straight t
