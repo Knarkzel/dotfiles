@@ -189,10 +189,6 @@
 (add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
 
-;; sailfish
-(add-to-list 'auto-mode-alist '("\\.stpl\\'" . mhtml-mode))
-(global-set-key (kbd "C-x k") 'kill-buffer-and-window)
-
 ;; bash
 (add-hook 'sh-mode-hook 'flycheck-mode)
 
@@ -213,9 +209,6 @@
 ;; lisp
 (add-hook 'elisp-lisp-mode-hook
           (lambda () (add-hook 'local-write-file-hooks 'check-parens)))
-
-;; rustdesk
-(add-to-list 'auto-mode-alist '("\\.tis\\'" . javascript-mode))
 
 ;; tramp
 (setq remote-file-name-inhibit-cache nil)

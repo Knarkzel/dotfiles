@@ -1,4 +1,4 @@
-;;; config.el -*- lexical-binding: t ; eval: (view-mode -1) -*-
+;;; config.el -*- lexical-binding: t -*-
 
 ;; Remove that disgusting system bar
 (set-frame-parameter nil 'undecorated t)
@@ -30,28 +30,13 @@
 (use-package zig-mode
   :straight t)
 
-(use-package rainbow-mode
-  :straight t)
-
-(use-package markdown-mode
-  :straight t)
-
-(use-package flycheck
-  :straight t)
-
 (use-package sudo-edit
-  :straight t)
-
-(use-package php-mode
   :straight t)
 
 (use-package doom-themes
   :straight t
   :config
-  (load-theme 'doom-flatwhite t)
-  ;; fix color for lsp-ui-doc
-  (require 'markdown-mode)
-  (set-face-background 'markdown-code-face "#f1ece4"))
+  (load-theme 'doom-flatwhite t))
 
 (use-package dired
   :init
@@ -64,51 +49,20 @@
   :custom
   (dired-omit-files "^\\.")
   (dired-dwim-target t)
+  (dired-free-space nil)
   (dired-listing-switches "--group-directories-first --dereference -Alh"))
 
-(use-package lsp-ui
+(use-package eglot
   :straight t
-  :custom
-  (lsp-ui-doc-max-width 45)
-  (lsp-ui-doc-max-height 20)
-  (lsp-ui-doc-show-with-cursor t)
-  (lsp-ui-doc-show-with-mouse nil)
-  (lsp-ui-doc-delay 0.25))
-
-(use-package lsp-mode
-  :straight t
-  :init
-  (define-key lsp-mode-map (kbd "C-c e") 'flycheck-next-error)
-  (define-key lsp-mode-map (kbd "C-c f") 'lsp-find-definition)
-  (define-key lsp-mode-map (kbd "C-c n") 'lsp-rename)
-  (define-key lsp-mode-map (kbd "C-c a") 'lsp-execute-code-action)
-  (define-key lsp-mode-map (kbd "C-c r") 'lsp-find-references)
-  (add-hook 'python-mode-hook 'lsp-deferred)
-  (add-hook 'rust-mode-hook 'lsp-deferred)
-  (add-hook 'zig-mode-hook 'lsp-deferred)
-  (add-hook 'nix-mode-hook 'lsp-deferred)
-  (add-hook 'typescript-mode-hook 'lsp-deferred)
-  (add-hook 'haskell-mode-hook 'lsp-deferred)
-  (add-hook 'haskell-literate-mode-hook 'lsp-deferred)
-  (add-hook 'latex-mode-hook 'lsp-deferred)
-  (add-hook 'scala-mode-hook 'lsp-deferred)
-  (add-hook 'csharp-mode-hook 'lsp-deferred)
-  (add-hook 'c-mode-hook 'lsp)
-  (add-hook 'c++-mode-hook 'lsp)
-  (setq lsp-csharp-server-path "/run/current-system/sw/bin/omnisharp")
-  :custom
-  (lsp-keymap-prefix "C-c l")
-  (lsp-idle-delay 0.500)
-  (lsp-log-io nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-lens-enable nil)
-  (lsp-signature-auto-activate nil)
-  (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"]))
+  :config
+  (define-key eglot-mode-map (kbd "C-c e") 'flymake-goto-next-error)
+  (define-key eglot-mode-map (kbd "C-c f") 'eglot-find-implementation)
+  (define-key eglot-mode-map (kbd "C-c n") 'eglot-rename)
+  (define-key eglot-mode-map (kbd "C-c a") 'eglot-code-actions)
+  (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references))
 
 (use-package rust-mode
-  :straight t
-  :custom
-  (rust-format-on-save nil))
+  :straight t)
 
 (use-package consult
   :straight t
@@ -171,34 +125,10 @@
   :init
   (add-to-list 'completion-at-point-functions #'cape-file))
 
-(use-package embark
-  :straight t
-  :init
-  (global-set-key (kbd "C-.") 'embark-dwim)
-  (global-set-key (kbd "M-.") 'embark-act))
-
-(use-package avy
-  :straight t
-  :init
-  (global-set-key (kbd "C-,") 'avy-goto-word-1)
-  (global-set-key (kbd "M-,") 'avy-goto-char))
-
-(use-package embark-consult
-  :straight t
-  :after (embark consult)
-  :demand t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
-
 ;; git magic
 (use-package magit
   :straight t
   :custom (magit-refresh-status-buffer nil))
-
-;; (use-package magit-todos
-;;   :straight t
-;;   :init
-;;   (magit-todos-mode t))
 
 ;; snippets
 (use-package yasnippet
@@ -231,6 +161,11 @@
   (set-face-attribute 'org-document-title nil
                       :foreground "#9d8f7c" :bold nil))
 
+;; org-agenda
+(use-package org-agenda
+  :custom
+  (org-agenda-start-on-weekday nil))
+
 ;; tree sitter
 (use-package tree-sitter
   :straight t
@@ -252,18 +187,12 @@
 (use-package simple-httpd
   :straight t)
 
-;; org-agenda
-(use-package org-agenda
-  :custom
-  (org-agenda-start-on-weekday nil))
-
 (use-package rainbow-delimiters
   :straight t
   :init
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (use-package csharp-mode
-  :after lsp
   :straight t
   :init
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
@@ -314,12 +243,6 @@
           (switch-to-buffer-other-window (car buffers))
         (vterm-toggle-show)))))
 
-(use-package dart-mode
-  :straight t)
-
-(use-package typescript-mode
-  :straight t)
-
 (use-package nix-mode
   :straight t
   :after lsp
@@ -332,26 +255,6 @@
 
 (use-package yaml-mode
   :straight t)
-
-(use-package haskell-mode
-  :straight t)
-
-(use-package lsp-haskell
-  :straight t)
-
-(use-package lsp-latex
-  :straight t)
-
-(use-package lsp-python-ms
-  :straight t
-  :hook (python-mode . (lambda () (require 'lsp-python-ms)))
-  :init
-  (setq lsp-python-ms-executable (executable-find "python-language-server")))
-
-(use-package slime
-  :straight t
-  :custom
-  (inferior-lisp-program "sbcl"))
 
 (use-package envrc
   :straight t
@@ -393,11 +296,6 @@
       (message "")
       (set-buffer-modified-p nil)
       (read-only-mode))))
-
-(use-package dired-launch
-  :straight t
-  :config
-  (add-hook 'dired-mode-hook 'dired-launch-enable))
 
 (use-package olivetti
   :straight t)
