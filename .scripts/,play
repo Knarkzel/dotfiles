@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-if [[ ! -z "$1" ]]; then
-    mpv --no-video --vo=null "$1"
-else
-    script=`basename "$0"`
-    echo "$script <url>"
-    exit 1
-fi

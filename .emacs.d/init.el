@@ -24,13 +24,13 @@
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
 
-(use-package markdown-mode
-  :straight t)
-
 (use-package zig-mode
   :straight t)
 
 (use-package sudo-edit
+  :straight t)
+
+(use-package markdown-mode
   :straight t)
 
 (use-package doom-themes

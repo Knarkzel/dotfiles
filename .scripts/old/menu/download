@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-set -Eeuxo pipefail
-LINK="$(xclip -o)"
-DOWNLOAD="$HOME/.scripts/archive"
-if [[ $LINK == *http* ]]; then
-    $DOWNLOAD "$LINK"
-fi
