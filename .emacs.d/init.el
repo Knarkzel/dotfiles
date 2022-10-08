@@ -20,6 +20,9 @@
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
 
+  ;; kill buffer
+  (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
+
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
@@ -59,7 +62,9 @@
   (define-key eglot-mode-map (kbd "C-c f") 'eglot-find-implementation)
   (define-key eglot-mode-map (kbd "C-c n") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c a") 'eglot-code-actions)
-  (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references))
+  (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references)
+  (add-hook 'zig-mode-hook 'eglot-ensure)
+  (add-hook 'rust-mode-hook 'eglot-ensure))
 
 (use-package rust-mode
   :straight t)
@@ -150,8 +155,8 @@
    (quote
     ((auto-mode . emacs)
      ("\\.mm\\'" . default)
-     ("\\.x?html?\\'" . "/usr/bin/firefox %s")
-     ("\\.pdf\\'" . "/usr/bin/firefox %s"))))
+     ("\\.x?html?\\'" . "firefox %s")
+     ("\\.pdf\\'" . "firefox %s"))))
   :config
   (add-hook 'org-mode-hook 'org-indent-mode)
   (set-face-attribute 'org-document-info-keyword nil
