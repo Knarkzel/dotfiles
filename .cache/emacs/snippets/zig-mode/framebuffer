@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: framebuffer
+# key: :f
+# --
+var buffer: [$1]u8 = undefined;
+var fba = std.heap.FixedBufferAllocator.init(&buffer);
+const allocator = fba.allocator();

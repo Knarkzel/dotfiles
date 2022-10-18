@@ -19,6 +19,7 @@
   (define-key xah-fly-command-map (kbd "G") 'magit)
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
+  (define-key xah-fly-command-map (kbd "C") 'org-capture)
 
   ;; kill buffer
   (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
@@ -55,7 +56,11 @@
   (dired-free-space nil)
   (dired-listing-switches "--group-directories-first --dereference -Alh"))
 
+(use-package eglot-x
+  :straight '(:type git :repo "https://github.com/knarkzel/eglot-x"))
+
 (use-package eglot
+  :after eglot-x
   :straight t
   :config
   (define-key eglot-mode-map (kbd "C-c e") 'flymake-goto-next-error)
@@ -64,7 +69,8 @@
   (define-key eglot-mode-map (kbd "C-c a") 'eglot-code-actions)
   (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references)
   (add-hook 'zig-mode-hook 'eglot-ensure)
-  (add-hook 'rust-mode-hook 'eglot-ensure))
+  (add-hook 'rust-mode-hook 'eglot-ensure)
+  (with-eval-after-load 'eglot (require 'eglot-x)))
 
 (use-package rust-mode
   :straight t)
@@ -151,6 +157,7 @@
   (org-hide-emphasis-markers t)
   (org-image-actual-width (list 250))
   (org-return-follows-link t)
+  (org-edit-src-content-indentation 0)
   (org-file-apps
    (quote
     ((auto-mode . emacs)
@@ -165,6 +172,11 @@
                       :foreground "#9d8f7c")
   (set-face-attribute 'org-document-title nil
                       :foreground "#9d8f7c" :bold nil))
+
+;; org-capture
+(use-package org-capture
+  :custom
+  (org-default-notes-file "~/notes/captures.org"))
 
 ;; org-agenda
 (use-package org-agenda
@@ -306,6 +318,12 @@
   :straight t)
 
 (use-package ccls
+  :straight t)
+
+(use-package protobuf-mode
+  :straight t)
+
+(use-package ledger-mode
   :straight t)
 
 (provide 'init)

@@ -189,9 +189,6 @@
 (add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
 
-;; bash
-(add-hook 'sh-mode-hook 'flycheck-mode)
-
 ;; utf-8
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)

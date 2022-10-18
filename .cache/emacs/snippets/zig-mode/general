@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: general
+# key: :g
+# --
+var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+const allocator = gpa.allocator();
