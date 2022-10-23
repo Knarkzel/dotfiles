@@ -15,6 +15,7 @@ alias zt="zig build test"
 alias tmp="cd $(mktemp -d); clear"
 alias ls="ls --color=always --group-directories-first"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+alias np="nix-shell -p"
 
 # exports
 export EDITOR="nano"

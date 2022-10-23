@@ -20,6 +20,7 @@
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
   (define-key xah-fly-command-map (kbd "C") 'org-capture)
+  (define-key xah-fly-command-map (kbd "O") (lambda () (interactive) (find-file "~/notes/captures.org")))
 
   ;; kill buffer
   (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
