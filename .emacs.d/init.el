@@ -20,11 +20,18 @@
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
   (define-key xah-fly-command-map (kbd "C") 'org-capture)
+  (define-key xah-fly-command-map (kbd "N") 'notmuch)
   (define-key xah-fly-command-map (kbd "O") (lambda () (interactive) (find-file "~/notes/captures.org")))
 
   ;; kill buffer
   (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
 
+  ;; moving windows
+  (define-key global-map (kbd "M-<up>") 'windmove-swap-states-up)
+  (define-key global-map (kbd "M-<down>") 'windmove-swap-states-down)
+  (define-key global-map (kbd "M-<left>") 'windmove-swap-states-left)
+  (define-key global-map (kbd "M-<right>") 'windmove-swap-states-right)
+  
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
@@ -326,5 +333,16 @@
 
 (use-package ledger-mode
   :straight t)
+
+(use-package notmuch
+  :straight t
+  :custom
+  (send-mail-function 'sendmail-send-it)
+  (user-mail-address "knarkzel@gmail.com")
+  (user-full-name "Odd-Harald Lillestø Myhren")
+  (sendmail-program "/etc/profiles/per-user/odd/bin/msmtp")
+  (mail-specify-envelope-from t)
+  (message-sendmail-envelope-from 'header)
+  (mail-envelope-from 'header))
 
 (provide 'init)
