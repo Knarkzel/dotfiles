@@ -78,6 +78,7 @@
   (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references)
   (add-hook 'zig-mode-hook 'eglot-ensure)
   (add-hook 'rust-mode-hook 'eglot-ensure)
+  (add-hook 'nix-mode-hook 'eglot-ensure)
   (with-eval-after-load 'eglot (require 'eglot-x)))
 
 (use-package rust-mode
@@ -344,5 +345,36 @@
   (mail-specify-envelope-from t)
   (message-sendmail-envelope-from 'header)
   (mail-envelope-from 'header))
+
+(defun bitlbee ()
+  "Connect to Bitlbee"
+  (interactive)
+  (let ((password (read-passwd "Bitlbee passsword: ")))
+    (erc :server "localhost" :port 6667 :nick "odd" :full-name "knarkzel" :password password)))
+
+(use-package erc
+  :custom
+  (erc-header-line-format nil)
+  (erc-prompt ">")
+  :init
+  (require 'erc)
+  (add-hook 'erc-mode-hook (lambda () (interactive) (corfu-mode -1)))
+  (define-key erc-mode-map (kbd "S-<return>") 'comment-indent-new-line)
+  (define-key erc-mode-map (kbd "C-l") (lambda () (interactive)
+                                         (erc-cmd-CLEAR)
+                                         (erc-kill-input)
+                                         (erc-send-current-line)))
+  (define-key erc-mode-map (kbd "C-u") 'erc-kill-input)
+  (define-key erc-mode-map (kbd "C-e") 'xah-end-of-line-or-block)
+  (define-key erc-mode-map (kbd "<up>") 'erc-previous-command)
+  (define-key erc-mode-map (kbd "<down>") 'erc-next-command))
+
+(use-package emms
+  :straight t
+  :custom
+  (emms-source-file-default-directory "~/source/quran")
+  :init
+  (emms-all)
+  (emms-default-players))
 
 (provide 'init)
