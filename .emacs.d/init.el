@@ -37,7 +37,9 @@
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
 
 (use-package zig-mode
-  :straight t)
+  :straight t
+  :init
+  (add-hook 'zig-mode-hook 'eglot-ensure))
 
 (use-package sudo-edit
   :straight t)
@@ -76,13 +78,12 @@
   (define-key eglot-mode-map (kbd "C-c n") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c a") 'eglot-code-actions)
   (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references)
-  (add-hook 'zig-mode-hook 'eglot-ensure)
-  (add-hook 'rust-mode-hook 'eglot-ensure)
-  (add-hook 'nix-mode-hook 'eglot-ensure)
   (with-eval-after-load 'eglot (require 'eglot-x)))
 
 (use-package rust-mode
-  :straight t)
+  :straight t
+  :init
+  (add-hook 'rust-mode-hook 'eglot-ensure))
 
 (use-package consult
   :straight t
@@ -273,6 +274,7 @@
   :straight t
   :after lsp
   :init
+  (add-hook 'nix-mode-hook 'eglot-ensure)
   (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
@@ -346,6 +348,12 @@
   (message-sendmail-envelope-from 'header)
   (mail-envelope-from 'header))
 
+(defun odd/fetch-mail ()
+  (interactive)
+  (set-process-sentinel
+   (start-process-shell-command "Fetch mail" "*fetch-mail*" "mbsync -a; notmuch new")
+   (lambda (_ _) (notmuch))))
+
 (defun bitlbee ()
   "Connect to Bitlbee"
   (interactive)
@@ -376,5 +384,12 @@
   :init
   (emms-all)
   (emms-default-players))
+
+(use-package typescript-mode
+  :straight t
+  :init
+  (add-hook 'typescript-mode-hook 'eglot-ensure)
+  (add-hook 'js-jsx-mode-hook 'eglot-ensure)
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . js-jsx-mode)))
 
 (provide 'init)
