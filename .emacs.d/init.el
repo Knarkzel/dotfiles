@@ -17,8 +17,8 @@
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
   (define-key xah-fly-command-map (kbd "C") 'org-capture)
   (define-key xah-fly-command-map (kbd "N") 'notmuch)
-  (define-key xah-fly-command-map (kbd "K") 'isearch-backward)
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
+  (define-key xah-fly-command-map (kbd "P") 'project-find-file)
   (define-key xah-fly-command-map (kbd ":") 'eval-expression)
   
   ;; kill buffer
