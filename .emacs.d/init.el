@@ -1,8 +1,5 @@
 ;;; config.el -*- lexical-binding: t -*-
 
-;; Remove that disgusting system bar
-(set-frame-parameter nil 'undecorated t)
-
 (use-package xah-fly-keys
   :straight t
   :init
@@ -13,7 +10,6 @@
   (add-hook 'xah-fly-command-mode-activate-hook (lambda () (interactive) (corfu-quit)))
 
   ;; keybindings
-  (define-key xah-fly-command-map (kbd "k") 'consult-line)
   (define-key xah-fly-command-map (kbd "E") 'odd/open-vterm)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
@@ -21,8 +17,10 @@
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
   (define-key xah-fly-command-map (kbd "C") 'org-capture)
   (define-key xah-fly-command-map (kbd "N") 'notmuch)
-  (define-key xah-fly-command-map (kbd "O") (lambda () (interactive) (find-file "~/notes/captures.org")))
-
+  (define-key xah-fly-command-map (kbd "K") 'isearch-backward)
+  (define-key xah-fly-command-map (kbd "k") 'consult-line)
+  (define-key xah-fly-command-map (kbd ":") 'eval-expression)
+  
   ;; kill buffer
   (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
 
@@ -33,19 +31,7 @@
   (define-key global-map (kbd "M-<right>") 'windmove-swap-states-right)
   
   ;; keybindings leader
-  (define-key xah-fly-leader-key-map (kbd ":") 'eval-expression)
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
-
-(use-package zig-mode
-  :straight t
-  :init
-  (add-hook 'zig-mode-hook 'eglot-ensure))
-
-(use-package sudo-edit
-  :straight t)
-
-(use-package markdown-mode
-  :straight t)
 
 (use-package doom-themes
   :straight t
@@ -53,11 +39,12 @@
   (load-theme 'doom-flatwhite t))
 
 (use-package dired
+  :defer t
+  :hook ((dired-mode . dired-hide-details-mode)
+         (dired-mode . dired-omit-mode))
   :init
   (define-key dired-mode-map (kbd "i") 'wdired-change-to-wdired-mode)
   (define-key dired-mode-map (kbd ".") 'dired-omit-mode)
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  (add-hook 'dired-mode-hook 'dired-omit-mode)
   (define-key dired-mode-map [mouse-2] 'dired-mouse-find-file)
   (define-key global-map [mouse-3] 'dired-jump)
   :custom
@@ -66,24 +53,85 @@
   (dired-free-space nil)
   (dired-listing-switches "--group-directories-first --dereference -Alh"))
 
-(use-package eglot-x
-  :straight '(:type git :repo "https://github.com/knarkzel/eglot-x"))
-
 (use-package eglot
-  :after eglot-x
   :straight t
   :config
   (define-key eglot-mode-map (kbd "C-c e") 'flymake-goto-next-error)
   (define-key eglot-mode-map (kbd "C-c f") 'eglot-find-implementation)
   (define-key eglot-mode-map (kbd "C-c n") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c a") 'eglot-code-actions)
-  (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references)
-  (with-eval-after-load 'eglot (require 'eglot-x)))
+  (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references))
+
+(use-package tree-sitter-langs
+  :straight t)
+
+(use-package tree-sitter-indent
+  :straight t)
+
+(use-package tree-sitter
+  :straight t
+  :init
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-mode-hook 'tree-sitter-hl-mode))
+
+(use-package zig-mode
+  :straight t
+  :hook (zig-mode . eglot-ensure))
 
 (use-package rust-mode
   :straight t
+  :hook (rust-mode . eglot-ensure))
+
+(use-package markdown-mode
+  :straight t)
+
+(use-package yaml-mode
+  :straight t)
+
+(use-package nix-mode
+  :straight t
+  :hook (nix-mode . eglot-ensure))
+
+(use-package wat-mode
+  :straight '(:type git :repo "https://github.com/knarkzel/wat-mode")
+  :mode "\\.wasm\\'"
+  :hook (wat-mode . wasm2wat))
+
+(defun wasm2wat ()
+  (let ((file (make-temp-file "wasm2wat")))
+    (write-region (point-min) (point-max) file)
+    (delete-region (point-min) (point-max))
+    (insert (shell-command-to-string (concat "wasm2wat " file)))
+    (beginning-of-buffer)
+    (message "")
+    (set-buffer-modified-p nil)
+    (read-only-mode)))
+
+(use-package protobuf-mode
+  :straight t)
+
+(use-package ledger-mode
+  :straight t)
+
+(use-package csharp-mode
+  :straight t
+  :mode (("\\.cs\\'" . csharp-tree-sitter-mode)
+         ("\\.cshtml\\'" . mhtml-mode)))
+
+(use-package typescript-mode
+  :straight t
   :init
-  (add-hook 'rust-mode-hook 'eglot-ensure))
+  (add-hook 'typescript-mode-hook 'eglot-ensure)
+  (add-hook 'js-jsx-mode-hook 'eglot-ensure)
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . js-jsx-mode)))
+
+(use-package cc-mode
+  :init
+  (add-hook 'c-mode-hook 'eglot-ensure)
+  (add-hook 'c++-mode-hook 'eglot-ensure))
+
+(use-package sudo-edit
+  :straight t)
 
 (use-package consult
   :straight t
@@ -127,31 +175,27 @@
   :config
   (which-key-mode t))
 
-;; auto-complete
 (use-package corfu
   :straight t
   :custom
   (corfu-cycle t)
   (corfu-auto t)
-  (corfu-quit-no-match t)
-  (corfu-auto-prefix 1)
-  (corfu-auto-delay 0.0)
   (corfu-count 5)
+  (corfu-auto-prefix 1)
+  (corfu-auto-delay 0.1)
+  (corfu-quit-no-match t)
   :config
   (global-corfu-mode))
 
-;; more completion backends
 (use-package cape
   :straight t
   :init
   (add-to-list 'completion-at-point-functions #'cape-file))
 
-;; git magic
 (use-package magit
   :straight t
   :custom (magit-refresh-status-buffer nil))
 
-;; snippets
 (use-package yasnippet
   :straight t
   :init
@@ -160,8 +204,8 @@
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
-;; org
 (use-package org
+  :hook (org-mode . org-indent-mode)
   :custom
   (org-hidden-keywords nil)
   (org-hide-emphasis-markers t)
@@ -175,7 +219,6 @@
      ("\\.x?html?\\'" . "firefox %s")
      ("\\.pdf\\'" . "firefox %s"))))
   :config
-  (add-hook 'org-mode-hook 'org-indent-mode)
   (set-face-attribute 'org-document-info-keyword nil
                       :foreground "#9d8f7c")
   (set-face-attribute 'org-document-info nil
@@ -183,49 +226,23 @@
   (set-face-attribute 'org-document-title nil
                       :foreground "#9d8f7c" :bold nil))
 
-;; org-capture
 (use-package org-capture
   :custom
   (org-default-notes-file "~/notes/captures.org"))
 
-;; org-agenda
 (use-package org-agenda
   :custom
   (org-agenda-start-on-weekday nil))
 
-;; tree sitter
-(use-package tree-sitter
-  :straight t
-  :init
-  (use-package tree-sitter-langs
-    :straight t)
-  (use-package tree-sitter-indent
-    :straight t)
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-mode-hook 'tree-sitter-hl-mode))
-
-;; eldoc
 (use-package eldoc
   :custom
   (eldoc-echo-area-use-multiline-p nil)
   (eldoc-echo-area-display-truncation-message nil))
 
-;; serve directory
-(use-package simple-httpd
-  :straight t)
-
 (use-package rainbow-delimiters
   :straight t
-  :init
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  :hook (prog-mode . rainbow-delimiters-mode))
 
-(use-package csharp-mode
-  :straight t
-  :init
-  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
-  (add-to-list 'auto-mode-alist '("\\.cshtml\\'" . mhtml-mode)))
-
-;; https://github.com/akermu/emacs-libvterm#vterm-enable-manipulate-selection-data-by-osc52
 (use-package vterm
   :straight t
   :custom
@@ -270,71 +287,15 @@
           (switch-to-buffer-other-window (car buffers))
         (vterm-toggle-show)))))
 
-(use-package nix-mode
-  :straight t
-  :after lsp
-  :init
-  (add-hook 'nix-mode-hook 'eglot-ensure)
-  (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
-                    :major-modes '(nix-mode)
-                    :server-id 'nix)))
-
-(use-package yaml-mode
-  :straight t)
-
 (use-package envrc
   :straight t
   :init
   (envrc-global-mode))
 
-(use-package lsp-metals
-  :straight t
-  :custom
-  (lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off")))
-
-(defun sort-lines-by-length (reverse beg end)
-  "Sort lines by length."
-  (interactive "P\nr")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region beg end)
-      (goto-char (point-min))
-      (let ;; To make `end-of-line' and etc. to ignore fields.
-          ((inhibit-field-text-motion t))
-        (sort-subr reverse 'forward-line 'end-of-line nil nil
-                   (lambda (l1 l2)
-                     (apply #'< (mapcar (lambda (range) (- (cdr range) (car range)))
-                                        (list l1 l2)))))))))
-
-(use-package wat-mode
-  :straight '(:type git :repo "https://github.com/knarkzel/wat-mode"))
-
-;; wasm2wat
-(add-hook 'find-file-hook 'wasm2wat-hook)
-(defun wasm2wat-hook ()
-  (when (string= (file-name-extension buffer-file-name) "wasm")
-    (let ((file (make-temp-file "wasm2wat")))
-      (write-region (point-min) (point-max) file)
-      (delete-region (point-min) (point-max))
-      (insert (shell-command-to-string (concat "wasm2wat" " " file)))
-      (beginning-of-buffer)
-      (wat-mode)
-      (message "")
-      (set-buffer-modified-p nil)
-      (read-only-mode))))
-
 (use-package olivetti
   :straight t)
 
 (use-package ccls
-  :straight t)
-
-(use-package protobuf-mode
-  :straight t)
-
-(use-package ledger-mode
   :straight t)
 
 (use-package notmuch
@@ -354,42 +315,12 @@
    (start-process-shell-command "Fetch mail" "*fetch-mail*" "mbsync -a; notmuch new")
    (lambda (_ _) (notmuch))))
 
-(defun bitlbee ()
-  "Connect to Bitlbee"
-  (interactive)
-  (let ((password (read-passwd "Bitlbee passsword: ")))
-    (erc :server "localhost" :port 6667 :nick "odd" :full-name "knarkzel" :password password)))
-
-(use-package erc
-  :custom
-  (erc-header-line-format nil)
-  (erc-prompt ">")
-  :init
-  (require 'erc)
-  (add-hook 'erc-mode-hook (lambda () (interactive) (corfu-mode -1)))
-  (define-key erc-mode-map (kbd "S-<return>") 'comment-indent-new-line)
-  (define-key erc-mode-map (kbd "C-l") (lambda () (interactive)
-                                         (erc-cmd-CLEAR)
-                                         (erc-kill-input)
-                                         (erc-send-current-line)))
-  (define-key erc-mode-map (kbd "C-u") 'erc-kill-input)
-  (define-key erc-mode-map (kbd "C-e") 'xah-end-of-line-or-block)
-  (define-key erc-mode-map (kbd "<up>") 'erc-previous-command)
-  (define-key erc-mode-map (kbd "<down>") 'erc-next-command))
-
 (use-package emms
   :straight t
   :custom
   (emms-source-file-default-directory "~/source/quran")
-  :init
+  :config
   (emms-all)
   (emms-default-players))
-
-(use-package typescript-mode
-  :straight t
-  :init
-  (add-hook 'typescript-mode-hook 'eglot-ensure)
-  (add-hook 'js-jsx-mode-hook 'eglot-ensure)
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . js-jsx-mode)))
 
 (provide 'init)

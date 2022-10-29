@@ -17,6 +17,9 @@ alias ls="ls --color=always --group-directories-first"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias np="nix-shell -p"
 
+# enable isearch forward
+[[ $- == *i* ]] && stty -ixon
+
 # exports
 export EDITOR="nano"
 export VISUAL="nano"
@@ -36,9 +39,6 @@ export HISTFILESIZE=100000
 # direnv
 export DIRENV_LOG_FORMAT=
 eval "$(direnv hook bash)"
-
-# layout
-export XKB_DEFAULT_LAYOUT="no(colemak)"
 
 # starship
 eval "$(starship init bash)"

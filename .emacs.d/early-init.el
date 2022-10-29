@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 
-;; Speed
+;; speed
 (defvar comp-deferred-compliation)
 (setq comp-deferred-compilation t)
 
@@ -15,27 +15,7 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 
 ;; max memory available for gc on startup
-(defvar me/gc-cons-threshold 16777216)
-(setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.6)
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold me/gc-cons-threshold
-                  gc-cons-percentage 0.1)))
-
-;; max memory available for gc when opening minibuffer
-(defun me/defer-garbage-collection-h ()
-  (setq gc-cons-threshold most-positive-fixnum))
-
-(defun me/restore-garbage-collection-h ()
-  ;; Defer it so that commands launched immediately after will enjoy the
-  ;; benefits.
-  (run-at-time
-   1 nil (lambda () (setq gc-cons-threshold me/gc-cons-threshold))))
-
-(add-hook 'minibuffer-setup-hook #'me/defer-garbage-collection-h)
-(add-hook 'minibuffer-exit-hook #'me/restore-garbage-collection-h)
-(setq garbage-collection-messages t)
+(setq gc-cons-threshold most-positive-fixnum)
 
 ;; file name handler disable
 (defvar me/-file-name-handler-alist file-name-handler-alist)
@@ -68,14 +48,8 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(setq vc-follow-symlinks 'ask) ; restore default
 (require 'straight-x)
 (straight-use-package 'use-package)
-
-(use-package esup
-  :straight t
-  :demand t
-  :commands esup)
 
 (use-package benchmark-init
   :demand t
@@ -126,13 +100,13 @@
               auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
               backup-by-copying t
               backup-directory-alist `((".*" . ,temporary-file-directory))
-              confirm-nonexistent-file-or-buffer nil
+              c-nonexistent-file-or-buffer nil
               delete-old-versions t
               dired-recursive-copies 'always
               dired-recursive-deletes 'always
               dired-clean-confirm-killing-deleted-buffers nil
               fill-column 100
-              undo-limit 500
+              undo-limit 250000
               native-comp-async-report-warnings-errors nil
               inhibit-startup-echo-area-message t
               make-backup-files nil
@@ -168,7 +142,6 @@
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
-(global-eldoc-mode -1)
 (blink-cursor-mode -1)
 
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
