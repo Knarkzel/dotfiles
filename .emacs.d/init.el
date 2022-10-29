@@ -20,6 +20,7 @@
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
   (define-key xah-fly-command-map (kbd "P") 'project-find-file)
   (define-key xah-fly-command-map (kbd ":") 'eval-expression)
+  (define-key xah-fly-command-map (kbd "H") 'devdocs-lookup)
   
   ;; kill buffer
   (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
@@ -76,11 +77,13 @@
 
 (use-package zig-mode
   :straight t
-  :hook (zig-mode . eglot-ensure))
+  :hook ((zig-mode . eglot-ensure)
+         (zig-mode . (lambda () (setq-local devdocs-current-docs '("zig"))))))
 
 (use-package rust-mode
   :straight t
-  :hook (rust-mode . eglot-ensure))
+  :hook ((rust-mode . eglot-ensure)
+         (rust-mode . (lambda () (setq-local devdocs-current-docs '("rust"))))))
 
 (use-package markdown-mode
   :straight t)
@@ -91,21 +94,6 @@
 (use-package nix-mode
   :straight t
   :hook (nix-mode . eglot-ensure))
-
-(use-package wat-mode
-  :straight '(:type git :repo "https://github.com/knarkzel/wat-mode")
-  :mode "\\.wasm\\'"
-  :hook (wat-mode . wasm2wat))
-
-(defun wasm2wat ()
-  (let ((file (make-temp-file "wasm2wat")))
-    (write-region (point-min) (point-max) file)
-    (delete-region (point-min) (point-max))
-    (insert (shell-command-to-string (concat "wasm2wat " file)))
-    (beginning-of-buffer)
-    (message "")
-    (set-buffer-modified-p nil)
-    (read-only-mode)))
 
 (use-package protobuf-mode
   :straight t)
@@ -129,6 +117,26 @@
   :init
   (add-hook 'c-mode-hook 'eglot-ensure)
   (add-hook 'c++-mode-hook 'eglot-ensure))
+
+(use-package hyperbole
+  :straight t
+  :config
+  (hyperbole-mode))
+
+(use-package wat-mode
+  :straight '(:type git :repo "https://github.com/knarkzel/wat-mode")
+  :mode "\\.wasm\\'"
+  :hook (wat-mode . wasm2wat))
+
+(defun wasm2wat ()
+  (let ((file (make-temp-file "wasm2wat")))
+    (write-region (point-min) (point-max) file)
+    (delete-region (point-min) (point-max))
+    (insert (shell-command-to-string (concat "wasm2wat " file)))
+    (beginning-of-buffer)
+    (message "")
+    (set-buffer-modified-p nil)
+    (read-only-mode)))
 
 (use-package sudo-edit
   :straight t)
@@ -228,7 +236,7 @@
 
 (use-package org-capture
   :custom
-  (org-default-notes-file "~/notes/captures.org"))
+  (org-default-notes-file "~/source/notes/captures.org"))
 
 (use-package org-agenda
   :custom
@@ -322,5 +330,8 @@
   :config
   (emms-all)
   (emms-default-players))
+
+(use-package devdocs
+  :straight t)
 
 (provide 'init)
