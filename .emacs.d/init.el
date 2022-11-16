@@ -108,20 +108,17 @@
 
 (use-package typescript-mode
   :straight t
-  :init
-  (add-hook 'typescript-mode-hook 'eglot-ensure)
-  (add-hook 'js-jsx-mode-hook 'eglot-ensure)
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . js-jsx-mode)))
+  :hook (typescript-mode . (lambda ()
+                             (setq-local indent-width 2)))
+  :mode ("\\.tsx\\'" . typescript-mode))
 
 (use-package cc-mode
   :init
   (add-hook 'c-mode-hook 'eglot-ensure)
   (add-hook 'c++-mode-hook 'eglot-ensure))
 
-(use-package hyperbole
-  :straight t
-  :config
-  (hyperbole-mode))
+(use-package scala-mode
+  :straight t)
 
 (use-package wat-mode
   :straight '(:type git :repo "https://github.com/knarkzel/wat-mode")
@@ -213,13 +210,18 @@
   (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
 (use-package org
-  :hook (org-mode . org-indent-mode)
   :custom
   (org-hidden-keywords nil)
   (org-hide-emphasis-markers t)
   (org-image-actual-width (list 250))
   (org-return-follows-link t)
   (org-edit-src-content-indentation 0)
+  (org-html-validation-link t)
+  (org-html-head-include-scripts nil)
+  (org-html-head-include-default-style nil)
+  (org-html-html5-fancy t)
+  (org-html-doctype "html5")
+  (org-html-htmlize-output-type 'inline)
   (org-file-apps
    (quote
     ((auto-mode . emacs)
@@ -333,5 +335,14 @@
 
 (use-package devdocs
   :straight t)
+
+(use-package hyperbole
+  :straight t
+  :config
+  (hyperbole-mode))
+
+(use-package prolog-mode
+  :mode ("\\.pl\\'" . prolog-mode)
+  :hook (prolog-mode . eglot-ensure))
 
 (provide 'init)
