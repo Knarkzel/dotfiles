@@ -34,6 +34,12 @@ shopt -s histappend
 export HISTSIZE=100000
 export HISTFILESIZE=100000
 
+# fzf
+if command -v fzf-share >/dev/null; then
+  source "$(fzf-share)/key-bindings.bash"
+  source "$(fzf-share)/completion.bash"
+fi
+
 # direnv
 export DIRENV_LOG_FORMAT=
 eval "$(direnv hook bash)"
