@@ -345,4 +345,7 @@
   :mode ("\\.pl\\'" . prolog-mode)
   :hook (prolog-mode . eglot-ensure))
 
+(use-package elm-mode
+  :straight t)
+
 (provide 'init)
