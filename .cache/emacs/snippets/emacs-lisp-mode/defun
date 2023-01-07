@@ -2,6 +2,5 @@
 # name: defun
 # key: :d
 # --
-(defun odd/$1 ()
-  (interactive)
-  ($2))
+(defun $1 ($2)
+  ($3))

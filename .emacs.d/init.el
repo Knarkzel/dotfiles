@@ -20,7 +20,7 @@
   (define-key xah-fly-command-map (kbd "k") 'consult-line)
   (define-key xah-fly-command-map (kbd "P") 'project-find-file)
   (define-key xah-fly-command-map (kbd ":") 'eval-expression)
-  (define-key xah-fly-command-map (kbd "H") 'devdocs-lookup)
+  (define-key xah-fly-command-map (kbd "5") 'split-window-right)
   
   ;; kill buffer
   (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
@@ -30,6 +30,9 @@
   (define-key global-map (kbd "M-<down>") 'windmove-swap-states-down)
   (define-key global-map (kbd "M-<left>") 'windmove-swap-states-left)
   (define-key global-map (kbd "M-<right>") 'windmove-swap-states-right)
+
+  ;; remove bad bindings
+  (global-unset-key (kbd "C-w"))
   
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
@@ -103,7 +106,7 @@
 
 (use-package csharp-mode
   :straight t
-  :mode (("\\.cs\\'" . csharp-tree-sitter-mode)
+  :mode (("\\.cs\\'" . csharp-mode)
          ("\\.cshtml\\'" . mhtml-mode)))
 
 (use-package typescript-mode
@@ -121,11 +124,10 @@
   :straight t)
 
 (use-package wat-mode
-  :straight '(:type git :repo "https://github.com/knarkzel/wat-mode")
-  :mode "\\.wasm\\'"
-  :hook (wat-mode . wasm2wat))
+  :straight '(:type git :repo "https://github.com/knarkzel/wat-mode"))
 
 (defun wasm2wat ()
+  (interactive)
   (let ((file (make-temp-file "wasm2wat")))
     (write-region (point-min) (point-max) file)
     (delete-region (point-min) (point-max))
@@ -133,7 +135,8 @@
     (beginning-of-buffer)
     (message "")
     (set-buffer-modified-p nil)
-    (read-only-mode)))
+    (read-only-mode)
+    (wat-mode)))
 
 (use-package sudo-edit
   :straight t)
@@ -226,8 +229,8 @@
    (quote
     ((auto-mode . emacs)
      ("\\.mm\\'" . default)
-     ("\\.x?html?\\'" . "firefox %s")
-     ("\\.pdf\\'" . "firefox %s"))))
+     ("\\.x?html?\\'" . "brave %s")
+     ("\\.pdf\\'" . "brave %s"))))
   :config
   (set-face-attribute 'org-document-info-keyword nil
                       :foreground "#9d8f7c")
@@ -319,12 +322,6 @@
   (message-sendmail-envelope-from 'header)
   (mail-envelope-from 'header))
 
-(defun odd/fetch-mail ()
-  (interactive)
-  (set-process-sentinel
-   (start-process-shell-command "Fetch mail" "*fetch-mail*" "mbsync -a; notmuch new")
-   (lambda (_ _) (notmuch))))
-
 (use-package emms
   :straight t
   :custom
@@ -332,9 +329,6 @@
   :config
   (emms-all)
   (emms-default-players))
-
-(use-package devdocs
-  :straight t)
 
 (use-package hyperbole
   :straight t
@@ -346,6 +340,27 @@
   :hook (prolog-mode . eglot-ensure))
 
 (use-package elm-mode
-  :straight t)
+  :straight t
+  :hook ((elm-mode . eglot-ensure)
+         (elm-mode . (lambda () (electric-indent-mode -1)))))
+
+(use-package paxedit
+  :straight t
+  :hook (emacs-lisp-mode . paxedit-mode)
+  :config
+  (define-key paxedit-mode-map (kbd "M-<right>") 'paxedit-transpose-forward)
+  (define-key paxedit-mode-map (kbd "M-<left>") 'paxedit-transpose-backward)
+  (define-key paxedit-mode-map (kbd "M-<up>") 'paxedit-backward-up)
+  (define-key paxedit-mode-map (kbd "M-<down>") 'paxedit-backward-end)
+  (define-key paxedit-mode-map (kbd "C-r") 'paxedit-sexp-raise))
+
+(use-package parinfer-rust-mode
+  :straight t
+  :custom
+  (parinfer-rust-download t)
+  (parinfer-rust-check-before-enable nil)
+  :hook (emacs-lisp-mode . (lambda ()
+                             (electric-pair-mode -1)
+                             (parinfer-rust-mode t))))
 
 (provide 'init)

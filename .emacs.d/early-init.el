@@ -161,6 +161,7 @@
 (add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
+(add-to-list 'auto-mode-alist '("\\.wasm\\'" . hexl-mode))
 
 ;; utf-8
 (prefer-coding-system 'utf-8)
