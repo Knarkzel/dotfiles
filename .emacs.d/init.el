@@ -91,18 +91,9 @@
 (use-package markdown-mode
   :straight t)
 
-(use-package yaml-mode
-  :straight t)
-
 (use-package nix-mode
   :straight t
   :hook (nix-mode . eglot-ensure))
-
-(use-package protobuf-mode
-  :straight t)
-
-(use-package ledger-mode
-  :straight t)
 
 (use-package csharp-mode
   :straight t
@@ -112,16 +103,14 @@
 (use-package typescript-mode
   :straight t
   :hook (typescript-mode . (lambda ()
-                             (setq-local indent-width 2)))
+                             (electric-indent-mode -1)
+                             (setq-local indent-width 4)))
   :mode ("\\.tsx\\'" . typescript-mode))
 
 (use-package cc-mode
   :init
   (add-hook 'c-mode-hook 'eglot-ensure)
   (add-hook 'c++-mode-hook 'eglot-ensure))
-
-(use-package scala-mode
-  :straight t)
 
 (use-package wat-mode
   :straight '(:type git :repo "https://github.com/knarkzel/wat-mode"))
@@ -190,7 +179,7 @@
   (corfu-auto t)
   (corfu-count 5)
   (corfu-auto-prefix 1)
-  (corfu-auto-delay 0.1)
+  (corfu-auto-delay 0.5)
   (corfu-quit-no-match t)
   :config
   (global-corfu-mode))
@@ -238,10 +227,6 @@
                       :foreground "#9d8f7c")
   (set-face-attribute 'org-document-title nil
                       :foreground "#9d8f7c" :bold nil))
-
-(use-package org-capture
-  :custom
-  (org-default-notes-file "~/source/notes/captures.org"))
 
 (use-package org-agenda
   :custom
@@ -305,22 +290,8 @@
   :init
   (envrc-global-mode))
 
-(use-package olivetti
-  :straight t)
-
 (use-package ccls
   :straight t)
-
-(use-package notmuch
-  :straight t
-  :custom
-  (send-mail-function 'sendmail-send-it)
-  (user-mail-address "knarkzel@gmail.com")
-  (user-full-name "Odd-Harald Lillestø Myhren")
-  (sendmail-program "/etc/profiles/per-user/odd/bin/msmtp")
-  (mail-specify-envelope-from t)
-  (message-sendmail-envelope-from 'header)
-  (mail-envelope-from 'header))
 
 (use-package emms
   :straight t
@@ -344,23 +315,19 @@
   :hook ((elm-mode . eglot-ensure)
          (elm-mode . (lambda () (electric-indent-mode -1)))))
 
-(use-package paxedit
-  :straight t
-  :hook (emacs-lisp-mode . paxedit-mode)
+(use-package prettify-symbols-mode
+  :hook (lisp-mode . prettify-symbols-mode)
   :config
-  (define-key paxedit-mode-map (kbd "M-<right>") 'paxedit-transpose-forward)
-  (define-key paxedit-mode-map (kbd "M-<left>") 'paxedit-transpose-backward)
-  (define-key paxedit-mode-map (kbd "M-<up>") 'paxedit-backward-up)
-  (define-key paxedit-mode-map (kbd "M-<down>") 'paxedit-backward-end)
-  (define-key paxedit-mode-map (kbd "C-r") 'paxedit-sexp-raise))
+  (defconst lisp--prettify-symbols-alist
+    '(("lambda"  . ?λ))))
 
-(use-package parinfer-rust-mode
+(use-package slime
   :straight t
-  :custom
-  (parinfer-rust-download t)
-  (parinfer-rust-check-before-enable nil)
-  :hook (emacs-lisp-mode . (lambda ()
-                             (electric-pair-mode -1)
-                             (parinfer-rust-mode t))))
+  :init
+  (setq inferior-lisp-program "sbcl"))
+
+(use-package paredit
+  :hook (lisp-mode . paredit-mode)
+  :straight t)
 
 (provide 'init)
