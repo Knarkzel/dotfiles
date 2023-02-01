@@ -2,8 +2,28 @@
 # name: template
 # key: :t
 # --
-{pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/e3583ad6e533a9d8dd78f90bfa93812d390ea187.tar.gz") {}}:
-with pkgs.buildPackages;
-  pkgs.mkShell {
-    buildInputs = [];
-  }
+{
+  inputs = {
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixos-unstable";
+    };
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+    ...
+  }:
+    flake-utils.lib.eachDefaultSystem (system: let
+      pkgs = import nixpkgs {inherit system;};
+    in {
+      devShell = pkgs.mkShell {
+        buildInputs = [$1];
+      };
+    });
+}

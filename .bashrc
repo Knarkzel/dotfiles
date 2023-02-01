@@ -21,9 +21,9 @@ alias np="nix-shell -p"
 [[ $- == *i* ]] && stty -ixon
 
 # exports
-export BROWSER="firefox"
+export BROWSER="brave"
 export TERM="xterm-256color"
-export PATH="$PATH:$HOME/.cargo/bin/:$HOME/.local/bin:$HOME/.scripts:$HOME/.nix-profile/bin"
+export PATH="$PATH:$HOME/.cargo/bin/:$HOME/.local/bin:$HOME/.scripts:$HOME/.nix-profile/bin:$HOME/source/vlang/v"
 export NIXPKGS_ALLOW_UNFREE=1
 export _JAVA_AWT_WM_NONREPARENTING=1
 

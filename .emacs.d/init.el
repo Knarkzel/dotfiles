@@ -10,6 +10,7 @@
   (add-hook 'xah-fly-command-mode-activate-hook (lambda () (interactive) (corfu-quit)))
 
   ;; keybindings
+  (define-key xah-fly-command-map (kbd "A") 'org-agenda)
   (define-key xah-fly-command-map (kbd "E") 'odd/open-vterm)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
@@ -24,6 +25,9 @@
   
   ;; kill buffer
   (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
+
+  ;; cycle org-agenda-files
+  (define-key global-map (kbd "C-'") 'org-cycle-agenda-files)
 
   ;; moving windows
   (define-key global-map (kbd "M-<up>") 'windmove-swap-states-up)
@@ -230,7 +234,8 @@
 
 (use-package org-agenda
   :custom
-  (org-agenda-start-on-weekday nil))
+  (org-agenda-start-on-weekday nil)
+  (org-agenda-files '("~/source/org/work")))
 
 (use-package eldoc
   :custom
@@ -316,7 +321,7 @@
          (elm-mode . (lambda () (electric-indent-mode -1)))))
 
 (use-package prettify-symbols-mode
-  :hook (lisp-mode . prettify-symbols-mode)
+  :hook (elisp-mode . prettify-symbols-mode)
   :config
   (defconst lisp--prettify-symbols-alist
     '(("lambda"  . ?λ))))
@@ -328,6 +333,15 @@
 
 (use-package paredit
   :hook (lisp-mode . paredit-mode)
+  :straight t)
+
+(use-package just-mode
+  :straight t)
+
+(use-package yaml-mode
+  :straight t)
+
+(use-package rainbow-mode
   :straight t)
 
 (provide 'init)
