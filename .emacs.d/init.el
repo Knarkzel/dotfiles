@@ -344,4 +344,16 @@
 (use-package rainbow-mode
   :straight t)
 
+(use-package dashboard
+  :straight t
+  :custom
+  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (dashboard-items '((agenda)))
+  (dashboard-week-agenda t)
+  (dashboard-set-footer nil)
+  (dashboard-set-init-info nil)
+  (dashboard-banner-logo-title nil)
+  :config
+  (dashboard-setup-startup-hook))
+
 (provide 'init)
