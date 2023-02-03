@@ -344,15 +344,23 @@
 (use-package rainbow-mode
   :straight t)
 
+(use-package project
+  :custom
+  (project--list '(("~/source/knarkzel")
+                   ("~/source/adhan-player")
+                   ("~/source/rust/space-operator"))))
+
 (use-package dashboard
   :straight t
   :custom
   (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (dashboard-items '((agenda)))
+  (dashboard-items '((projects . 5) (agenda)))
+  (dashboard-projects-backend 'project-el)
   (dashboard-week-agenda t)
   (dashboard-set-footer nil)
   (dashboard-set-init-info nil)
   (dashboard-banner-logo-title nil)
+  (dashboard-show-shortcuts nil)
   :config
   (dashboard-setup-startup-hook))
 
