@@ -84,13 +84,11 @@
 
 (use-package zig-mode
   :straight t
-  :hook ((zig-mode . eglot-ensure)
-         (zig-mode . (lambda () (setq-local devdocs-current-docs '("zig"))))))
+  :hook ((zig-mode . eglot-ensure)))
 
 (use-package rust-mode
   :straight t
-  :hook ((rust-mode . eglot-ensure)
-         (rust-mode . (lambda () (setq-local devdocs-current-docs '("rust"))))))
+  :hook ((rust-mode . eglot-ensure)))
 
 (use-package markdown-mode
   :straight t)
@@ -332,7 +330,8 @@
   (setq inferior-lisp-program "sbcl"))
 
 (use-package paredit
-  :hook (lisp-mode . paredit-mode)
+  :hook ((lisp-mode . paredit-mode)
+         (emacs-lisp-mode . paredit-mode)) 
   :straight t)
 
 (use-package just-mode
@@ -348,6 +347,7 @@
   :custom
   (project--list '(("~/source/knarkzel")
                    ("~/source/adhan-player")
+                   ("~/source/typescript/revert")
                    ("~/source/rust/space-operator"))))
 
 (use-package dashboard
@@ -363,5 +363,24 @@
   (dashboard-show-shortcuts nil)
   :config
   (dashboard-setup-startup-hook))
+
+(defun odd/run-octave ()
+  (interactive)
+  (let* ((path (buffer-file-name (window-buffer (minibuffer-selected-window))))
+         (output (shell-command-to-string (format "octave %s" path)))
+         (buffer (get-buffer-create "*octave*")))
+    (with-current-buffer buffer
+      (erase-buffer)
+      (insert (s-trim output)))
+    (display-buffer-in-side-window buffer '(( side . right)))))
+
+(use-package octave
+  :mode (("\\.m\\'" . octave-mode))
+  :bind (("C-c C-c" . odd/run-octave)))
+
+(use-package ac-octave
+  :hook ((octave-mode . ac-octave-setup)
+         (octave-mode . auto-complete-mode))
+  :straight t)
 
 (provide 'init)
