@@ -366,13 +366,20 @@
 
 (defun odd/run-octave ()
   (interactive)
+  (save-buffer)
+  (message nil)
   (let* ((path (buffer-file-name (window-buffer (minibuffer-selected-window))))
-         (output (shell-command-to-string (format "octave %s" path)))
+         (output (shell-command-to-string (format "octave --no-gui --persist %s" path)))
          (buffer (get-buffer-create "*octave*")))
     (with-current-buffer buffer
+      (visual-line-mode)
       (erase-buffer)
       (insert (s-trim output)))
-    (display-buffer-in-side-window buffer '(( side . right)))))
+    (if (> (buffer-size buffer) 0)
+        (progn
+          (display-buffer-in-side-window buffer '(( side . right)))
+          (select-window (get-buffer-window buffer))
+          (balance-windows)))))
 
 (use-package octave
   :mode (("\\.m\\'" . octave-mode))
