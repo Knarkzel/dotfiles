@@ -41,10 +41,16 @@
   ;; keybindings leader
   (define-key xah-fly-leader-key-map (kbd "t") 'consult-buffer))
 
+(use-package markdown-mode
+  :straight t)
+
 (use-package doom-themes
   :straight t
   :config
-  (load-theme 'doom-flatwhite t))
+  (load-theme 'doom-flatwhite t)
+  ;; fix color for lsp-ui-doc
+  (require 'markdown-mode)
+  (set-face-background 'markdown-code-face "#f1ece4"))
 
 (use-package dired
   :defer t
@@ -61,73 +67,53 @@
   (dired-free-space nil)
   (dired-listing-switches "--group-directories-first --dereference -Alh"))
 
-(use-package eglot
+(use-package flycheck
+  :straight t)
+
+(use-package lsp-ui
   :straight t
-  :config
-  (define-key eglot-mode-map (kbd "C-c e") 'flymake-goto-next-error)
-  (define-key eglot-mode-map (kbd "C-c f") 'eglot-find-implementation)
-  (define-key eglot-mode-map (kbd "C-c n") 'eglot-rename)
-  (define-key eglot-mode-map (kbd "C-c a") 'eglot-code-actions)
-  (define-key eglot-mode-map (kbd "C-c r") 'xref-find-references))
+  :custom
+  (lsp-ui-doc-max-width 45)
+  (lsp-ui-doc-max-height 20)
+  (lsp-ui-doc-show-with-cursor t)
+  (lsp-ui-doc-show-with-mouse nil)
+  (lsp-ui-doc-delay 0.25))
 
-(use-package tree-sitter-langs
-  :straight t)
-
-(use-package tree-sitter-indent
-  :straight t)
-
-(use-package tree-sitter
+(use-package lsp-mode
   :straight t
   :init
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-mode-hook 'tree-sitter-hl-mode))
+  (define-key lsp-mode-map (kbd "C-c e") 'flycheck-next-error)
+  (define-key lsp-mode-map (kbd "C-c f") 'lsp-find-definition)
+  (define-key lsp-mode-map (kbd "C-c n") 'lsp-rename)
+  (define-key lsp-mode-map (kbd "C-c a") 'lsp-execute-code-action)
+  (define-key lsp-mode-map (kbd "C-c r") 'lsp-find-references)
+  :custom
+  (lsp-enable-suggest-server-download nil)
+  (lsp-keymap-prefix "C-c l")
+  (lsp-idle-delay 0.500)
+  (lsp-log-io nil)
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-lens-enable nil)
+  (lsp-signature-auto-activate nil)
+  (lsp-completion-provider :none)
+  (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"]))
 
 (use-package zig-mode
   :straight t
-  :hook ((zig-mode . eglot-ensure)))
+  :hook ((zig-mode . lsp-deferred)))
 
 (use-package rust-mode
   :straight t
-  :hook ((rust-mode . eglot-ensure)))
-
-(use-package markdown-mode
-  :straight t)
+  :hook ((rust-mode . lsp-deferred)))
 
 (use-package nix-mode
   :straight t
-  :hook (nix-mode . eglot-ensure))
+  :hook (nix-mode . lsp-deferred))
 
 (use-package csharp-mode
   :straight t
   :mode (("\\.cs\\'" . csharp-mode)
          ("\\.cshtml\\'" . mhtml-mode)))
-
-(use-package typescript-mode
-  :straight t
-  :hook (typescript-mode . (lambda ()
-                             (electric-indent-mode -1)
-                             (setq-local indent-width 4)))
-  :mode ("\\.tsx\\'" . typescript-mode))
-
-(use-package cc-mode
-  :init
-  (add-hook 'c-mode-hook 'eglot-ensure)
-  (add-hook 'c++-mode-hook 'eglot-ensure))
-
-(use-package wat-mode
-  :straight '(:type git :repo "https://github.com/knarkzel/wat-mode"))
-
-(defun wasm2wat ()
-  (interactive)
-  (let ((file (make-temp-file "wasm2wat")))
-    (write-region (point-min) (point-max) file)
-    (delete-region (point-min) (point-max))
-    (insert (shell-command-to-string (concat "wasm2wat " file)))
-    (beginning-of-buffer)
-    (message "")
-    (set-buffer-modified-p nil)
-    (read-only-mode)
-    (wat-mode)))
 
 (use-package sudo-edit
   :straight t)
@@ -144,15 +130,6 @@
   (vertico-count-format '("" . ""))
   :init
   (vertico-mode t))
-
-(use-package vertico-posframe
-  :straight t
-  :init
-  (vertico-posframe-mode t)
-  (set-face-background 'vertico-posframe-border "white")
-  :custom
-  (vertico-posframe-border-width 1)
-  (vertico-posframe-width 80))
 
 (use-package orderless
   :straight t
@@ -293,9 +270,6 @@
   :init
   (envrc-global-mode))
 
-(use-package ccls
-  :straight t)
-
 (use-package emms
   :straight t
   :custom
@@ -309,25 +283,11 @@
   :config
   (hyperbole-mode))
 
-(use-package prolog-mode
-  :mode ("\\.pl\\'" . prolog-mode)
-  :hook (prolog-mode . eglot-ensure))
-
-(use-package elm-mode
-  :straight t
-  :hook ((elm-mode . eglot-ensure)
-         (elm-mode . (lambda () (electric-indent-mode -1)))))
-
 (use-package prettify-symbols-mode
   :hook (elisp-mode . prettify-symbols-mode)
   :config
   (defconst lisp--prettify-symbols-alist
     '(("lambda"  . ?λ))))
-
-(use-package slime
-  :straight t
-  :init
-  (setq inferior-lisp-program "sbcl"))
 
 (use-package paredit
   :hook ((lisp-mode . paredit-mode)
@@ -346,7 +306,7 @@
 (use-package project
   :custom
   (project--list '(("~/source/knarkzel")
-                   ("~/source/adhan-player")
+                   ("~/source/rust/adhan-player")
                    ("~/source/typescript/revert")
                    ("~/source/rust/space-operator"))))
 
@@ -354,7 +314,7 @@
   :straight t
   :custom
   (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (dashboard-items '((projects . 5) (agenda)))
+  (dashboard-items '((projects . 5)))
   (dashboard-projects-backend 'project-el)
   (dashboard-week-agenda t)
   (dashboard-set-footer nil)
@@ -378,7 +338,6 @@
     (if (> (buffer-size buffer) 0)
         (progn
           (display-buffer-in-side-window buffer '(( side . right)))
-          (select-window (get-buffer-window buffer))
           (balance-windows)))))
 
 (use-package octave
@@ -389,5 +348,18 @@
   :hook ((octave-mode . ac-octave-setup)
          (octave-mode . auto-complete-mode))
   :straight t)
+
+(use-package coverlay
+  :straight t)
+
+(use-package origami
+  :straight t)
+
+(use-package css-in-js-mode
+  :straight '(css-in-js-mode :type git :host github :repo "orzechowskid/tree-sitter-css-in-js"))
+
+(use-package tsx-mode
+  :straight '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el" :branch "emacs29")
+  :hook ((tsx-ts-mode . lsp-deferred)))
 
 (provide 'init)

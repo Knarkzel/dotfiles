@@ -1,5 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
+;; straight bug
+(defvar native-comp-deferred-compilation-deny-list ())
+(defvar eglot-server-programs ())
+
 ;; speed
 (defvar comp-deferred-compliation)
 (setq comp-deferred-compilation t)
@@ -71,8 +75,6 @@
   :demand t
   :config
   (gcmh-mode 1))
-
-(setq comp-deferred-compilation t)
 
 (setq byte-compile-warnings '(not nresolved
                                   free-vars
@@ -161,7 +163,6 @@
 (add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.gb\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.ch8\\'" . hexl-mode))
-(add-to-list 'auto-mode-alist '("\\.wasm\\'" . hexl-mode))
 
 ;; utf-8
 (prefer-coding-system 'utf-8)
