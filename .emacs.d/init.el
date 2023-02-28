@@ -12,6 +12,7 @@
   ;; keybindings
   (define-key xah-fly-command-map (kbd "A") 'org-agenda)
   (define-key xah-fly-command-map (kbd "E") 'odd/open-vterm)
+  (define-key xah-fly-command-map (kbd "V") 'vterm)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
@@ -87,9 +88,11 @@
   (define-key lsp-mode-map (kbd "C-c n") 'lsp-rename)
   (define-key lsp-mode-map (kbd "C-c a") 'lsp-execute-code-action)
   (define-key lsp-mode-map (kbd "C-c r") 'lsp-find-references)
+  (add-hook 'rust-ts-mode-hook 'lsp-deferred)
+  (add-hook 'zig-mode-hook 'lsp-deferred)
+  (add-hook 'nix-mode-hook 'lsp-deferred)
   :custom
   (lsp-enable-suggest-server-download nil)
-  (lsp-keymap-prefix "C-c l")
   (lsp-idle-delay 0.500)
   (lsp-log-io nil)
   (lsp-headerline-breadcrumb-enable nil)
@@ -99,16 +102,13 @@
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"]))
 
 (use-package zig-mode
-  :straight t
-  :hook ((zig-mode . lsp-deferred)))
+  :straight t)
 
-(use-package rust-mode
-  :straight t
-  :hook ((rust-mode . lsp-deferred)))
+(use-package rust-ts-mode
+  :mode (("\\.rs\\'" . rust-ts-mode)))
 
 (use-package nix-mode
-  :straight t
-  :hook (nix-mode . lsp-deferred))
+  :straight t)
 
 (use-package csharp-mode
   :straight t
@@ -237,7 +237,11 @@
         (setq default-directory dir))))
   (advice-add #'dired-jump :before #'vterm-directory-sync)
   (define-key vterm-mode-map (kbd "C-v") 'vterm-yank)
-  (define-key vterm-mode-map (kbd "C-u") 'vterm-send-C-u))
+  (define-key vterm-mode-map (kbd "C-u") 'vterm-send-C-u)
+  (define-key vterm-mode-map (kbd "M-<up>") 'windmove-swap-states-up)
+  (define-key vterm-mode-map (kbd "M-<down>") 'windmove-swap-states-down)
+  (define-key vterm-mode-map (kbd "M-<left>") 'windmove-swap-states-left)
+  (define-key vterm-mode-map (kbd "M-<right>") 'windmove-swap-states-right))
 
 (use-package vterm-toggle
   :straight t
@@ -360,6 +364,8 @@
 
 (use-package tsx-mode
   :straight '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el" :branch "emacs29")
-  :hook ((tsx-ts-mode . lsp-deferred)))
+  :init
+  (add-hook 'tsx-ts-mode-hook 'lsp)
+  (add-hook 'typescript-ts-mode-hook 'lsp))
 
 (provide 'init)
