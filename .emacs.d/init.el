@@ -15,7 +15,7 @@
   (define-key xah-fly-command-map (kbd "V") 'vterm)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
-  (define-key xah-fly-command-map (kbd "T") 'gpt-dwim)
+  (define-key xah-fly-command-map (kbd "T") 'gptel)
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
   (define-key xah-fly-command-map (kbd "C") 'org-capture)
@@ -378,10 +378,10 @@
   :init
   (zoom-mode t))
 
-(use-package gpt
+(use-package gptel
+  :straight '(gptel :type git :host github :repo "karthink/gptel")
   :demand t
   :custom
-  (gpt-openai-key "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")
-  :straight t)
+  (gptel-api-key "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"))
 
 (provide 'init)
