@@ -15,6 +15,7 @@
   (define-key xah-fly-command-map (kbd "V") 'vterm)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
+  (define-key xah-fly-command-map (kbd "T") 'gpt-dwim)
   (define-key xah-fly-command-map (kbd "R") 'consult-ripgrep)
   (define-key xah-fly-command-map (kbd "F") 'consult-find)
   (define-key xah-fly-command-map (kbd "C") 'org-capture)
@@ -90,7 +91,6 @@
   (define-key lsp-mode-map (kbd "C-c r") 'lsp-find-references)
   (add-hook 'rust-ts-mode-hook 'lsp-deferred)
   (add-hook 'zig-mode-hook 'lsp-deferred)
-  (add-hook 'nix-mode-hook 'lsp-deferred)
   :custom
   (lsp-enable-suggest-server-download nil)
   (lsp-idle-delay 0.500)
@@ -367,5 +367,21 @@
   :init
   (add-hook 'tsx-ts-mode-hook 'lsp)
   (add-hook 'typescript-ts-mode-hook 'lsp))
+
+(use-package wgsl-mode
+  :straight '(wgsl-mode :type git :host github :repo "acowley/wgsl-mode"))
+
+(use-package zoom
+  :straight t
+  :custom
+  (zoom-size '(0.618 . 0.618))
+  :init
+  (zoom-mode t))
+
+(use-package gpt
+  :demand t
+  :custom
+  (gpt-openai-key "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")
+  :straight t)
 
 (provide 'init)

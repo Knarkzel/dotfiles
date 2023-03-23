@@ -23,8 +23,9 @@ alias np="nix-shell -p"
 # exports
 export BROWSER="brave"
 export TERM="xterm-256color"
-export PATH="$PATH:$HOME/.cargo/bin/:$HOME/.local/bin:$HOME/.scripts:$HOME/.nix-profile/bin:$HOME/source/vlang/v"
+export PATH="$PATH:$HOME/.npm-packages/bin:$HOME/.cargo/bin/:$HOME/.local/bin:$HOME/.scripts:$HOME/.nix-profile/bin:$HOME/source/vlang/v"
 export NIXPKGS_ALLOW_UNFREE=1
+export NIXPKGS_ALLOW_INSECURE=1
 export _JAVA_AWT_WM_NONREPARENTING=1
 
 # history
