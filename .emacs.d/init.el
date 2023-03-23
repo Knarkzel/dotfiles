@@ -380,8 +380,9 @@
 
 (use-package gptel
   :straight '(gptel :type git :host github :repo "karthink/gptel")
-  :demand t
-  :custom
-  (gptel-api-key "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"))
+  :init
+  (setq gptel-api-key "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")
+  (setq gptel-default-mode 'org-mode)
+  (setq gptel-prompt-string "* "))
 
 (provide 'init)
