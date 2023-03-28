@@ -385,4 +385,16 @@
   (setq gptel-default-mode 'org-mode)
   (setq gptel-prompt-string "* "))
 
+(use-package emmet-mode
+  :straight t
+  :hook (typescript-ts-mode . emmet-mode)
+  :custom
+  (emmet-indent-after-insert nil)
+  (emmet-indentation 2))
+
+(use-package svelte-mode
+  :hook ((svelte-mode . emmet-mode)
+         (svelte-mode . lsp-deferred))
+  :straight t)
+
 (provide 'init)
