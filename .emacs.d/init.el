@@ -389,12 +389,17 @@
   :straight t
   :hook (typescript-ts-mode . emmet-mode)
   :custom
+  (emmet-indentation 2)
   (emmet-indent-after-insert nil)
-  (emmet-indentation 2))
+  (emmet-insert-flash-time 0.25))
 
-(use-package svelte-mode
-  :hook ((svelte-mode . emmet-mode)
-         (svelte-mode . lsp-deferred))
+(use-package web-mode
+  :mode (("\\.svelte\\'" . web-mode))
+  :hook ((web-mode . emmet-mode)
+         (web-mode . lsp-deferred))
+  :custom
+  (web-mode-part-padding 0)
+  (web-mode-markup-indent-offset 2)
   :straight t)
 
 (provide 'init)
