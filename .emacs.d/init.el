@@ -181,6 +181,7 @@
   (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
 (use-package org
+  :hook (org-mode . org-indent-mode)
   :custom
   (org-hidden-keywords nil)
   (org-hide-emphasis-markers t)
@@ -383,7 +384,8 @@
   :init
   (setq gptel-api-key "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")
   (setq gptel-default-mode 'org-mode)
-  (setq gptel-prompt-string "* "))
+  (setq gptel-prompt-string "* ")
+  (setq gptel--model "gpt-4"))
 
 (use-package emmet-mode
   :straight t
@@ -393,13 +395,20 @@
   (emmet-indent-after-insert nil)
   (emmet-insert-flash-time 0.25))
 
-(use-package web-mode
-  :mode (("\\.svelte\\'" . web-mode))
-  :hook ((web-mode . emmet-mode)
-         (web-mode . lsp-deferred))
-  :custom
-  (web-mode-part-padding 0)
-  (web-mode-markup-indent-offset 2)
+(use-package svelte-mode
+  :hook ((svelte-mode . emmet-mode)
+         (svelte-mode . lsp-deferred))
   :straight t)
+
+(use-package typescript-mode
+  :hook (typescript-mode . lsp-deferred)
+  :straight t)
+
+(use-package lsp-dart
+  :straight t)
+
+(use-package dart-mode
+  :straight t
+  :hook (dart-mode . lsp-deferred))
 
 (provide 'init)
