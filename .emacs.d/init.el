@@ -11,8 +11,8 @@
 
   ;; keybindings
   (define-key xah-fly-command-map (kbd "A") 'org-agenda)
-  (define-key xah-fly-command-map (kbd "E") 'odd/open-vterm)
-  (define-key xah-fly-command-map (kbd "V") 'vterm)
+  (define-key xah-fly-command-map (kbd "E") 'vterm-toggle)
+  (define-key xah-fly-command-map (kbd "V") 'odd/open-vterm)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
   (define-key xah-fly-command-map (kbd "T") 'gptel)
@@ -246,8 +246,6 @@
 
 (use-package vterm-toggle
   :straight t
-  :custom
-  (vterm-toggle-scope 'all)
   :config
   (define-key vterm-mode-map (kbd "<escape>") 'xah-fly-command-mode-activate)
   :hook
@@ -261,14 +259,16 @@
   (require 'vterm-toggle)
   (if (string-match-p "vterm" (buffer-name))
       (delete-window)
-    (let* ((dir (expand-file-name default-directory))
-           (vterm (format "vterm %s" dir))
-           (buffers (seq-filter (lambda (it) (string-match-p "vterm" (buffer-name it))) (buffer-list))))
-      (while (and buffers (not (string= vterm (format "%s/" (buffer-name (car buffers))))))
-        (setq buffers (cdr buffers)))
-      (if (> (length buffers) 0)
-          (switch-to-buffer-other-window (car buffers))
-        (vterm-toggle-show)))))
+    (let* ((current-dir (file-name-directory (buffer-file-name)))
+           (buffer-name (format "vterm %s" current-dir))
+           (buffer-directory (directory-file-name (file-name-as-directory buffer-name)))
+           (matching-buffer (get-buffer buffer-directory)))
+      (if matching-buffer
+          (progn
+            (split-window-below)
+            (other-window 1)
+            (switch-to-buffer matching-buffer))
+        (vterm)))))
 
 (use-package envrc
   :straight t
@@ -363,6 +363,13 @@
 (use-package css-in-js-mode
   :straight '(css-in-js-mode :type git :host github :repo "orzechowskid/tree-sitter-css-in-js"))
 
+(use-package javascript-mode
+  :mode (("\\.js\\'" . javascript-mode)
+         ("\\.cjs\\'" . javascript-mode))
+  :hook (javascript-mode . lsp-deferred)
+  :custom
+  (js-indent-level 2))
+
 (use-package tsx-mode
   :straight '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el" :branch "emacs29")
   :init
@@ -385,7 +392,7 @@
   (setq gptel-api-key "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")
   (setq gptel-default-mode 'org-mode)
   (setq gptel-prompt-string "* ")
-  (setq gptel--model "gpt-4"))
+  (setq gptel--model "gpt-3.5"))
 
 (use-package emmet-mode
   :straight t
@@ -397,12 +404,20 @@
 
 (use-package svelte-mode
   :hook ((svelte-mode . emmet-mode)
-         (svelte-mode . lsp-deferred))
+         (svelte-mode . lsp-deferred)
+         (svelte-mode . (lambda () (rainbow-delimiters-mode -1))))
   :straight t)
 
 (use-package typescript-mode
   :hook (typescript-mode . lsp-deferred)
+  :custom
+  (typescript-indent-level 2)
   :straight t)
+
+(use-package css-mode
+  :mode (("\\.postcss\\'" . css-mode))
+  :custom
+  (css-indent-offset 2))
 
 (use-package lsp-dart
   :straight t)
@@ -410,5 +425,25 @@
 (use-package dart-mode
   :straight t
   :hook (dart-mode . lsp-deferred))
+
+(use-package mhtml-mode
+  :hook (mhtml-mode . emmet-mode))
+
+(use-package asm-mode
+  :hook (asm-mode . (lambda (electric-indent-mode -1))))
+
+(use-package vlang-mode
+  :straight '(vlang-mode :type git :host github :repo "Naheel-Azawy/vlang-mode"))
+
+(use-package typst-mode
+  :straight t)
+
+(use-package writeroom-mode
+  :straight t)
+
+(use-package treemacs
+  :straight t
+  :custom
+  (treemacs-width 30))
 
 (provide 'init)
