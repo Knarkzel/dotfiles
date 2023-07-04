@@ -259,17 +259,16 @@
   (require 'vterm-toggle)
   (if (string-match-p "vterm" (buffer-name))
       (delete-window)
-    (let* ((current-dir (file-name-directory (buffer-file-name)))
-           (buffer-name (format "vterm %s" current-dir))
-           (buffer-directory (directory-file-name (file-name-as-directory buffer-name)))
-           (matching-buffer (get-buffer buffer-directory)))
-      (if matching-buffer
-          (progn
-            (split-window-below)
-            (other-window 1)
-            (switch-to-buffer matching-buffer))
-        (vterm)))))
-
+    (let* ((buffer-directory (expand-file-name (directory-file-name default-directory)))
+           (buffer-name (format "vterm %s" buffer-directory))
+           (matching-buffer (get-buffer buffer-name)))
+      (progn
+        (split-window-below)
+        (other-window 1)
+        (if matching-buffer
+            (switch-to-buffer matching-buffer)
+          (vterm))))))
+ 
 (use-package envrc
   :straight t
   :init
