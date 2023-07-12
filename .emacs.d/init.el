@@ -11,8 +11,8 @@
 
   ;; keybindings
   (define-key xah-fly-command-map (kbd "A") 'org-agenda)
-  (define-key xah-fly-command-map (kbd "E") 'vterm-toggle)
-  (define-key xah-fly-command-map (kbd "V") 'odd/open-vterm)
+  (define-key xah-fly-command-map (kbd "E") 'odd/open-vterm)
+  (define-key xah-fly-command-map (kbd "V") 'vterm)
   (define-key xah-fly-command-map (kbd "U") 'winner-undo)
   (define-key xah-fly-command-map (kbd "G") 'magit)
   (define-key xah-fly-command-map (kbd "T") 'gptel)
@@ -67,7 +67,7 @@
   (dired-omit-files "^\\.")
   (dired-dwim-target t)
   (dired-free-space nil)
-  (dired-listing-switches "--group-directories-first --dereference -Alh"))
+  (dired-listing-switches "--group-directories-first --dereference -Alvh"))
 
 (use-package flycheck
   :straight t)
@@ -263,6 +263,7 @@
            (buffer-name (format "vterm %s" buffer-directory))
            (matching-buffer (get-buffer buffer-name)))
       (progn
+        (message buffer-name)
         (split-window-below)
         (other-window 1)
         (if matching-buffer
