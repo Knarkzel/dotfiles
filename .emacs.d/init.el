@@ -386,14 +386,6 @@
   :init
   (zoom-mode t))
 
-(use-package gptel
-  :straight '(gptel :type git :host github :repo "karthink/gptel")
-  :init
-  (setq gptel-api-key "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")
-  (setq gptel-default-mode 'org-mode)
-  (setq gptel-prompt-string "* ")
-  (setq gptel--model "gpt-3.5"))
-
 (use-package emmet-mode
   :straight t
   :hook (typescript-ts-mode . emmet-mode)
@@ -440,10 +432,5 @@
 
 (use-package writeroom-mode
   :straight t)
-
-(use-package treemacs
-  :straight t
-  :custom
-  (treemacs-width 30))
 
 (provide 'init)
