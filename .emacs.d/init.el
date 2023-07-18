@@ -363,13 +363,6 @@
 (use-package css-in-js-mode
   :straight '(css-in-js-mode :type git :host github :repo "orzechowskid/tree-sitter-css-in-js"))
 
-(use-package javascript-mode
-  :mode (("\\.js\\'" . javascript-mode)
-         ("\\.cjs\\'" . javascript-mode))
-  :hook (javascript-mode . lsp-deferred)
-  :custom
-  (js-indent-level 2))
-
 (use-package tsx-mode
   :straight '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el" :branch "emacs29")
   :init
@@ -399,6 +392,13 @@
          (svelte-mode . lsp-deferred)
          (svelte-mode . (lambda () (rainbow-delimiters-mode -1))))
   :straight t)
+
+(use-package javascript-mode
+  :mode (("\\.js\\'" . javascript-mode)
+         ("\\.cjs\\'" . javascript-mode))
+  :hook (javascript-mode . lsp-deferred)
+  :custom
+  (js-indent-level 2))
 
 (use-package typescript-mode
   :hook (typescript-mode . lsp-deferred)
