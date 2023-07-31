@@ -49,10 +49,13 @@
 (use-package doom-themes
   :straight t
   :config
-  (load-theme 'doom-flatwhite t)
-  ;; fix color for lsp-ui-doc
-  (require 'markdown-mode)
-  (set-face-background 'markdown-code-face "#f1ece4"))
+  (if recording-video
+      (load-theme 'doom-one t)
+      (progn
+        ;; fix color for lsp-ui-doc
+        (load-theme 'doom-flatwhite t)
+        (require 'markdown-mode)
+        (set-face-background 'markdown-code-face "#f1ece4"))))
 
 (use-package dired
   :defer t
@@ -426,9 +429,6 @@
 
 (use-package vlang-mode
   :straight '(vlang-mode :type git :host github :repo "Naheel-Azawy/vlang-mode"))
-
-(use-package typst-mode
-  :straight t)
 
 (use-package writeroom-mode
   :straight t)
