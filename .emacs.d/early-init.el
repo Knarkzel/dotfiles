@@ -60,15 +60,15 @@
   :straight (:host github :repo "kekeimiku/benchmark-init-el")
   :hook (after-init . benchmark-init/deactivate))
 
-(add-hook
- 'emacs-startup-hook
- (lambda ()
-   (message "Emacs ready in %s with %d garbage collections."
-            (format
-             "%.2f seconds"
-             (float-time
-              (time-subtract after-init-time before-init-time)))
-            gcs-done)))
+;; (add-hook
+;;  'emacs-startup-hook
+;;  (lambda ()
+;;    (message "Emacs ready in %s with %d garbage collections."
+;;             (format
+;;              "%.2f seconds"
+;;              (float-time
+;;               (time-subtract after-init-time before-init-time)))
+;;             gcs-done)))
 
 (use-package gcmh
   :straight t
@@ -85,7 +85,7 @@
                                   cl-functions
                                   interactive-only))
 
-(setq recording-video nil)
+(setq recording-video t)
 (setq screen-font (if recording-video "Monospace:size=40" "Monospace:size=28"))
 (setq-default default-frame-alist
               (append (list

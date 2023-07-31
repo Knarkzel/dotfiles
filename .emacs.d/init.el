@@ -46,11 +46,23 @@
 (use-package markdown-mode
   :straight t)
 
-(use-package doom-themes
+;; Silence useless messages
+(dolist (fn '(previus-line next-line dired-jump)) 
+  (defadvice fn (around silencer activate)
+    (condition-case nil
+        ad-do-it
+      ((beginning-of-buffer)))))
+
+(use-package catppuccin-theme
   :straight t
   :config
   (if recording-video
-      (load-theme 'doom-one t)
+      (load-theme 'catppuccin t)))
+
+(use-package doom-themes
+  :straight t
+  :config
+  (if (not recording-video) 
       (progn
         ;; fix color for lsp-ui-doc
         (load-theme 'doom-flatwhite t)
@@ -69,6 +81,7 @@
   :custom
   (dired-omit-files "^\\.")
   (dired-dwim-target t)
+  (dired-omit-verbose nil)
   (dired-free-space nil)
   (dired-listing-switches "--group-directories-first --dereference -Alvh"))
 
@@ -266,7 +279,6 @@
            (buffer-name (format "vterm %s" buffer-directory))
            (matching-buffer (get-buffer buffer-name)))
       (progn
-        (message buffer-name)
         (split-window-below)
         (other-window 1)
         (if matching-buffer
@@ -310,27 +322,6 @@
 
 (use-package rainbow-mode
   :straight t)
-
-(use-package project
-  :custom
-  (project--list '(("~/source/knarkzel")
-                   ("~/source/rust/adhan-player")
-                   ("~/source/typescript/revert")
-                   ("~/source/rust/space-operator"))))
-
-(use-package dashboard
-  :straight t
-  :custom
-  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (dashboard-items '((projects . 5)))
-  (dashboard-projects-backend 'project-el)
-  (dashboard-week-agenda t)
-  (dashboard-set-footer nil)
-  (dashboard-set-init-info nil)
-  (dashboard-banner-logo-title nil)
-  (dashboard-show-shortcuts nil)
-  :config
-  (dashboard-setup-startup-hook))
 
 (defun odd/run-octave ()
   (interactive)
