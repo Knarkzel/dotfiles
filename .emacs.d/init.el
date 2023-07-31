@@ -129,6 +129,7 @@
   (add-hook 'zig-mode-hook 'lsp-deferred)
   :custom
   (lsp-enable-suggest-server-download nil)
+  (lsp-auto-guess-root t)
   (lsp-idle-delay 0.500)
   (lsp-log-io nil)
   (lsp-headerline-breadcrumb-enable nil)
