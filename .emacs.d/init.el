@@ -24,6 +24,7 @@
   (define-key xah-fly-command-map (kbd "P") 'project-find-file)
   (define-key xah-fly-command-map (kbd ":") 'eval-expression)
   (define-key xah-fly-command-map (kbd "5") 'split-window-right)
+  (define-key xah-fly-command-map (kbd "C-o") 'pop-to-mark-command)
   
   ;; kill buffer
   (define-key global-map (kbd "C-x k") 'kill-this-buffer)  
@@ -444,5 +445,10 @@
 
 (use-package writeroom-mode
   :straight t)
+
+(defun browse-web ()
+  (interactive)
+  (let ((input (read-string "Search for: ")))
+    (shell-command (concat "brave " "https://www.google.com/search?q=" "'" input "'"))))
 
 (provide 'init)

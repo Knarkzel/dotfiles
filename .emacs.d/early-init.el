@@ -222,4 +222,14 @@
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
 
+;; Find-file should automatically create parents
+(defun my-find-file (orig-fun &rest args)
+  (let* ((filename (car args))
+         (directory (file-name-directory filename)))
+    (if (not (file-directory-p directory))
+        (make-directory directory t))
+    (apply orig-fun args)))
+
+(advice-add 'find-file :around 'my-find-file)
+
 (provide 'early-init)
