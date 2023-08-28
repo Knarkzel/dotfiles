@@ -1,5 +1,10 @@
 ;;; config.el -*- lexical-binding: t -*-
 
+(use-package treesit-auto
+  :straight t
+  :config
+  (global-treesit-auto-mode))
+
 (use-package xah-fly-keys
   :straight t
   :init
@@ -89,6 +94,16 @@
         (load-theme 'doom-flatwhite t)
         (require 'markdown-mode)
         (set-face-background 'markdown-code-face "#f1ece4"))))
+
+(use-package theme-changer
+  :demand t
+  :straight t
+  :custom
+  (calendar-location-name "Froland, Norway") 
+  (calendar-latitude 58.0)
+  (calendar-longitude 9.0)
+  :config
+  (change-theme 'doom-flatwhite 'catppuccin))
 
 (use-package dired
   :defer t
@@ -445,6 +460,11 @@
 
 (use-package writeroom-mode
   :straight t)
+
+(use-package typst-mode
+  :mode (("\\.typst\\'" . typst-mode))
+  :hook ((typst-mode . (lambda () (eletric-pair-mode -1))))
+  :straight (:type git :host github :repo "Ziqi-Yang/typst-mode.el"))
 
 (defun browse-web ()
   (interactive)
